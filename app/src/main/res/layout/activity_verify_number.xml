@@ -6,92 +6,76 @@
     android:layout_height="match_parent"
     tools:context=".LoginActivity">
 
+
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/signInHeaderText"
+        android:id="@+id/enterOTPHeaderText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="112dp"
-        android:layout_marginBottom="127dp"
-        android:text="Sign In"
+        android:layout_marginTop="61dp"
+        android:layout_marginBottom="11dp"
+        android:text="Enter OTP"
         android:textColor="#7BED8D"
         android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/phoneNumberInputLayout"
+        app:layout_constraintBottom_toTopOf="@+id/imageView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/forgotPasswordTextView"
+    <ImageView
+        android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:text="Forgot password?"
-        android:textColor="#A6BCD0"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="14dp"
+        android:src="@drawable/otp_security"
+        app:layout_constraintBottom_toTopOf="@+id/otpNumberInputLayout"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/enterOTPHeaderText" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/signInButton"
+        android:id="@+id/verifyButton"
         android:layout_width="315dp"
         android:layout_height="60dp"
-        android:layout_marginBottom="55dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginEnd="48dp"
+        android:layout_marginBottom="127dp"
         android:backgroundTint="#7BED8D"
-        android:text="Sign In"
+        android:text="Verify"
         android:textAllCaps="true"
         android:textColor="@android:color/white"
         app:cornerRadius="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/createAccountButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/phoneNumberInputLayout" />
-
-
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/createAccountButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="78dp"
-        android:text="Create Account"
-        android:textAllCaps="true"
-        android:textColor="#A6BCD0"
-        android:textSize="14sp"
-        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/signInButton" />
+        app:layout_constraintTop_toBottomOf="@+id/otpNumberInputLayout" />
+
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/phoneNumberInputLayout"
+        android:id="@+id/otpNumberInputLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="188dp"
+        android:layout_marginBottom="98dp"
         app:boxStrokeWidth="0dp"
         app:boxStrokeWidthFocused="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/signInButton"
+        app:layout_constraintBottom_toTopOf="@+id/verifyButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/signInHeaderText"
-        app:startIconDrawable="@drawable/phone_icon"
-        app:startIconTint="#A6BCD0">
+        app:layout_constraintTop_toBottomOf="@+id/imageView">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/phoneNumberInputText"
+            android:id="@+id/otpInputText"
             android:layout_width="315dp"
             android:layout_height="60dp"
             android:background="@drawable/rounded_edittext"
             android:inputType="phone"
-            android:maxLength="10"
             android:maxLines="1"
             android:padding="5dp"
             android:textColor="#A6BCD0"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.51"
             app:layout_constraintStart_toStartOf="parent"
-            tools:layout_editor_absoluteY="271dp" />
+            tools:layout_editor_absoluteY="386dp" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
