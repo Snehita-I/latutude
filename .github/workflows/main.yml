@@ -21,3 +21,25 @@ jobs:
       with:
         name: Upload app-debug
         path: ./app/build/outputs/apk/debug/app-debug.apk
+    - name: send APK build on success
+      uses: appleboy/telegram-action@master
+      with:
+        to: ${{ secrets.TELEGRAM_TO }}
+        token: ${{ secrets.TELEGRAM_TOKEN }}
+        message: |
+            iku Earth Build
+            Author: ${{ github.actor }}
+            Commit ID: ${{ github.sha }}
+            View: https://github.com/Renuka-Pooja/iku-earth/actions/runs/${{ github.run_id }}
+        document: ./app/build/outputs/apk/debug/app-debug.apk 
+    - name: send fail message
+      uses: appleboy/telegram-action@master
+      if: failure()
+      with:
+        to: ${{ secrets.TELEGRAM_TO }}
+        token: ${{ secrets.TELEGRAM_TOKEN }}
+        message: |
+            COVID Karnataka Build
+            Author: ${{ github.actor }}
+            Build Failed!
+            View: https://github.com/Renuka-Pooja/iku-earth/actions/runs/${{ github.run_id }}
