@@ -39,7 +39,7 @@ jobs:
         to: ${{ secrets.TELEGRAM_TO }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
         message: |
-            COVID Karnataka Build
+            iku Earth Build
             Author: ${{ github.actor }}
             Build Failed!
             View: https://github.com/Renuka-Pooja/iku-earth/actions/runs/${{ github.run_id }}
