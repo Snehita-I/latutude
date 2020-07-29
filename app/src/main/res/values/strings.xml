@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">iku</string>
+    <string name="welcome_policy"><![CDATA[By continuing, you agree that you have read and accepted our T&Cs and Privacy Policy]]></string>
+
+    <string name="facebook_app_id">1247477352274007</string>
+    <string name="fb_login_protocol_scheme">fb1247477352274007</string>
+
 </resources>
