@@ -62,7 +62,7 @@ public class WelcomeActivity extends AppCompatActivity {
         emailButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent enterEmailIntent = new Intent(WelcomeActivity.this,EmailInputActivity.class);
+                Intent enterEmailIntent = new Intent(WelcomeActivity.this,HomeActivity.class);
                 startActivity(enterEmailIntent);
             }
         });
