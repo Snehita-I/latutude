@@ -21,11 +21,12 @@
         app:srcCompat="@drawable/iku" />
 
     <com.facebook.login.widget.LoginButton
+        android:id="@+id/facebook_login_button"
         android:layout_width="259dp"
         android:layout_height="40dp"
-        android:elevation="2dp"
         android:layout_above="@id/google_signin_button"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:elevation="2dp" />
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/google_signin_button"

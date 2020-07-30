@@ -24,8 +24,8 @@
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/profileImageCard"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
         android:layout_below="@id/appBar"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="70dp"
@@ -33,11 +33,10 @@
         app:cardElevation="0dp">
 
         <ImageView
-            android:id="@+id/circular_image"
+            android:id="@+id/profileImage"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:scaleType="fitCenter"
-            android:src="@drawable/iku" />
+            android:scaleType="fitCenter" />
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.textview.MaterialTextView
@@ -47,7 +46,6 @@
         android:layout_below="@id/profileImageCard"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:text="Abhishek AN"
         android:textSize="18sp" />
 
     <com.google.android.material.button.MaterialButton
