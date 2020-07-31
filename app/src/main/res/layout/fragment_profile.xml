@@ -22,34 +22,25 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/profileImageCard"
-        android:layout_width="96dp"
-        android:layout_height="96dp"
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profileImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_below="@id/appBar"
-        android:layout_centerHorizontal="true"
         android:layout_marginTop="70dp"
-        app:cardCornerRadius="50dp"
-        app:cardElevation="0dp">
-
-        <ImageView
-            android:id="@+id/profileImage"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:scaleType="fitCenter" />
-    </com.google.android.material.card.MaterialCardView>
+        android:layout_centerHorizontal="true"/>
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/userName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/profileImageCard"
+        android:layout_below="@id/profileImage"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
         android:textSize="18sp" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/email_signin_button"
+        android:id="@+id/logout_button"
         android:layout_width="150dp"
         android:layout_height="45dp"
         android:layout_below="@+id/userName"

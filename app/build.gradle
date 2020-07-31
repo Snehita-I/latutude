@@ -41,6 +41,8 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'nl.joery.animatedbottombar:library:1.0.4'
     implementation 'com.squareup.picasso:picasso:2.5.2'
+    implementation 'com.facebook.android:facebook-android-sdk:[5,6)'
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
 }
 repositories {
     mavenCentral()
