@@ -6,20 +6,4 @@
     android:layout_height="match_parent"
     tools:context=".ProfileFragment">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/topAppBar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/white"
-            app:navigationIcon="@drawable/ic_iku"
-            app:subtitle="NotSaxy"
-            app:title="Saxy" />
-
-    </com.google.android.material.appbar.AppBarLayout>
-
 </RelativeLayout>

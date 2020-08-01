@@ -21,44 +21,44 @@
         app:srcCompat="@drawable/iku" />
 
     <com.google.android.material.button.MaterialButton
-        android:layout_width="259dp"
+        android:id="@+id/facebook_login_button"
+        android:layout_width="260dp"
         android:layout_height="50dp"
         android:layout_above="@id/google_signin_button"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center"
-        android:visibility="gone"
+        android:layout_marginBottom="8dp"
         android:backgroundTint="@color/white"
         android:drawableLeft="@drawable/facebook"
         android:elevation="4dp"
-        android:text="Facebook"
-        android:textColor="@android:color/black" />
+        android:textColor="@android:color/black"
+        android:text="Continue with Facebook"
+        android:textSize="12sp"
+        android:textStyle="normal" />
 
-
-    <com.facebook.login.widget.LoginButton
-        android:id="@+id/facebook_login_button"
-        android:layout_width="259dp"
-        android:layout_height="50dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_above="@id/google_signin_button"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="10dp" />
-
-    <com.google.android.gms.common.SignInButton
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/google_signin_button"
-        android:layout_width="259dp"
+        android:layout_width="260dp"
         android:layout_height="50dp"
         android:layout_above="@id/email_signin_button"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center"
-        android:layout_marginBottom="10dp"/>
+        android:layout_marginBottom="8dp"
+        android:backgroundTint="@color/white"
+        android:drawableLeft="@drawable/google_icon"
+        android:elevation="4dp"
+        android:text="Continue with Google"
+        android:textColor="@android:color/black"
+        android:textSize="12sp" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/email_signin_button"
-        android:layout_width="259dp"
+        android:layout_width="260dp"
         android:layout_height="50dp"
         android:layout_above="@id/policyText"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center"
+        android:layout_marginBottom="8dp"
         android:backgroundTint="@color/white"
         android:drawableLeft="@drawable/ic_email_24"
         android:elevation="4dp"
@@ -72,6 +72,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
         android:text="@string/welcome_policy"
         android:textAlignment="center"
         android:textColor="#858585" />

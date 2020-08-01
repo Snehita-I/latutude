@@ -53,7 +53,7 @@ public class ProfileFragment extends Fragment {
         userNameText = view.findViewById(R.id.userName);
         logoutButton = view.findViewById(R.id.logout_button);
 
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getActivity().getApplicationContext());
+        /*GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getActivity().getApplicationContext());
         if (account != null) {
             String personName = account.getDisplayName();
             String personGivenName = account.getGivenName();
@@ -62,7 +62,7 @@ public class ProfileFragment extends Fragment {
             String personID = account.getId();
             Uri personPhoto = account.getPhotoUrl();
 
-            /*String originalPieceOfUrl = "s96-c";
+            String originalPieceOfUrl = "s96-c";
             String newPieceOfUrlToAdd = "s400-c";
 
             String photoPath = personPhoto.toString();
@@ -77,12 +77,12 @@ public class ProfileFragment extends Fragment {
                     .into(profilePicture);
 
             Log.e(TAG, "\nAccount: " + account + "\nEmail: " + personEmail + "\nFamilyName: " + personFamilyName + "\nPhoto: " + personPhoto + "\nGiveName: " + personGivenName + "\nID: " + personID + "\nName: " + personName);
-        */
-        }
+
+        }*/
 
         if (user != null) {
             String originalPieceOfUrl = "s96-c";
-            String newPieceOfUrlToAdd = "s400-c";
+            String newPieceOfUrlToAdd = "s800-c";
 
             String personName = user.getDisplayName();
             String photoUrl = user.getPhotoUrl().toString();
