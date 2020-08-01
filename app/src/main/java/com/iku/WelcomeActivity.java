@@ -19,7 +19,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -31,6 +30,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.iku.databinding.ActivityWelcomeBinding;
 
 import java.util.Arrays;
 
@@ -38,12 +38,11 @@ public class WelcomeActivity extends AppCompatActivity {
 
     private CallbackManager mCallbackManager;
 
+    ActivityWelcomeBinding binding;
 
     private GoogleSignInClient mGoogleSignInClient;
 
     private FirebaseAuth mAuth;
-
-    private MaterialButton emailButton, loginFBButton, googleSignInButton;
 
     public static final String TAG = WelcomeActivity.class.getSimpleName();
 
@@ -52,13 +51,11 @@ public class WelcomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_welcome);
+
+        binding = ActivityWelcomeBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         mAuth = FirebaseAuth.getInstance();
-
-        googleSignInButton = findViewById(R.id.google_signin_button);
-
-        emailButton = findViewById(R.id.email_signin_button);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -67,14 +64,14 @@ public class WelcomeActivity extends AppCompatActivity {
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
-        googleSignInButton.setOnClickListener(new View.OnClickListener() {
+        binding.googleSigninButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 signIn();
             }
         });
 
-        emailButton.setOnClickListener(new View.OnClickListener() {
+        binding.emailSigninButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent enterEmailIntent = new Intent(WelcomeActivity.this, HomeActivity.class);
@@ -84,8 +81,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
         // Initialize Facebook Login button
         mCallbackManager = CallbackManager.Factory.create();
-        loginFBButton = findViewById(R.id.facebook_login_button);
-        loginFBButton.setOnClickListener(new View.OnClickListener() {
+        binding.facebookLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 LoginManager.getInstance().logInWithReadPermissions(WelcomeActivity.this,
