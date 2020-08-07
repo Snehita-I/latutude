@@ -96,6 +96,12 @@ public class ChatFragment extends Fragment {
         };
 
         adapter.startListening();
+        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                mChatList.smoothScrollToPosition(0);
+            }
+        });
 
         mChatList.setHasFixedSize(true);
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
