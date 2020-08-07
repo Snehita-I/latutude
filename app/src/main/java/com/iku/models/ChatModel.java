@@ -2,7 +2,6 @@ package com.iku.models;
 
 public class ChatModel {
 
-    private String itemID;
     private String message, UID;
 
     private long timestamp;
@@ -10,11 +9,10 @@ public class ChatModel {
     private ChatModel() {
     }
 
-    private ChatModel(String message, long timestamp, String UID,String itemID) {
+    private ChatModel(String message, long timestamp, String UID) {
         this.message = message;
         this.UID = UID;
         this.timestamp = timestamp;
-        this.itemID = itemID;
     }
 
     public String getMessage() {
@@ -39,13 +37,5 @@ public class ChatModel {
 
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
-    }
-
-    public String getItemID() {
-        return itemID;
-    }
-
-    public void setItemID(String itemID) {
-        this.itemID = itemID;
     }
 }

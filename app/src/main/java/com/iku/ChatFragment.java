@@ -4,7 +4,6 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.paging.PagedList;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -13,17 +12,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.firebase.ui.firestore.SnapshotParser;
-import com.firebase.ui.firestore.paging.FirestorePagingAdapter;
-import com.firebase.ui.firestore.paging.FirestorePagingOptions;
-import com.firebase.ui.firestore.paging.LoadingState;
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textview.MaterialTextView;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.functions.FirebaseFunctions;
@@ -46,7 +42,7 @@ public class ChatFragment extends Fragment {
 
     private FirebaseFunctions mFunctions;
 
-    private FirestorePagingAdapter adapter;
+    private FirestoreRecyclerAdapter adapter;
 
     private RecyclerView mChatList;
 
@@ -68,7 +64,6 @@ public class ChatFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_chat, container, false);
 
-
         mFunctions = FirebaseFunctions.getInstance();
 
         messageBox = view.findViewById(R.id.messageTextField);
@@ -81,23 +76,12 @@ public class ChatFragment extends Fragment {
 
         Query query = firebaseFirestore.collection("iku_earth_messages").orderBy("timestamp", Query.Direction.DESCENDING);
 
-        PagedList.Config config = new PagedList.Config.Builder().setInitialLoadSizeHint(10).setPageSize(3).build();
-
-        FirestorePagingOptions<ChatModel> options = new FirestorePagingOptions.Builder<ChatModel>()
-                .setLifecycleOwner(getActivity())
-                .setQuery(query, config, new SnapshotParser<ChatModel>() {
-                    @NonNull
-                    @Override
-                    public ChatModel parseSnapshot(@NonNull DocumentSnapshot snapshot) {
-                        ChatModel chatModel = snapshot.toObject(ChatModel.class);
-                        String itemid = snapshot.getId();
-                        chatModel.setItemID(itemid);
-                        return chatModel;
-                    }
-                })
+        FirestoreRecyclerOptions<ChatModel> options = new FirestoreRecyclerOptions.Builder<ChatModel>()
+                .setQuery(query, ChatModel.class)
                 .build();
 
-        adapter = new FirestorePagingAdapter<ChatModel, ChatViewHolder>(options) {
+
+        adapter = new FirestoreRecyclerAdapter<ChatModel, ChatViewHolder>(options) {
             @NonNull
             @Override
             public ChatViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -106,35 +90,15 @@ public class ChatFragment extends Fragment {
             }
 
             @Override
-            protected void onBindViewHolder(@NonNull ChatViewHolder productsViewHolder, int i, @NonNull ChatModel chatModel) {
-                productsViewHolder.messageText.setText(chatModel.getMessage());
-            }
-
-            @Override
-            protected void onLoadingStateChanged(@NonNull LoadingState state) {
-                super.onLoadingStateChanged(state);
-                switch (state) {
-                    case LOADING_INITIAL:
-                        Log.d("PAGING LOG", "Loading initial data ");
-                        break;
-                    case LOADING_MORE:
-                        Log.d("PAGING LOG", "Loading Next Page ");
-                        break;
-                    case FINISHED:
-                        Log.d("PAGING LOG", "ALL DATA LOADED");
-                        break;
-                    case ERROR:
-                        Log.d("PAGING LOG", "ERROR LOADING DATA ");
-                        break;
-                    case LOADED:
-                        Log.d("PAGING_LOG", "Initial items Loaded: " + getItemCount());
-                        break;
-                }
+            protected void onBindViewHolder(@NonNull ChatViewHolder chatViewHolder, int i, @NonNull ChatModel chatModel) {
+                chatViewHolder.messageText.setText(chatModel.getMessage());
             }
         };
 
+        adapter.startListening();
+
         mChatList.setHasFixedSize(true);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setReverseLayout(true);
         mChatList.setLayoutManager(linearLayoutManager);
         mChatList.setAdapter(adapter);
