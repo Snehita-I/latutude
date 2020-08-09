@@ -17,9 +17,15 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textview.MaterialTextView;
+import com.google.firebase.Timestamp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.functions.FirebaseFunctions;
@@ -52,6 +58,12 @@ public class ChatFragment extends Fragment {
 
     private AnimatedBottomBar animatedBottomBar;
 
+    private FirebaseAuth mAuth;
+
+    private FirebaseUser user;
+
+    private FirebaseFirestore db;
+
     EditText messageBox;
     MaterialButton sendButton;
 
@@ -66,8 +78,12 @@ public class ChatFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_chat, container, false);
 
-
         mFunctions = FirebaseFunctions.getInstance();
+
+        db = FirebaseFirestore.getInstance();
+
+        mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
 
         messageBox = view.findViewById(R.id.messageTextField);
         sendButton = view.findViewById(R.id.sendMessageButton);
@@ -127,51 +143,30 @@ public class ChatFragment extends Fragment {
     }
 
     private void sendTheMessage() {
-        String message = String.valueOf(messageBox.getText());
-        Log.i(TAG, "onClick: " + message);
-        addMessage(message)
-                .addOnCompleteListener(new OnCompleteListener<String>() {
+        final String message = String.valueOf(messageBox.getText());
+        Date d = new Date();
+        long timestamp = d.getTime();
+        Log.i(TAG, "onClick: " + message + "\n TIME:" + timestamp);
+        Map<String, Object> docData = new HashMap<>();
+        docData.put("message", message);
+        docData.put("timestamp", timestamp);
+        docData.put("uid", user.getUid());
+        docData.put("userName", user.getDisplayName());
+
+        db.collection("iku_earth_messages")
+                .add(docData)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
-                    public void onComplete(@NonNull Task<String> task) {
-                        if (!task.isSuccessful()) {
-                            Exception e = task.getException();
-                            if (e instanceof FirebaseFunctionsException) {
-                                FirebaseFunctionsException ffe = (FirebaseFunctionsException) e;
-                                FirebaseFunctionsException.Code code = ffe.getCode();
-                                Object details = ffe.getDetails();
-                            }
-
-                            // [START_EXCLUDE]
-                            Log.w(TAG, "addMessage:onFailure", e);
-                            return;
-                            // [END_EXCLUDE]
-                        }
-
-                        // [START_EXCLUDE]
-                        String result = task.getResult();
-                        Log.e(TAG, "onComplete: " + result);
-                        // [END_EXCLUDE]
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
+                        messageBox.setText("");
+                        messageBox.requestFocus();
                     }
-                });
-    }
-
-    private Task<String> addMessage(String message) {
-        // Create the arguments to the callable function.
-        Map<String, String> data = new HashMap<>();
-        data.put("message", message);
-
-        return mFunctions
-                .getHttpsCallable("addMessage")
-                .call(data)
-                .continueWith(new Continuation<HttpsCallableResult, String>() {
+                })
+                .addOnFailureListener(new OnFailureListener() {
                     @Override
-                    public String then(@NonNull Task<HttpsCallableResult> task) throws Exception {
-                        // This continuation runs on either success or failure, but if the task
-                        // has failed then getResult() will throw an Exception which will be
-                        // propagated down.
-                        Boolean result = (boolean) task.getResult().getData();
-                        String a = String.valueOf(result);
-                        return a;
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error adding document", e);
                     }
                 });
     }

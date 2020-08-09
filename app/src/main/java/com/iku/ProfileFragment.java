@@ -85,19 +85,27 @@ public class ProfileFragment extends Fragment {
             String newPieceOfUrlToAdd = "s800-c";
 
             String personName = user.getDisplayName();
-            String photoUrl = user.getPhotoUrl().toString();
 
-            photoUrl = photoUrl.replace(originalPieceOfUrl, newPieceOfUrlToAdd);
+            Log.i(TAG, "onCreateView: " + personName + "\n");
 
-            photoUrl = photoUrl + "?height=500";
-
-
-            Log.e(TAG, "\nUser: " + user + "\nPhoto: " + photoUrl + "\nGiveName: " + "\nName: " + personName);
             userNameText.setText(personName);
-            Picasso.with(getActivity())
-                    .load(photoUrl)
-                    .noFade()
-                    .into(profilePicture);
+
+            Uri photoUri = user.getPhotoUrl();
+            if (photoUri != null) {
+                String photoUrl = photoUri.toString();
+
+                photoUrl = photoUrl.replace(originalPieceOfUrl, newPieceOfUrlToAdd);
+
+                photoUrl = photoUrl + "?height=500";
+
+
+                Log.e(TAG, "\nUser: " + user + "\nPhoto: " + photoUrl + "\nGiveName: " + "\nName: " + personName);
+
+                Picasso.with(getActivity())
+                        .load(photoUrl)
+                        .noFade()
+                        .into(profilePicture);
+            }
         }
 
         logoutButton.setOnClickListener(new View.OnClickListener() {

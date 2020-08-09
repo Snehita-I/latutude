@@ -22,6 +22,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.AuthCredential;
@@ -31,6 +33,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.functions.FirebaseFunctionsException;
 import com.google.firebase.functions.HttpsCallableResult;
@@ -52,6 +57,8 @@ public class WelcomeActivity extends AppCompatActivity {
 
     private FirebaseFunctions mFunctions;
 
+    private FirebaseFirestore db;
+
     public static final String TAG = WelcomeActivity.class.getSimpleName();
 
     private int RC_SIGN_IN = 121;
@@ -63,12 +70,15 @@ public class WelcomeActivity extends AppCompatActivity {
         binding = ActivityWelcomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        db = FirebaseFirestore.getInstance();
+
         mAuth = FirebaseAuth.getInstance();
         mFunctions = FirebaseFunctions.getInstance();
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
+                .requestProfile()
                 .build();
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
@@ -238,41 +248,15 @@ public class WelcomeActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     Log.e(TAG, "onComplete: Successful");
-                    FirebaseUser user = mAuth.getCurrentUser();
                     GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(WelcomeActivity.this);
-                    String firstName = null, lastName = null;
+                    String firstName = null, lastName = null, email = null;
                     if (acct != null) {
                         firstName = acct.getGivenName();
                         lastName = acct.getFamilyName();
+                        email = acct.getEmail();
+                        Log.i(TAG, "onComplete: " + firstName + lastName);
+                        newUserSignUp(firstName, lastName, email);
                     }
-
-                    Log.i(TAG, "onComplete: " + firstName + lastName);
-
-                    newUserSignUp(firstName, lastName)
-                            .addOnCompleteListener(new OnCompleteListener<String>() {
-                                @Override
-                                public void onComplete(@NonNull Task<String> task) {
-                                    if (!task.isSuccessful()) {
-                                        Exception e = task.getException();
-                                        if (e instanceof FirebaseFunctionsException) {
-                                            FirebaseFunctionsException ffe = (FirebaseFunctionsException) e;
-                                            FirebaseFunctionsException.Code code = ffe.getCode();
-                                            Object details = ffe.getDetails();
-                                        }
-
-                                        // [START_EXCLUDE]
-                                        Log.w(TAG, "newUserSignUp:onFailure", e);
-                                        return;
-                                        // [END_EXCLUDE]
-                                    }
-
-                                    // [START_EXCLUDE]
-                                    String result = task.getResult();
-                                    Log.e(TAG, "onComplete: " + result);
-                                    // [END_EXCLUDE]
-                                }
-                            });
-                    updateUI(user);
                 } else {
                     Log.e(TAG, "onComplete: failed");
                 }
@@ -291,26 +275,38 @@ public class WelcomeActivity extends AppCompatActivity {
         }
     }
 
-    private Task<String> newUserSignUp(String firstName, String lastName) {
-        // Create the arguments to the callable function.
-        Map<String, String> data = new HashMap<>();
-        data.put("firstName", firstName);
-        data.put("lastName", lastName);
+    private void newUserSignUp(String firstName, String lastName, String email) {
 
-        return mFunctions
-                .getHttpsCallable("newUserSignUp")
-                .call(data)
-                .continueWith(new Continuation<HttpsCallableResult, String>() {
-                    @Override
-                    public String then(@NonNull Task<HttpsCallableResult> task) throws Exception {
-                        // This continuation runs on either success or failure, but if the task
-                        // has failed then getResult() will throw an Exception which will be
-                        // propagated down.
-                        Boolean result = (boolean) task.getResult().getData();
-                        String a = String.valueOf(result);
-                        return a;
-                    }
-                });
+        // Create the arguments to the callable function.
+        Map<String, Object> userInfo = new HashMap<>();
+        userInfo.put("firstName", firstName);
+        userInfo.put("lastName", lastName);
+        userInfo.put("email", email);
+
+        final String userID = mAuth.getUid();
+
+        if (userID != null) {
+
+            db.collection("users").document(mAuth.getUid())
+                    .set(userInfo)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            DocumentReference groupRef = db.collection("groups").document("iku_earth");
+                            groupRef.update("members", FieldValue.arrayUnion(userID));
+                            
+                            updateUI(user);
+                            Log.d(TAG, "DocumentSnapshot successfully written!");
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w(TAG, "Error writing document", e);
+                        }
+                    });
+        }
     }
 
 }
