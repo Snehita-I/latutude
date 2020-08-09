@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -18,7 +19,6 @@ import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -27,6 +27,8 @@ import com.google.firebase.functions.FirebaseFunctionsException;
 import com.google.firebase.functions.HttpsCallableResult;
 import com.iku.models.ChatModel;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,7 +52,7 @@ public class ChatFragment extends Fragment {
 
     private AnimatedBottomBar animatedBottomBar;
 
-    TextInputEditText messageBox;
+    EditText messageBox;
     MaterialButton sendButton;
 
     public ChatFragment() {
@@ -63,6 +65,7 @@ public class ChatFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_chat, container, false);
+
 
         mFunctions = FirebaseFunctions.getInstance();
 
@@ -91,7 +94,11 @@ public class ChatFragment extends Fragment {
 
             @Override
             protected void onBindViewHolder(@NonNull ChatViewHolder chatViewHolder, int i, @NonNull ChatModel chatModel) {
+                SimpleDateFormat sfd = new SimpleDateFormat("hh:mm a");
+                long timeStamp = chatModel.getTimestamp();
+
                 chatViewHolder.messageText.setText(chatModel.getMessage());
+                chatViewHolder.messageTime.setText(sfd.format(new Date(timeStamp)));
             }
         };
 
@@ -171,11 +178,13 @@ public class ChatFragment extends Fragment {
 
     private class ChatViewHolder extends RecyclerView.ViewHolder {
 
-        private MaterialTextView messageText;
+        private MaterialTextView messageText, messageTime;
 
         public ChatViewHolder(@NonNull View itemView) {
             super(itemView);
             messageText = itemView.findViewById(R.id.message);
+            messageTime = itemView.findViewById(R.id.message_time);
+
         }
     }
 

@@ -1,18 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/chatLayout"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:background="@drawable/chat_sender_bubble"
-    android:gravity="center">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/message"
+    <RelativeLayout
+        android:id="@+id/message_send"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="15dp"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="10dp"
-        android:textColor="@android:color/white"
-        android:textSize="14sp" />
+        android:layout_marginTop="5dp"
+        android:layout_toLeftOf="@+id/test_arrow"
+        android:background="@color/colorPrimaryDark"
+        android:maxWidth="200dp"
+        android:paddingLeft="15dp"
+        android:paddingTop="5dp"
+        android:paddingRight="15dp"
+        android:paddingBottom="7dp"
+        tools:ignore="UselessParent">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:maxWidth="200dp"
+            android:text="demo Text"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/message_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/message"
+            android:layout_toEndOf="@+id/message"
+            android:text="1:30 P.M."
+            android:textSize="12sp"
+            android:textColor="@android:color/white" />
+
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/test_arrow"
+        android:layout_width="20dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="-8dp"
+        android:layout_marginTop="-2dp"
+        android:background="@null" />
 </RelativeLayout>
