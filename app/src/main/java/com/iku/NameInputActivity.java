@@ -1,5 +1,6 @@
 package com.iku;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -8,17 +9,32 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class NameInputActivity extends AppCompatActivity {
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.HashMap;
+import java.util.Map;
+
+public class NameInputActivity extends AppCompatActivity {
+    private TextInputEditText firstName, lastName;
+    private String email;
+    private FirebaseFirestore db;
     private MaterialButton submitNameBtn;
     private FirebaseAuth fAuth;
     private FirebaseUser user;
 
-    private String TAG = NameInputActivity.class.getSimpleName();
+    public static final String TAG = NameInputActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,9 +42,16 @@ public class NameInputActivity extends AppCompatActivity {
         setContentView(R.layout.activity_name_input);
 
         fAuth = FirebaseAuth.getInstance();
-        submitNameBtn = findViewById(R.id.names_next_button);
 
         user = fAuth.getCurrentUser();
+
+        firstName = findViewById(R.id.enter_first_name);
+        lastName = findViewById(R.id.enter_last_name);
+        submitNameBtn = findViewById(R.id.names_next_button);
+
+        email = user.getEmail();
+
+        db = FirebaseFirestore.getInstance();
 
         submitNameBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -36,15 +59,63 @@ public class NameInputActivity extends AppCompatActivity {
                 user.reload();
                 if (!user.isEmailVerified()) {
                     Toast.makeText(NameInputActivity.this, "Verify your email via the email sent to you before proceeding.", Toast.LENGTH_SHORT).show();
-                }
-                else {
+                } else {
                     Log.i(TAG, "VERIFIED USER. ");
-                    Intent goToHome = new Intent(NameInputActivity.this, HomeActivity.class);
-                    startActivity(goToHome);
+                    newUserSignUp(firstName.getText().toString(), lastName.getText().toString(), email);
                 }
             }
         });
+    }
 
+    private void updateUI(FirebaseUser user) {
+        if (user != null) {
+            Intent intent = new Intent(NameInputActivity.this, HomeActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        } else {
+            Toast.makeText(NameInputActivity.this, "Sign in to continue.",
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
 
+    private void newUserSignUp(final String firstName, final String lastName, String email) {
+
+        // Create the arguments to the callable function.
+        Map<String, Object> userInfo = new HashMap<>();
+        userInfo.put("firstName", firstName);
+        userInfo.put("lastName", lastName);
+        userInfo.put("email", email);
+
+        final String userID = fAuth.getUid();
+
+        if (userID != null) {
+
+            db.collection("users").document(fAuth.getUid())
+                    .set(userInfo)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            DocumentReference groupRef = db.collection("groups").document("iku_earth");
+                            groupRef.update("members", FieldValue.arrayUnion(userID));
+                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                    .setDisplayName(firstName + " " + lastName).build();
+
+                            user.updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    updateUI(user);
+                                }
+                            });
+
+                            Log.d(TAG, "DocumentSnapshot successfully written!");
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w(TAG, "Error writing document", e);
+                        }
+                    });
+        }
     }
 }
