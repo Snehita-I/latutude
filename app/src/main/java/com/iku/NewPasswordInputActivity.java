@@ -11,11 +11,14 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class NewPasswordInputActivity extends AppCompatActivity {
 
@@ -71,10 +74,29 @@ public class NewPasswordInputActivity extends AppCompatActivity {
                                 if (task.isSuccessful()) {
                                     Log.i("Register", "User registered ");
 
-                                    Toast.makeText(NewPasswordInputActivity.this, "User Registered", Toast.LENGTH_SHORT).show();
-                                    //sending to Profile Activity
-                                    Intent goToNameActivity = new Intent(NewPasswordInputActivity.this, NameInputActivity.class);
-                                    startActivity(goToNameActivity);
+                                    FirebaseUser user = fAuth.getCurrentUser();
+
+                                    if (user != null) {
+                                        Log.i(TAG, String.valueOf(user));
+                                        user.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                Toast.makeText(NewPasswordInputActivity.this, "Verification email sent", Toast.LENGTH_SHORT).show();
+
+                                            }
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.i("Register", "email not sent " + e.getMessage());
+                                            }
+                                        });
+
+                                        Toast.makeText(NewPasswordInputActivity.this, "User Registered", Toast.LENGTH_SHORT).show();
+                                        //sending to Profile Activity
+                                        Intent goToNameActivity = new Intent(NewPasswordInputActivity.this, NameInputActivity.class);
+                                        startActivity(goToNameActivity);
+
+                                    }
                                 } else {
                                     Toast.makeText(NewPasswordInputActivity.this, "Error!" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                 }
