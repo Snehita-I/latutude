@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -22,6 +23,7 @@ public class EmailInputActivity extends AppCompatActivity {
     private String email;
     private TextInputEditText emailEditText;
     private FirebaseAuth fAuth;
+    private ImageView backButton;
     private String TAG = EmailInputActivity.class.getSimpleName();
 
     @Override
@@ -33,6 +35,14 @@ public class EmailInputActivity extends AppCompatActivity {
         emailEditText = findViewById(R.id.enter_email);
 
         fAuth = FirebaseAuth.getInstance();
+
+        backButton = (ImageView) findViewById(R.id.back_button);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
 
         emailNextButton.setOnClickListener(new View.OnClickListener() {
             @Override

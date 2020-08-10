@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -22,6 +23,7 @@ public class NewPasswordInputActivity extends AppCompatActivity {
     private String email, password;
     private TextInputEditText passwordEditText;
     private FirebaseAuth fAuth;
+    private ImageView backButton;
     private String TAG = "REGISTER";
 
     @Override
@@ -33,6 +35,14 @@ public class NewPasswordInputActivity extends AppCompatActivity {
         passwordEditText = findViewById(R.id.enter_new_password);
 
         fAuth = FirebaseAuth.getInstance();
+
+        backButton = (ImageView) findViewById(R.id.back_button);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
 
         Intent myIntent = getIntent();
         email = myIntent.getStringExtra("email");
