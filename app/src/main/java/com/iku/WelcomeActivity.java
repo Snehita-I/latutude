@@ -93,7 +93,7 @@ public class WelcomeActivity extends AppCompatActivity {
         binding.emailSigninButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent enterEmailIntent = new Intent(WelcomeActivity.this, HomeActivity.class);
+                Intent enterEmailIntent = new Intent(WelcomeActivity.this, EmailInputActivity.class);
                 startActivity(enterEmailIntent);
             }
         });
@@ -295,7 +295,7 @@ public class WelcomeActivity extends AppCompatActivity {
                             FirebaseUser user = mAuth.getCurrentUser();
                             DocumentReference groupRef = db.collection("groups").document("iku_earth");
                             groupRef.update("members", FieldValue.arrayUnion(userID));
-                            
+
                             updateUI(user);
                             Log.d(TAG, "DocumentSnapshot successfully written!");
                         }
