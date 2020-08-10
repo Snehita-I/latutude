@@ -26,6 +26,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
@@ -59,6 +60,8 @@ public class WelcomeActivity extends AppCompatActivity {
 
     private FirebaseFirestore db;
 
+    private FirebaseAnalytics mFirebaseAnalytics;
+
     public static final String TAG = WelcomeActivity.class.getSimpleName();
 
     private int RC_SIGN_IN = 121;
@@ -71,6 +74,8 @@ public class WelcomeActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         db = FirebaseFirestore.getInstance();
+        // Obtain the FirebaseAnalytics instance.
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         mAuth = FirebaseAuth.getInstance();
         mFunctions = FirebaseFunctions.getInstance();
