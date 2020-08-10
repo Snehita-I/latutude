@@ -1,6 +1,7 @@
 package com.iku;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -12,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.amulyakhare.textdrawable.TextDrawable;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.material.button.MaterialButton;
@@ -125,6 +127,22 @@ public class ProfileFragment extends Fragment {
                                         .into(profilePicture);
                             }
                         });
+            } else {
+                String displayName = user.getDisplayName();
+                String firstLetter, secondLetter;
+                if (displayName != null) {
+                    firstLetter = String.valueOf(displayName.charAt(0));
+                    secondLetter = displayName.substring(displayName.indexOf(' ') + 1, displayName.indexOf(' ') + 2).trim();
+                    Log.i(TAG, "No picture:" + firstLetter + " " + secondLetter);
+                    TextDrawable drawable = TextDrawable.builder()
+                            .beginConfig()
+                            .width(200)
+                            .height(200)
+                            .endConfig()
+                            .buildRect(firstLetter + secondLetter, Color.DKGRAY);
+
+                    profilePicture.setImageDrawable(drawable);
+                }
             }
         }
 
