@@ -143,7 +143,16 @@ public class WelcomeActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            updateUI(user);
+                            if (user != null) {
+                                String displayName = user.getDisplayName();
+                                if (displayName!=null){
+                                    String firstName = displayName.substring(0, displayName.indexOf(' ')).trim();
+                                    String lastName = displayName.substring(displayName.indexOf(' ')).trim();
+                                    String email = user.getEmail();
+                                    newUserSignUp(firstName, lastName, email);
+                                    Log.i(TAG, "ABC: " + displayName + "\n" + firstName + lastName);
+                                }
+                            }
                         } else {
 
                             String errorCode = ((FirebaseAuthException) task.getException()).getErrorCode();
