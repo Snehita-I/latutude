@@ -19,6 +19,8 @@ import com.google.android.material.textview.MaterialTextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 /**
@@ -32,6 +34,8 @@ public class ProfileFragment extends Fragment {
     private MaterialTextView userNameText;
 
     private MaterialButton logoutButton;
+
+    private String photoUrl;
 
     private static final String TAG = ProfileFragment.class.getSimpleName();
 
@@ -92,7 +96,7 @@ public class ProfileFragment extends Fragment {
 
             Uri photoUri = user.getPhotoUrl();
             if (photoUri != null) {
-                String photoUrl = photoUri.toString();
+                photoUrl = photoUri.toString();
 
                 photoUrl = photoUrl.replace(originalPieceOfUrl, newPieceOfUrlToAdd);
 
@@ -104,7 +108,23 @@ public class ProfileFragment extends Fragment {
                 Picasso.with(getActivity())
                         .load(photoUrl)
                         .noFade()
-                        .into(profilePicture);
+                        .networkPolicy(NetworkPolicy.OFFLINE)
+                        .into(profilePicture, new Callback() {
+
+                            @Override
+                            public void onSuccess() {
+                                Log.i(TAG, "PICASSO Success ");
+                            }
+
+                            @Override
+                            public void onError() {
+                                Log.i(TAG, "PICASSO Error ");
+                                Picasso.with(getActivity())
+                                        .load(photoUrl)
+                                        .noFade()
+                                        .into(profilePicture);
+                            }
+                        });
             }
         }
 
