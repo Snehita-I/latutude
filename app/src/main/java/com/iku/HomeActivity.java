@@ -6,8 +6,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -27,6 +30,8 @@ public class HomeActivity extends AppCompatActivity {
     AnimatedBottomBar animatedBottomBar;
     FragmentManager fragmentManager;
 
+
+    private ImageView groupIcon;
     MaterialTextView membercount;
 
     @Override
@@ -36,6 +41,16 @@ public class HomeActivity extends AppCompatActivity {
 
         animatedBottomBar = findViewById(R.id.animatedBottomBar);
         membercount = findViewById(R.id.memberCount);
+
+        groupIcon = findViewById(R.id.group_icon);
+
+        groupIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent goToLeaderboard = new Intent(HomeActivity.this,LeaderboardActivity.class);
+                startActivity(goToLeaderboard);
+            }
+        });
 
         if (savedInstanceState == null) {
             animatedBottomBar.selectTabById(R.id.chat, true);
