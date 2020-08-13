@@ -1,12 +1,17 @@
 package com.iku;
 
+import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.provider.OpenableColumns;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +37,8 @@ import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.functions.FirebaseFunctionsException;
 import com.google.firebase.functions.HttpsCallableResult;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.iku.models.ChatModel;
 
 import java.text.SimpleDateFormat;
@@ -40,6 +47,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import nl.joery.animatedbottombar.AnimatedBottomBar;
+
+import static android.app.Activity.RESULT_OK;
 
 
 /**
@@ -67,8 +76,12 @@ public class ChatFragment extends Fragment {
 
     private FirebaseFirestore db;
 
-    EditText messageBox;
-    MaterialButton sendButton;
+    private EditText messageBox;
+    private MaterialButton sendButton, addImageButton;
+
+    private Uri mImageUri;
+
+    private int PICK_IMAGE = 123;
 
     public ChatFragment() {
         // Required empty public constructor
@@ -93,6 +106,7 @@ public class ChatFragment extends Fragment {
         messageBox = view.findViewById(R.id.messageTextField);
         sendButton = view.findViewById(R.id.sendMessageButton);
         mChatList = view.findViewById(R.id.chatRecyclerView);
+        addImageButton = view.findViewById(R.id.choose);
 
         animatedBottomBar = getActivity().findViewById(R.id.animatedBottomBar);
 
@@ -144,10 +158,16 @@ public class ChatFragment extends Fragment {
             }
         });
 
+        addImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openFileChooser();
+            }
+        });
+
         return view;
     }
 
-    
 
     private void sendTheMessage() {
         final String message = String.valueOf(messageBox.getText());
@@ -190,4 +210,70 @@ public class ChatFragment extends Fragment {
         }
     }
 
+    private void openFileChooser() {
+        Intent i = new Intent();
+        i.setType("image/*");
+        i.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(i, PICK_IMAGE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE && resultCode == RESULT_OK
+                && data != null && data.getData() != null) {
+            mImageUri = data.getData();
+            Log.i(TAG, "onActivityResult: " + mImageUri + "\nFilename" + getFileName(mImageUri));
+            uploadPDF(mImageUri);
+
+        }
+    }
+
+    public String getFileName(Uri uri) {
+        String result = null;
+        if (uri.getScheme().equals("content")) {
+            Cursor cursor = getActivity().getApplicationContext().getContentResolver().query(uri, null, null, null, null);
+            try {
+                if (cursor != null && cursor.moveToFirst()) {
+                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                }
+            } finally {
+                cursor.close();
+            }
+        }
+        if (result == null) {
+            result = uri.getPath();
+            int cut = result.lastIndexOf('/');
+            if (cut != -1) {
+                result = result.substring(cut + 1);
+            }
+        }
+        return result;
+    }
+
+    private void uploadPDF(Uri imageUri) {
+
+        final StorageReference reference = storage.getReference();
+
+        StorageReference imagesFolder = reference.child(user.getUid());
+
+        final StorageReference imagesRef = imagesFolder.child(getFileName(imageUri));
+
+        imagesRef.putFile(mImageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onComplete(@NonNull final Task<UploadTask.TaskSnapshot> task) {
+                if (task.isSuccessful()) {
+                    imagesRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            if (task.isSuccessful()) {
+                                String url = uri.toString();
+                                Log.e("DD", "onSuccess: " + url);
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    }
 }

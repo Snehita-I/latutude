@@ -85,6 +85,12 @@
             app:iconSize="24dp"
             app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MyApp.Button.Circle" />
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/choose"
+            android:layout_width="68dp"
+            android:layout_height="wrap_content"
+            android:text="Button" />
+
     </RelativeLayout>
 
 </RelativeLayout>
