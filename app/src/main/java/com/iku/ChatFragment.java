@@ -31,6 +31,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.functions.FirebaseFunctionsException;
 import com.google.firebase.functions.HttpsCallableResult;
+import com.google.firebase.storage.FirebaseStorage;
 import com.iku.models.ChatModel;
 
 import java.text.SimpleDateFormat;
@@ -62,6 +63,8 @@ public class ChatFragment extends Fragment {
 
     private FirebaseUser user;
 
+    private FirebaseStorage storage;
+
     private FirebaseFirestore db;
 
     EditText messageBox;
@@ -84,6 +87,8 @@ public class ChatFragment extends Fragment {
 
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
+
+        storage = FirebaseStorage.getInstance();
 
         messageBox = view.findViewById(R.id.messageTextField);
         sendButton = view.findViewById(R.id.sendMessageButton);
@@ -141,6 +146,8 @@ public class ChatFragment extends Fragment {
 
         return view;
     }
+
+    
 
     private void sendTheMessage() {
         final String message = String.valueOf(messageBox.getText());

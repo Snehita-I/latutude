@@ -2,17 +2,21 @@ package com.iku.models;
 
 public class ChatModel {
 
-    private String message, UID;
+    private String message;
+    private String UID;
+
+    private String userName;
 
     private long timestamp;
 
     private ChatModel() {
     }
 
-    private ChatModel(String message, long timestamp, String UID) {
+    private ChatModel(String message, long timestamp, String UID,String userName) {
         this.message = message;
         this.UID = UID;
         this.timestamp = timestamp;
+        this.userName = userName;
     }
 
     public String getMessage() {
@@ -37,5 +41,13 @@ public class ChatModel {
 
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }
