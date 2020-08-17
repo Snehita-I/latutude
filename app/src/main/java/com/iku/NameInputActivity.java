@@ -22,16 +22,21 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.iku.databinding.ActivityNameInputBinding;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class NameInputActivity extends AppCompatActivity {
-    private TextInputEditText firstName, lastName;
+
+    private ActivityNameInputBinding binding;
+
     private String email;
+
     private FirebaseFirestore db;
-    private MaterialButton submitNameBtn;
+
     private FirebaseAuth fAuth;
+
     private FirebaseUser user;
 
     public static final String TAG = NameInputActivity.class.getSimpleName();
@@ -39,21 +44,18 @@ public class NameInputActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_name_input);
+        binding = ActivityNameInputBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         fAuth = FirebaseAuth.getInstance();
 
         user = fAuth.getCurrentUser();
 
-        firstName = findViewById(R.id.enter_first_name);
-        lastName = findViewById(R.id.enter_last_name);
-        submitNameBtn = findViewById(R.id.names_next_button);
-
         email = user.getEmail();
 
         db = FirebaseFirestore.getInstance();
 
-        submitNameBtn.setOnClickListener(new View.OnClickListener() {
+        binding.namesNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 user.reload();
@@ -61,7 +63,7 @@ public class NameInputActivity extends AppCompatActivity {
                     Toast.makeText(NameInputActivity.this, "Verify your email via the email sent to you before proceeding.", Toast.LENGTH_SHORT).show();
                 } else {
                     Log.i(TAG, "VERIFIED USER. ");
-                    newUserSignUp(firstName.getText().toString(), lastName.getText().toString(), email);
+                    newUserSignUp(binding.enterFirstName.getText().toString(), binding.enterLastName.getText().toString(), email);
                 }
             }
         });

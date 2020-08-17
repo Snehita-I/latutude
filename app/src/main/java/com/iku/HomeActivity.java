@@ -17,6 +17,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.iku.databinding.ActivityHomeBinding;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -26,41 +27,35 @@ import nl.joery.animatedbottombar.AnimatedBottomBar;
 
 public class HomeActivity extends AppCompatActivity {
 
+    private ActivityHomeBinding homeBinding;
+
+    private FragmentManager fragmentManager;
+
     private static final String TAG = HomeActivity.class.getSimpleName();
-    AnimatedBottomBar animatedBottomBar;
-    FragmentManager fragmentManager;
-
-
-    private ImageView groupIcon;
-    MaterialTextView membercount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
+        homeBinding = ActivityHomeBinding.inflate(getLayoutInflater());
+        setContentView(homeBinding.getRoot());
 
-        animatedBottomBar = findViewById(R.id.animatedBottomBar);
-        membercount = findViewById(R.id.memberCount);
-
-        groupIcon = findViewById(R.id.group_icon);
-
-        groupIcon.setOnClickListener(new View.OnClickListener() {
+        homeBinding.groupIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent goToLeaderboard = new Intent(HomeActivity.this,LeaderboardActivity.class);
+                Intent goToLeaderboard = new Intent(HomeActivity.this, LeaderboardActivity.class);
                 startActivity(goToLeaderboard);
             }
         });
 
         if (savedInstanceState == null) {
-            animatedBottomBar.selectTabById(R.id.chat, true);
+            homeBinding.animatedBottomBar.selectTabById(R.id.chat, true);
             fragmentManager = getSupportFragmentManager();
             ChatFragment chatFragment = new ChatFragment();
             fragmentManager.beginTransaction().replace(R.id.fragment_container, chatFragment)
                     .commit();
         }
 
-        animatedBottomBar.setOnTabSelectListener(new AnimatedBottomBar.OnTabSelectListener() {
+        homeBinding.animatedBottomBar.setOnTabSelectListener(new AnimatedBottomBar.OnTabSelectListener() {
             @Override
             public void onTabSelected(int lastIndex, @Nullable AnimatedBottomBar.Tab lastTab, int newIndex, @NotNull AnimatedBottomBar.Tab newTab) {
                 Fragment fragment = null;
@@ -92,7 +87,7 @@ public class HomeActivity extends AppCompatActivity {
                 DocumentSnapshot document = task.getResult();
                 List<String> group = (List<String>) document.get("members");
                 Log.i(TAG, "onComplete: " + group.size() + group);
-                membercount.setText("Members: " + group.size());
+                homeBinding.memberCount.setText("Members: " + group.size());
 
             }
         });

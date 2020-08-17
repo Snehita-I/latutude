@@ -7,58 +7,51 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.button.MaterialButton;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.iku.databinding.ActivityPasswordInputBinding;
 
 public class PasswordInputActivity extends AppCompatActivity {
 
-    private TextInputEditText enteredPassword;
-    private MaterialTextView forgotPassword;
-    private MaterialButton signinButton;
-    private ImageView backButton;
+    private ActivityPasswordInputBinding binding;
+
     private FirebaseAuth firebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_password_input);
+        binding = ActivityPasswordInputBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         Bundle extras = getIntent().getExtras();
         final String enteredEmail = extras.getString("email");
-        enteredPassword = findViewById(R.id.enter_password);
-        signinButton = findViewById(R.id.signin_button);
-        firebaseAuth = FirebaseAuth.getInstance();
-        forgotPassword = findViewById(R.id.forgotPasswordTextView);
 
-        backButton = (ImageView) findViewById(R.id.back_button);
-        backButton.setOnClickListener(new View.OnClickListener() {
+        firebaseAuth = FirebaseAuth.getInstance();
+
+        binding.backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onBackPressed();
             }
         });
 
-        signinButton.setOnClickListener(new View.OnClickListener() {
+        binding.signinButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
 
-                if (TextUtils.isEmpty(enteredPassword.getText().toString())) {
+                if (TextUtils.isEmpty(binding.enterPassword.getText().toString())) {
                     Toast.makeText(PasswordInputActivity.this, "Please enter your password", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                firebaseAuth.signInWithEmailAndPassword(enteredEmail, enteredPassword.getText().toString())
+                firebaseAuth.signInWithEmailAndPassword(enteredEmail, binding.enterPassword.getText().toString())
                         .addOnCompleteListener(PasswordInputActivity.this, new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -75,7 +68,7 @@ public class PasswordInputActivity extends AppCompatActivity {
             }
         });
 
-        forgotPassword.setOnClickListener(new View.OnClickListener() {
+        binding.forgotPasswordTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 firebaseAuth.sendPasswordResetEmail(enteredEmail).addOnSuccessListener(new OnSuccessListener<Void>() {

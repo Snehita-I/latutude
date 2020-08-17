@@ -7,52 +7,46 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.button.MaterialButton;
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.SignInMethodQueryResult;
+import com.iku.databinding.ActivityEmailInputBinding;
 
 public class EmailInputActivity extends AppCompatActivity {
 
-    private MaterialButton emailNextButton;
+    private ActivityEmailInputBinding binding;
+
     private String email;
-    private TextInputEditText emailEditText;
     private FirebaseAuth fAuth;
-    private ImageView backButton;
     private String TAG = EmailInputActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_email_input);
-
-        emailNextButton = findViewById(R.id.email_next_button);
-        emailEditText = findViewById(R.id.enter_email);
+        binding = ActivityEmailInputBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         fAuth = FirebaseAuth.getInstance();
 
-        backButton = (ImageView) findViewById(R.id.back_button);
-        backButton.setOnClickListener(new View.OnClickListener() {
+        binding.backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onBackPressed();
             }
         });
 
-        emailNextButton.setOnClickListener(new View.OnClickListener() {
+        binding.emailNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                email = emailEditText.getText().toString().trim();
+                email = binding.enterEmail.getText().toString().trim();
 
                 //validations
                 if (email.isEmpty()) {
-                    emailEditText.setError("Email cannot be empty");
+                    binding.enterEmail.setError("Email cannot be empty");
                     return;
                 }
 

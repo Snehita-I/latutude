@@ -19,28 +19,27 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.iku.databinding.ActivityNewPasswordInputBinding;
 
 public class NewPasswordInputActivity extends AppCompatActivity {
 
-    private MaterialButton newPasswordNextBtn;
+    private ActivityNewPasswordInputBinding binding;
+
     private String email, password;
-    private TextInputEditText passwordEditText;
+
     private FirebaseAuth fAuth;
-    private ImageView backButton;
-    private String TAG = "REGISTER";
+
+    private String TAG = NewPasswordInputActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_password_input);
-
-        newPasswordNextBtn = findViewById(R.id.new_password_next_button);
-        passwordEditText = findViewById(R.id.enter_new_password);
+        binding = ActivityNewPasswordInputBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         fAuth = FirebaseAuth.getInstance();
 
-        backButton = (ImageView) findViewById(R.id.back_button);
-        backButton.setOnClickListener(new View.OnClickListener() {
+        binding.backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onBackPressed();
@@ -51,18 +50,18 @@ public class NewPasswordInputActivity extends AppCompatActivity {
         email = myIntent.getStringExtra("email");
         Log.i(TAG, "email: " + email);
 
-        newPasswordNextBtn.setOnClickListener(new View.OnClickListener() {
+        binding.newPasswordNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                password = passwordEditText.getText().toString().trim();
+                password = binding.enterNewPassword.getText().toString().trim();
 
                 //validations
                 if (password.isEmpty()) {
-                    passwordEditText.setError("password cannot be empty");
+                    binding.enterNewPassword.setError("password cannot be empty");
                     return;
                 }
                 if (password.length() < 8) {
-                    passwordEditText.setError("password must be at least 8 characters");
+                    binding.enterNewPassword.setError("password must be at least 8 characters");
                     return;
                 }
 

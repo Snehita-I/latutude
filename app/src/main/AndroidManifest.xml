@@ -24,7 +24,6 @@
             android:value="false" />
 
         <activity android:name=".NameInputActivity" />
-        <activity android:name=".OTPActivity" />
         <activity android:name=".PasswordInputActivity" />
         <activity android:name=".NewPasswordInputActivity" />
         <activity android:name=".EmailInputActivity" />
