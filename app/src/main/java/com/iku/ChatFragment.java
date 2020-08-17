@@ -1,7 +1,10 @@
 package com.iku;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -20,27 +23,18 @@ import android.widget.EditText;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textview.MaterialTextView;
-import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.functions.FirebaseFunctions;
-import com.google.firebase.functions.FirebaseFunctionsException;
-import com.google.firebase.functions.HttpsCallableResult;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.iku.models.ChatModel;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -224,7 +218,6 @@ public class ChatFragment extends Fragment {
                 && data != null && data.getData() != null) {
             mImageUri = data.getData();
             Log.i(TAG, "onActivityResult: " + mImageUri + "\nFilename" + getFileName(mImageUri));
-            uploadPDF(mImageUri);
 
         }
     }
@@ -251,29 +244,4 @@ public class ChatFragment extends Fragment {
         return result;
     }
 
-    private void uploadPDF(Uri imageUri) {
-
-        final StorageReference reference = storage.getReference();
-
-        StorageReference imagesFolder = reference.child(user.getUid());
-
-        final StorageReference imagesRef = imagesFolder.child(getFileName(imageUri));
-
-        imagesRef.putFile(mImageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onComplete(@NonNull final Task<UploadTask.TaskSnapshot> task) {
-                if (task.isSuccessful()) {
-                    imagesRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            if (task.isSuccessful()) {
-                                String url = uri.toString();
-                                Log.e("DD", "onSuccess: " + url);
-                            }
-                        }
-                    });
-                }
-            }
-        });
-    }
 }
