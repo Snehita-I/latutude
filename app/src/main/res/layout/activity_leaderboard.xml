@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="5dp"
     android:background="@android:color/white"
     tools:context=".LeaderboardActivity">
 
@@ -31,22 +30,13 @@
                 app:title="Iku Experiment"
                 app:titleMarginStart="177dp" />
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/memberCount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="14dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/group_icon"
-                app:layout_constraintTop_toTopOf="parent" />
-
             <ImageView
                 android:id="@+id/group_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
                 android:layout_marginBottom="12dp"
                 android:src="@drawable/shield"
-                android:layout_marginLeft="10dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.349"
@@ -54,17 +44,27 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/appBar"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        app:cardElevation="0dp"
+        android:backgroundTint="#F0F0F0"
+        app:cardCornerRadius="10dp">
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="140dp"
-            android:background="@android:color/white"
-            android:orientation="horizontal"
-            android:paddingTop="20dp"
-            android:paddingBottom="20dp">
+            android:layout_height="115dp"
+            android:orientation="horizontal">
 
             <LinearLayout
-                android:layout_width="150dp"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_weight="1"
                 android:orientation="vertical">
 
                 <TextView
@@ -72,7 +72,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:text="players"
+                    android:textColor="#040404"
+                    android:text="Players"
                     android:textAlignment="center"
                     android:textSize="20dp"
                     android:textStyle="bold" />
@@ -82,6 +83,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_marginTop="5dp"
+                    android:textColor="#040404"
                     android:text="14"
                     android:textAlignment="center"
                     android:textSize="28dp"
@@ -90,13 +92,16 @@
 
             <ImageView
                 android:id="@+id/imageView2"
-                android:layout_width="90dp"
+                android:layout_width="0dp"
                 android:layout_height="90dp"
-                android:layout_marginRight="0dp" />
+                android:layout_weight="1"
+                android:layout_marginRight="0dp"
+                app:srcCompat="@drawable/pedestal" />
 
             <LinearLayout
-                android:layout_width="160dp"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_weight="1"
                 android:orientation="vertical">
 
                 <TextView
@@ -104,8 +109,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:text="total hearts won"
+                    android:text="Total hearts"
                     android:textAlignment="center"
+                    android:textColor="#040404"
                     android:textSize="20dp"
                     android:textStyle="bold" />
 
@@ -113,6 +119,7 @@
                     android:id="@+id/heartscount"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
+                    android:textColor="#040404"
                     android:layout_marginTop="5dp"
                     android:text="238"
                     android:textAlignment="center"
@@ -121,8 +128,7 @@
             </LinearLayout>
 
         </LinearLayout>
-
-    </com.google.android.material.appbar.AppBarLayout>
+    </androidx.cardview.widget.CardView>
 
 
     <LinearLayout
@@ -137,21 +143,24 @@
             android:layout_width="27dp"
             android:layout_height="27dp"
             android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp" />
+            android:layout_marginBottom="10dp"
+            android:src="@drawable/best" />
 
         <ImageView
             android:id="@+id/silver"
             android:layout_width="27dp"
             android:layout_height="27dp"
             android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp" />
+            android:layout_marginBottom="10dp"
+            android:src="@drawable/silvermedal" />
 
         <ImageView
             android:id="@+id/bronze"
             android:layout_width="27dp"
             android:layout_height="27dp"
             android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp" />
+            android:layout_marginBottom="10dp"
+            android:src="@drawable/bronzemedal" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -168,22 +177,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appBar" />
 
-    <nl.joery.animatedbottombar.AnimatedBottomBar
-        android:id="@+id/animatedBottomBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="#fff"
-        android:elevation="12dp"
-        app:abb_indicatorAppearance="round"
-        app:abb_indicatorColor="#419A88"
-        app:abb_indicatorLocation="bottom"
-
-        app:abb_selectedTabType="text"
-        app:abb_tabColor="#454545"
-        app:abb_tabColorSelected="#419A88"
-        app:abb_tabs="@menu/menu" />
-
     <TextView
         android:id="@+id/namescolumn"
         android:layout_width="wrap_content"
@@ -192,7 +185,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginStart="70dp"
         android:layout_marginTop="202dp"
-        android:text="Players:"
+        android:text="Players"
         android:textAlignment="center"
         android:textColor="@android:color/black"
         android:textSize="18dp"
@@ -206,7 +199,7 @@
         android:layout_alignParentEnd="true"
         android:layout_marginTop="202dp"
         android:layout_marginEnd="30dp"
-        android:text="Hearts won:"
+        android:text="Hearts"
         android:textColor="@android:color/black"
         android:textSize="18dp"
         android:textStyle="bold" />
