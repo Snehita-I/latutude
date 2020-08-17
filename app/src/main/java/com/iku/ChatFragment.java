@@ -49,10 +49,6 @@ public class ChatFragment extends Fragment {
 
     private static final String TAG = ChatFragment.class.getSimpleName();
 
-    private FirebaseFunctions mFunctions;
-
-    private FirestoreRecyclerAdapter adapter;
-
     private RecyclerView mChatList;
 
     private FirebaseFirestore firebaseFirestore;
@@ -63,14 +59,14 @@ public class ChatFragment extends Fragment {
 
     private FirebaseUser user;
 
-    private FirebaseStorage storage;
-
     private FirebaseFirestore db;
 
     private EditText messageBox;
     private MaterialButton sendButton, addImageButton;
 
     private Uri mImageUri;
+
+    private ChatAdapter chatadapter;
 
     private int PICK_IMAGE = 123;
 
@@ -85,14 +81,10 @@ public class ChatFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_chat, container, false);
 
-        mFunctions = FirebaseFunctions.getInstance();
-
         db = FirebaseFirestore.getInstance();
 
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
-
-        storage = FirebaseStorage.getInstance();
 
         messageBox = view.findViewById(R.id.messageTextField);
         sendButton = view.findViewById(R.id.sendMessageButton);
@@ -109,39 +101,21 @@ public class ChatFragment extends Fragment {
                 .setQuery(query, ChatModel.class)
                 .build();
 
+        mChatList.setHasFixedSize(true);
+        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        linearLayoutManager.setReverseLayout(true);
+        mChatList.setLayoutManager(linearLayoutManager);
 
-        adapter = new FirestoreRecyclerAdapter<ChatModel, ChatViewHolder>(options) {
-            @NonNull
-            @Override
-            public ChatViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_right, parent, false);
-                return new ChatViewHolder(view);
-            }
-
-            @Override
-            protected void onBindViewHolder(@NonNull ChatViewHolder chatViewHolder, int i, @NonNull ChatModel chatModel) {
-                SimpleDateFormat sfd = new SimpleDateFormat("hh:mm a");
-                long timeStamp = chatModel.getTimestamp();
-
-                chatViewHolder.messageText.setText(chatModel.getMessage());
-                chatViewHolder.messageTime.setText(sfd.format(new Date(timeStamp)));
-                chatViewHolder.senderName.setText(chatModel.getUserName());
-            }
-        };
-
-        adapter.startListening();
-        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+        chatadapter = new ChatAdapter(options);
+        chatadapter.startListening();
+        chatadapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
                 mChatList.smoothScrollToPosition(0);
             }
         });
+        mChatList.setAdapter(chatadapter);
 
-        mChatList.setHasFixedSize(true);
-        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-        linearLayoutManager.setReverseLayout(true);
-        mChatList.setLayoutManager(linearLayoutManager);
-        mChatList.setAdapter(adapter);
 
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -190,18 +164,6 @@ public class ChatFragment extends Fragment {
                 });
     }
 
-    private class ChatViewHolder extends RecyclerView.ViewHolder {
-
-        private MaterialTextView messageText, messageTime, senderName;
-
-        public ChatViewHolder(@NonNull View itemView) {
-            super(itemView);
-            messageText = itemView.findViewById(R.id.message);
-            messageTime = itemView.findViewById(R.id.message_time);
-            senderName = itemView.findViewById(R.id.sendername);
-
-        }
-    }
 
     private void openFileChooser() {
         Intent i = new Intent();

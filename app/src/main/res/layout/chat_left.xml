@@ -22,7 +22,7 @@
             android:textColor="@android:color/holo_orange_light" />
 
         <TextView
-            android:id="@+id/textmessage"
+            android:id="@+id/message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="TextView"
@@ -32,7 +32,7 @@
             android:textColor="@android:color/white" />
 
         <TextView
-            android:id="@+id/timestamp"
+            android:id="@+id/message_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="right"
