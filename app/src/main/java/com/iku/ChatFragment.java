@@ -1,10 +1,7 @@
 package com.iku;
 
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -117,7 +114,7 @@ public class ChatFragment extends Fragment {
             @NonNull
             @Override
             public ChatViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_bubble, parent, false);
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_right, parent, false);
                 return new ChatViewHolder(view);
             }
 
@@ -128,6 +125,7 @@ public class ChatFragment extends Fragment {
 
                 chatViewHolder.messageText.setText(chatModel.getMessage());
                 chatViewHolder.messageTime.setText(sfd.format(new Date(timeStamp)));
+                chatViewHolder.senderName.setText(chatModel.getUserName());
             }
         };
 
@@ -194,12 +192,13 @@ public class ChatFragment extends Fragment {
 
     private class ChatViewHolder extends RecyclerView.ViewHolder {
 
-        private MaterialTextView messageText, messageTime;
+        private MaterialTextView messageText, messageTime, senderName;
 
         public ChatViewHolder(@NonNull View itemView) {
             super(itemView);
             messageText = itemView.findViewById(R.id.message);
             messageTime = itemView.findViewById(R.id.message_time);
+            senderName = itemView.findViewById(R.id.sendername);
 
         }
     }
