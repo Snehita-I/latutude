@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -62,7 +63,7 @@ public class ChatFragment extends Fragment {
     private FirebaseFirestore db;
 
     private EditText messageBox;
-    private MaterialButton sendButton, addImageButton;
+    private ImageView sendButton, addImageButton;
 
     private Uri mImageUri;
 
