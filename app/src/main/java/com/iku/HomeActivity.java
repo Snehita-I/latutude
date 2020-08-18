@@ -87,7 +87,7 @@ public class HomeActivity extends AppCompatActivity {
                 DocumentSnapshot document = task.getResult();
                 List<String> group = (List<String>) document.get("members");
                 Log.i(TAG, "onComplete: " + group.size() + group);
-                homeBinding.memberCount.setText("Members: " + group.size());
+                homeBinding.memberCount.setText("ikulogists: " + group.size());
 
             }
         });
