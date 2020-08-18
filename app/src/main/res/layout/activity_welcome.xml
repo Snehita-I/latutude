@@ -62,10 +62,9 @@
         android:backgroundTint="@color/white"
         android:drawableLeft="@drawable/ic_email_24"
         android:elevation="4dp"
-        android:text="Email"
-        android:textColor="#66B2B2"
-        app:strokeColor="#66B2B2"
-        app:strokeWidth="1dp" />
+        android:textSize="12sp"
+        android:text="Continue with Email"
+        android:textColor="@android:color/black" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/policyText"

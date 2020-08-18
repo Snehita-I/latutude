@@ -59,6 +59,7 @@ public class PasswordInputActivity extends AppCompatActivity {
                                     Toast.makeText(PasswordInputActivity.this, "Login successful", Toast.LENGTH_LONG).show();
                                     //sending to Home Activity
                                     Intent goToHomeActivity = new Intent(PasswordInputActivity.this, HomeActivity.class);
+                                    goToHomeActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                     startActivity(goToHomeActivity);
                                 } else {
                                     Toast.makeText(PasswordInputActivity.this, "Incorrect password", Toast.LENGTH_LONG).show();
