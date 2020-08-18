@@ -39,7 +39,8 @@
         </service>
 
 
-        <activity android:name=".UserPofileActivity"></activity>
+        <activity android:name=".UserPofileActivity" />
+        <activity android:name=".ChatImageActivity" />
         <activity android:name=".LeaderboardActivity" />
 
         <meta-data
