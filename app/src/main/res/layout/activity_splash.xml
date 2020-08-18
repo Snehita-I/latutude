@@ -7,16 +7,13 @@
     android:fillViewport="true"
     tools:context=".SplashActivity">
 
-    <TextView
-        android:id="@+id/textView"
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="iku"
-        android:textStyle="italic"
-        android:textSize="24sp"
-        android:textColor="@android:color/darker_gray"
+        android:src="@drawable/iku_splash"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
