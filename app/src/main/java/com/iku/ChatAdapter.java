@@ -22,14 +22,37 @@ import com.squareup.picasso.Picasso;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, ChatAdapter.ChatViewHolder> {
+public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerView.ViewHolder> {
 
 
-    public class ChatViewHolder extends RecyclerView.ViewHolder {
+    @Override
+    protected void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i, @NonNull ChatModel chatModel) {
+        switch (viewHolder.getItemViewType()) {
+            case MSG_TYPE_LEFT:
+                ChatLeftViewHolder chatLeftViewHolder = (ChatLeftViewHolder) viewHolder;
+                SimpleDateFormat sfdLeft = new SimpleDateFormat("hh:mm a");
+                long timeStampLeft = chatModel.getTimestamp();
+
+                chatLeftViewHolder.messageText.setText(chatModel.getMessage());
+                chatLeftViewHolder.messageTime.setText(sfdLeft.format(new Date(timeStampLeft)));
+                chatLeftViewHolder.senderName.setText(chatModel.getUserName());
+                break;
+            case MSG_TYPE_RIGHT:
+                ChatRightViewHolder chatRightViewHolder = (ChatRightViewHolder) viewHolder;
+                SimpleDateFormat sfdRight = new SimpleDateFormat("hh:mm a");
+                long timeStampRight = chatModel.getTimestamp();
+
+                chatRightViewHolder.messageText.setText(chatModel.getMessage());
+                chatRightViewHolder.messageTime.setText(sfdRight.format(new Date(timeStampRight)));
+                break;
+        }
+    }
+
+    public class ChatLeftViewHolder extends RecyclerView.ViewHolder {
 
         private MaterialTextView messageText, messageTime, senderName;
 
-        public ChatViewHolder(@NonNull View itemView) {
+        public ChatLeftViewHolder(@NonNull View itemView) {
             super(itemView);
 
             messageText = itemView.findViewById(R.id.message);
@@ -45,6 +68,19 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, ChatAdapter
                     }
                 }
             });
+
+        }
+    }
+
+    public class ChatRightViewHolder extends RecyclerView.ViewHolder {
+
+        private MaterialTextView messageText, messageTime, senderName;
+
+        public ChatRightViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            messageText = itemView.findViewById(R.id.message);
+            messageTime = itemView.findViewById(R.id.message_time);
 
         }
     }
@@ -75,36 +111,33 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, ChatAdapter
         mContext = context;
     }
 
-    @Override
-    protected void onBindViewHolder(@NonNull ChatViewHolder chatViewHolder, int position, @NonNull ChatModel chatModel) {
-        SimpleDateFormat sfd = new SimpleDateFormat("hh:mm a");
-        long timeStamp = chatModel.getTimestamp();
-
-        chatViewHolder.messageText.setText(chatModel.getMessage());
-        chatViewHolder.messageTime.setText(sfd.format(new Date(timeStamp)));
-        chatViewHolder.senderName.setText(chatModel.getUserName());
-
-    }
-
     @NonNull
     @Override
-    public ChatViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = null;
 
-        if (viewType == MSG_TYPE_RIGHT)
+        if (viewType == MSG_TYPE_RIGHT) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_right, parent, false);
-        else if (viewType == MSG_TYPE_LEFT)
+            return new ChatRightViewHolder(view);
+        } else if (viewType == MSG_TYPE_LEFT) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_left, parent, false);
-
-        return new ChatViewHolder(view);
+            return new ChatLeftViewHolder(view);
+        } else
+            return null;
     }
 
     @Override
     public int getItemViewType(int position) {
         if (getItem(position).getUID().equals(user.getUid()))
             return MSG_TYPE_RIGHT;
-        else 
+        else if (!getItem(position).getUID().equals(user.getUid()))
             return MSG_TYPE_LEFT;
+        else if (getItem(position).getType().equals("image") && getItem(position).getImageURL() != null) {
+            return MSG_TYPE_IMAGE_LEFT;
+        } else if (getItem(position).getType().equals("image") && getItem(position).getImageURL() != null && getItem(position).getUID().equals(user.getUid())) {
+            return MSG_TYPE_IMAGE_RIGHT;
+        } else
+            return 0;
     }
 
 
