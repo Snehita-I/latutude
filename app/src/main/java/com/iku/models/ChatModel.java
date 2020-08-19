@@ -5,20 +5,20 @@ public class ChatModel {
     private String message;
     private String UID;
 
-    private String userName, type, imageURL;
+    private String userName, type, imageUrl;
 
     private long timestamp;
 
     private ChatModel() {
     }
 
-    private ChatModel(String message, long timestamp, String UID, String userName, String type, String imageURL) {
+    private ChatModel(String message, long timestamp, String UID, String userName, String type, String imageUrl) {
         this.message = message;
         this.UID = UID;
         this.timestamp = timestamp;
         this.userName = userName;
         this.type = type;
-        this.imageURL = imageURL;
+        this.imageUrl = imageUrl;
     }
 
     public String getMessage() {
@@ -62,11 +62,11 @@ public class ChatModel {
         this.type = type;
     }
 
-    public String getImageURL() {
-        return imageURL;
+    public String getimageUrl() {
+        return imageUrl;
     }
 
-    public void setImageURL(String imageURL) {
-        this.imageURL = imageURL;
+    public void setimageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

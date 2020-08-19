@@ -128,13 +128,13 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
 
     @Override
     public int getItemViewType(int position) {
-        if (getItem(position).getUID().equals(user.getUid()))
+        if (getItem(position).getUID().equals(user.getUid()) && getItem(position).getimageUrl() == null)
             return MSG_TYPE_RIGHT;
-        else if (!getItem(position).getUID().equals(user.getUid()))
+        else if (!getItem(position).getUID().equals(user.getUid()) && getItem(position).getimageUrl() == null)
             return MSG_TYPE_LEFT;
-        else if (getItem(position).getType().equals("image") && getItem(position).getImageURL() != null) {
+        else if (getItem(position).getType().equals("image") && getItem(position).getimageUrl() != null) {
             return MSG_TYPE_IMAGE_LEFT;
-        } else if (getItem(position).getType().equals("image") && getItem(position).getImageURL() != null && getItem(position).getUID().equals(user.getUid())) {
+        } else if (getItem(position).getType().equals("image") && getItem(position).getimageUrl() != null && getItem(position).getUID().equals(user.getUid())) {
             return MSG_TYPE_IMAGE_RIGHT;
         } else
             return 0;
