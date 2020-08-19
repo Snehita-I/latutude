@@ -25,6 +25,7 @@ public class UserPofileActivity extends AppCompatActivity {
 
         Bundle extras = this.getIntent().getExtras();
         String userName = extras.getString("EXTRA_PERSON_NAME");
+        nameTextView = findViewById(R.id.userName);
         nameTextView.setText(userName);
         Log.i(TAG, "onCreate: " + userName);
 
