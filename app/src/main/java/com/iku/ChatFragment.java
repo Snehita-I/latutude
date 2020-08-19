@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -27,9 +28,11 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.iku.models.ChatModel;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -113,6 +116,27 @@ public class ChatFragment extends Fragment {
         });
         mChatList.setAdapter(chatadapter);
 
+        chatadapter.setOnItemClickListener(new ChatAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(DocumentSnapshot documentSnapshot, int position) {
+                Intent userProfileIntent = new Intent(getContext(), UserPofileActivity.class);
+
+                ChatModel chatModel = documentSnapshot.toObject(ChatModel.class);
+                String id = documentSnapshot.getId();
+                String path = documentSnapshot.getReference().getPath();
+                String name = chatModel.getUserName();
+                if (name != null) {
+                    userProfileIntent.putExtra("EXTRA_PERSON_NAME",name);
+                    startActivity(userProfileIntent);
+                }
+                //Toast displaying the document id
+
+                Toast.makeText(getActivity(),
+                        "Position: " + position + " ID: " + id + "Name" + name, Toast.LENGTH_LONG).show();
+
+            }
+        });
+
         messageBox.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -121,7 +145,7 @@ public class ChatFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if(charSequence.toString().isEmpty()){
+                if (charSequence.toString().isEmpty()) {
                     addImageButton.setVisibility(View.VISIBLE);
                 } else {
                     addImageButton.setVisibility(View.GONE);

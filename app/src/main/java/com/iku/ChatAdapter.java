@@ -12,6 +12,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.iku.models.ChatModel;
 
@@ -21,11 +22,20 @@ import java.util.Date;
 public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, ChatAdapter.ChatViewHolder> {
 
 
+    private ChatAdapter.OnItemClickListener listener;
     public static final int MSG_TYPE_LEFT = 0;
     public static final int MSG_TYPE_RIGHT = 1;
 
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+    public interface OnItemClickListener {
+        void onItemClick(DocumentSnapshot documentSnapshot, int position);
+    }
+
+    public void setOnItemClickListener(ChatAdapter.OnItemClickListener listener) {
+        this.listener = listener;
+    }
 
     public ChatAdapter(@NonNull FirestoreRecyclerOptions<ChatModel> options) {
         super(options);
@@ -73,6 +83,16 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, ChatAdapter
             messageText = itemView.findViewById(R.id.message);
             messageTime = itemView.findViewById(R.id.message_time);
             senderName = itemView.findViewById(R.id.sendername);
+
+            senderName.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION && listener != null) {
+                        listener.onItemClick(getSnapshots().getSnapshot(position), position);
+                    }
+                }
+            });
 
         }
     }
