@@ -106,7 +106,7 @@ public class ChatFragment extends Fragment {
         linearLayoutManager.setReverseLayout(true);
         mChatList.setLayoutManager(linearLayoutManager);
 
-        chatadapter = new ChatAdapter(options);
+        chatadapter = new ChatAdapter(getActivity(), options);
         chatadapter.startListening();
         chatadapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
@@ -126,7 +126,7 @@ public class ChatFragment extends Fragment {
                 String path = documentSnapshot.getReference().getPath();
                 String name = chatModel.getUserName();
                 if (name != null) {
-                    userProfileIntent.putExtra("EXTRA_PERSON_NAME",name);
+                    userProfileIntent.putExtra("EXTRA_PERSON_NAME", name);
                     startActivity(userProfileIntent);
                 }
                 //Toast displaying the document id
