@@ -6,9 +6,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -31,15 +33,21 @@ public class LeaderboardActivity extends AppCompatActivity {
 
     private FirebaseUser user;
 
+    private int totplayers;
+    private int tothearts;
+    private TextView heartscount;
+    private TextView playerscount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_leaderboard);
-        
+
         firebaseFirestore = FirebaseFirestore.getInstance();
 
-        mLeaderboardList=findViewById(R.id.leaderboard_recyclerview);
+        heartscount = findViewById(R.id.heartscount);
+        playerscount = findViewById(R.id.playerscount);
+        mLeaderboardList = findViewById(R.id.leaderboard_recyclerview);
 
         Query query = firebaseFirestore.collection("dummy_groups").orderBy("points", Query.Direction.DESCENDING);
 
@@ -47,7 +55,8 @@ public class LeaderboardActivity extends AppCompatActivity {
                 .setQuery(query, LeaderboardModel.class)
                 .build();
 
-
+        tothearts = 0;
+        totplayers = 0;
         adapter = new FirestoreRecyclerAdapter<LeaderboardModel, LeaderboardActivity.LeaderboardViewHolder>(options) {
             @NonNull
             @Override
@@ -59,19 +68,23 @@ public class LeaderboardActivity extends AppCompatActivity {
             @Override
             protected void onBindViewHolder(@NonNull LeaderboardActivity.LeaderboardViewHolder leaderboardViewHolder, int i, @NonNull LeaderboardModel leaderboardModel) {
 
-                leaderboardViewHolder.firstNameTextView.setText(leaderboardModel.getFirstName());
-                leaderboardViewHolder.lastNameTextView.setText(leaderboardModel.getLastName());
+                leaderboardViewHolder.firstNameTextView.setText(leaderboardModel.getFirstName() + " " + leaderboardModel.getLastName());
                 leaderboardViewHolder.pointsTextView.setText(String.valueOf(leaderboardModel.getPoints()));
+                tothearts += leaderboardModel.getPoints();
+                totplayers++;
+                playerscount.setText(Integer.toString(totplayers));
+                heartscount.setText(Integer.toString(tothearts));
             }
         };
-
 
 
         mLeaderboardList.setHasFixedSize(true);
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         mLeaderboardList.setLayoutManager(linearLayoutManager);
         mLeaderboardList.setAdapter(adapter);
-        
+        Log.i("tothearts", Integer.toString(tothearts));
+        Log.i("totplayers", Integer.toString(totplayers));
+
     }
 
     private class LeaderboardViewHolder extends RecyclerView.ViewHolder {
@@ -81,7 +94,6 @@ public class LeaderboardActivity extends AppCompatActivity {
         public LeaderboardViewHolder(@NonNull View itemView) {
             super(itemView);
             firstNameTextView = itemView.findViewById(R.id.firstname);
-            lastNameTextView = itemView.findViewById(R.id.lastname);
             pointsTextView = itemView.findViewById(R.id.pointsText);
         }
     }
