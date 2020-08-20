@@ -1,6 +1,7 @@
 package com.iku;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +16,6 @@ import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.iku.models.ChatModel;
 import com.squareup.picasso.Picasso;
 
@@ -24,6 +24,7 @@ import java.util.Date;
 
 public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerView.ViewHolder> {
 
+    private String TAG = ChatAdapter.class.getSimpleName();
 
     @Override
     protected void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i, @NonNull ChatModel chatModel) {
@@ -44,6 +45,16 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
 
                 chatRightViewHolder.messageText.setText(chatModel.getMessage());
                 chatRightViewHolder.messageTime.setText(sfdRight.format(new Date(timeStampRight)));
+                break;
+            case MSG_TYPE_IMAGE_LEFT:
+                ChatLeftImageViewHolder chatLeftImageViewHolder = (ChatLeftImageViewHolder) viewHolder;
+                SimpleDateFormat sfdImageLeft = new SimpleDateFormat("hh:mm a");
+                long timeStampImageLeft = chatModel.getTimestamp();
+
+                chatLeftImageViewHolder.messageText.setText(chatModel.getMessage());
+                chatLeftImageViewHolder.messageTime.setText(sfdImageLeft.format(new Date(timeStampImageLeft)));
+                chatLeftImageViewHolder.senderName.setText(chatModel.getUserName());
+                Picasso.with(chatLeftImageViewHolder.receiverImage.getContext()).load("https://firebasestorage.googleapis.com/v0/b/iku-2020.appspot.com/o/images%2F1597843303202.jpg?alt=media&token=01b41d99-2491-4b06-8fa0-19e75c0f48b3").fit().centerInside().into(chatLeftImageViewHolder.receiverImage);
                 break;
         }
     }
@@ -72,9 +83,35 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
         }
     }
 
-    public class ChatRightViewHolder extends RecyclerView.ViewHolder {
+    public class ChatLeftImageViewHolder extends RecyclerView.ViewHolder {
 
         private MaterialTextView messageText, messageTime, senderName;
+        private ImageView receiverImage;
+
+        public ChatLeftImageViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            messageText = itemView.findViewById(R.id.message);
+            messageTime = itemView.findViewById(R.id.message_time);
+            senderName = itemView.findViewById(R.id.sendername);
+            receiverImage = itemView.findViewById(R.id.receivedImage);
+
+            senderName.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION && listener != null) {
+                        listener.onItemClick(getSnapshots().getSnapshot(position), position);
+                    }
+                }
+            });
+
+        }
+    }
+
+    public class ChatRightViewHolder extends RecyclerView.ViewHolder {
+
+        private MaterialTextView messageText, messageTime;
 
         public ChatRightViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -96,7 +133,6 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
     private Context mContext;
 
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     public interface OnItemClickListener {
         void onItemClick(DocumentSnapshot documentSnapshot, int position);
@@ -122,21 +158,27 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
         } else if (viewType == MSG_TYPE_LEFT) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_left, parent, false);
             return new ChatLeftViewHolder(view);
+        } else if (viewType == MSG_TYPE_IMAGE_LEFT) {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_left_image, parent, false);
+            return new ChatLeftImageViewHolder(view);
         } else
             return null;
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (getItem(position).getUID().equals(user.getUid()))
+        if (getItem(position).getUID().equals(user.getUid()) && getItem(position).getType().equals("text")) {
+            Log.i(TAG, "getItemViewType: " + getItem(position).getUID() + "\n" + getItem(position).getType());
             return MSG_TYPE_RIGHT;
-        else if (!getItem(position).getUID().equals(user.getUid()))
+        } else if (!getItem(position).getUID().equals(user.getUid()) && getItem(position).getType().equals("text")) {
+            Log.i(TAG, "getItemViewType: " + getItem(position).getUID() + "\n" + getItem(position).getType());
             return MSG_TYPE_LEFT;
-        else if (getItem(position).getType().equals("image") && getItem(position).getimageUrl() != null) {
+        } else if (!getItem(position).getUID().equals(user.getUid()) && getItem(position).getType().equals("image")) {
+            Log.i(TAG, "getItemViewType: " + getItem(position).getUID() + "\n" + getItem(position).getType() + "\n" + getItem(position).getimageUrl());
             return MSG_TYPE_IMAGE_LEFT;
-        } else if (getItem(position).getType().equals("image") && getItem(position).getimageUrl() != null && getItem(position).getUID().equals(user.getUid())) {
-            return MSG_TYPE_IMAGE_RIGHT;
-        } else
+        }   // else if (getItem(position).getType().equals("image") && getItem(position).getimageUrl() != null && getItem(position).getUID().equals(user.getUid()))
+        //    return MSG_TYPE_IMAGE_RIGHT;
+        else
             return 0;
     }
 

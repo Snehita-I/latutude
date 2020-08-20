@@ -106,7 +106,7 @@ public class ChatFragment extends Fragment {
         linearLayoutManager.setReverseLayout(true);
         mChatList.setLayoutManager(linearLayoutManager);
 
-        chatadapter = new ChatAdapter(getActivity(), options);
+        chatadapter = new ChatAdapter(getContext(), options);
         chatadapter.startListening();
         chatadapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
