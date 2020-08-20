@@ -33,8 +33,6 @@ public class LeaderboardActivity extends AppCompatActivity {
 
     private FirebaseUser user;
 
-    private int totplayers;
-    private int tothearts;
     private TextView heartscount;
     private TextView playerscount;
 
@@ -55,8 +53,6 @@ public class LeaderboardActivity extends AppCompatActivity {
                 .setQuery(query, LeaderboardModel.class)
                 .build();
 
-        tothearts = 0;
-        totplayers = 0;
         adapter = new FirestoreRecyclerAdapter<LeaderboardModel, LeaderboardActivity.LeaderboardViewHolder>(options) {
             @NonNull
             @Override
@@ -70,10 +66,6 @@ public class LeaderboardActivity extends AppCompatActivity {
 
                 leaderboardViewHolder.firstNameTextView.setText(leaderboardModel.getFirstName() + " " + leaderboardModel.getLastName());
                 leaderboardViewHolder.pointsTextView.setText(String.valueOf(leaderboardModel.getPoints()));
-                tothearts += leaderboardModel.getPoints();
-                totplayers++;
-                playerscount.setText(Integer.toString(totplayers));
-                heartscount.setText(Integer.toString(tothearts));
             }
         };
 
@@ -82,8 +74,6 @@ public class LeaderboardActivity extends AppCompatActivity {
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         mLeaderboardList.setLayoutManager(linearLayoutManager);
         mLeaderboardList.setAdapter(adapter);
-        Log.i("tothearts", Integer.toString(tothearts));
-        Log.i("totplayers", Integer.toString(totplayers));
 
     }
 
