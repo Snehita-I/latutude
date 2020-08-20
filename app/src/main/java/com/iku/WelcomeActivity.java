@@ -40,6 +40,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.functions.FirebaseFunctionsException;
 import com.google.firebase.functions.HttpsCallableResult;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.iku.databinding.ActivityWelcomeBinding;
 
 import java.util.Arrays;
@@ -289,38 +291,53 @@ public class WelcomeActivity extends AppCompatActivity {
         }
     }
 
-    private void newUserSignUp(String firstName, String lastName, String email) {
+    private void newUserSignUp( final String firstName, final String lastName, final String email) {
 
-        // Create the arguments to the callable function.
-        Map<String, Object> userInfo = new HashMap<>();
-        userInfo.put("firstName", firstName);
-        userInfo.put("lastName", lastName);
-        userInfo.put("email", email);
-
-        final String userID = mAuth.getUid();
-
-        if (userID != null) {
-
-            db.collection("users").document(mAuth.getUid())
-                    .set(userInfo)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            DocumentReference groupRef = db.collection("groups").document("iku_earth");
-                            groupRef.update("members", FieldValue.arrayUnion(userID));
-
-                            updateUI(user);
-                            Log.d(TAG, "DocumentSnapshot successfully written!");
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "getInstanceId failed", task.getException());
+                            return;
                         }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.w(TAG, "Error writing document", e);
+                        // Get new Instance ID token
+                        String token = task.getResult().getToken();
+                        Toast.makeText(WelcomeActivity.this, token, Toast.LENGTH_SHORT).show();
+
+                        // Create the arguments to the callable function.
+                        Map<String, Object> userInfo = new HashMap<>();
+                        userInfo.put("firstName", firstName);
+                        userInfo.put("lastName", lastName);
+                        userInfo.put("email", email);
+                        userInfo.put("registrationToken", token);
+
+
+                        final String userID = mAuth.getUid();
+
+                        if (userID != null) {
+
+                            db.collection("users").document(mAuth.getUid())
+                                    .set(userInfo)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            FirebaseUser user = mAuth.getCurrentUser();
+                                            DocumentReference groupRef = db.collection("groups").document("iku_earth");
+                                            groupRef.update("members", FieldValue.arrayUnion(userID));
+
+                                            updateUI(user);
+                                            Log.d(TAG, "DocumentSnapshot successfully written!");
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Log.w(TAG, "Error writing document", e);
+                                        }
+                                    });
                         }
-                    });
-        }
+                    }
+                });
     }
-
 }
