@@ -186,6 +186,7 @@ public class ChatFragment extends Fragment {
         docData.put("message", message);
         docData.put("timestamp", timestamp);
         docData.put("uid", user.getUid());
+        docData.put("type", "text");
         docData.put("userName", user.getDisplayName());
 
         db.collection("iku_earth_messages")
