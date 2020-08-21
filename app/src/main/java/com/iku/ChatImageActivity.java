@@ -137,7 +137,7 @@ public class ChatImageActivity extends AppCompatActivity {
                 mainImageUri = getImageUri(this, imageSelected);
             if (mainImageUri != null) {
                 final StorageReference imageRef = mStorageRef.child(System.currentTimeMillis() + "." + getFileExtension(mainImageUri));
-                UploadTask uploadTask = imageRef.putFile(mImageUri);
+                UploadTask uploadTask = imageRef.putFile(mainImageUri);
                 uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {

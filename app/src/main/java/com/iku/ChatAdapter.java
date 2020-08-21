@@ -17,6 +17,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.iku.models.ChatModel;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
@@ -39,7 +41,7 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
     private String TAG = ChatAdapter.class.getSimpleName();
 
     @Override
-    protected void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i, @NonNull ChatModel chatModel) {
+    protected void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i, @NonNull final ChatModel chatModel) {
         switch (viewHolder.getItemViewType()) {
             case MSG_TYPE_LEFT:
                 ChatLeftViewHolder chatLeftViewHolder = (ChatLeftViewHolder) viewHolder;
@@ -59,23 +61,57 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
                 chatRightViewHolder.messageTime.setText(sfdRight.format(new Date(timeStampRight)));
                 break;
             case MSG_TYPE_IMAGE_LEFT:
-                ChatLeftImageViewHolder chatLeftImageViewHolder = (ChatLeftImageViewHolder) viewHolder;
+                final ChatLeftImageViewHolder chatLeftImageViewHolder = (ChatLeftImageViewHolder) viewHolder;
                 SimpleDateFormat sfdImageLeft = new SimpleDateFormat("hh:mm a");
                 long timeStampImageLeft = chatModel.getTimestamp();
 
                 chatLeftImageViewHolder.messageText.setText(chatModel.getMessage());
                 chatLeftImageViewHolder.messageTime.setText(sfdImageLeft.format(new Date(timeStampImageLeft)));
                 chatLeftImageViewHolder.senderName.setText(chatModel.getUserName());
-                Picasso.with(mContext).load(chatModel.getimageUrl()).resize(1080, 1080).into(chatLeftImageViewHolder.receiverImage);
+                Picasso.with(mContext)
+                        .load(chatModel.getimageUrl())
+                        .noFade()
+                        .networkPolicy(NetworkPolicy.OFFLINE)
+                        .into(chatLeftImageViewHolder.receiverImage, new Callback() {
+                            @Override
+                            public void onSuccess() {
+
+                            }
+
+                            @Override
+                            public void onError() {
+                                Picasso.with(mContext)
+                                        .load(chatModel.getimageUrl())
+                                        .noFade()
+                                        .into(chatLeftImageViewHolder.receiverImage);
+                            }
+                        });
                 break;
             case MSG_TYPE_IMAGE_RIGHT:
-                ChatRightImageViewHolder chatRightImageViewHolder = (ChatRightImageViewHolder) viewHolder;
+                final ChatRightImageViewHolder chatRightImageViewHolder = (ChatRightImageViewHolder) viewHolder;
                 SimpleDateFormat sfdImageRight = new SimpleDateFormat("hh:mm a");
                 long timeStampImageRight = chatModel.getTimestamp();
 
                 chatRightImageViewHolder.messageText.setText(chatModel.getMessage());
                 chatRightImageViewHolder.messageTime.setText(sfdImageRight.format(new Date(timeStampImageRight)));
-                Picasso.with(mContext).load(chatModel.getimageUrl()).resize(1080, 1080).into(chatRightImageViewHolder.sentImage);
+                Picasso.with(mContext)
+                        .load(chatModel.getimageUrl())
+                        .noFade()
+                        .networkPolicy(NetworkPolicy.OFFLINE)
+                        .into(chatRightImageViewHolder.sentImage, new Callback() {
+                            @Override
+                            public void onSuccess() {
+
+                            }
+
+                            @Override
+                            public void onError() {
+                                Picasso.with(mContext)
+                                        .load(chatModel.getimageUrl())
+                                        .noFade()
+                                        .into(chatRightImageViewHolder.sentImage);
+                            }
+                        });
                 break;
 
         }

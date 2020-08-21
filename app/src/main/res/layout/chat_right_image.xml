@@ -13,14 +13,15 @@
         android:layout_height="wrap_content"
         android:background="@drawable/chat_sender_bubble"
         android:orientation="vertical"
+        android:layout_marginTop="5dp"
         tools:ignore="UselessParent">
 
-        <ImageView
-            android:layout_marginTop="5dp"
+        <com.google.android.material.imageview.ShapeableImageView
+            android:scaleType="centerInside"
+            android:adjustViewBounds="true"
             android:id="@+id/sentImage"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:src="@drawable/iku_splash"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/message"
@@ -28,8 +29,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:layout_marginTop="5dp"
-            android:text="Let's get more eco-friendly"
             android:layout_marginRight="5dp"
+            android:text="Let's get more eco-friendly"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/white" />
 
@@ -39,9 +40,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:layout_marginLeft="8dp"
-            android:text="12:30 AM"
-            android:layout_marginBottom="5dp"
             android:layout_marginRight="8dp"
+            android:layout_marginBottom="5dp"
+            android:text="12:30 AM"
             android:textColor="@color/white"
             android:textSize="12sp" />
 
