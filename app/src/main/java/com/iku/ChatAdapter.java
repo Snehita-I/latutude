@@ -54,7 +54,7 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
                 chatLeftImageViewHolder.messageText.setText(chatModel.getMessage());
                 chatLeftImageViewHolder.messageTime.setText(sfdImageLeft.format(new Date(timeStampImageLeft)));
                 chatLeftImageViewHolder.senderName.setText(chatModel.getUserName());
-                Picasso.with(chatLeftImageViewHolder.receiverImage.getContext()).load("https://firebasestorage.googleapis.com/v0/b/iku-2020.appspot.com/o/images%2F1597843303202.jpg?alt=media&token=01b41d99-2491-4b06-8fa0-19e75c0f48b3").fit().centerInside().into(chatLeftImageViewHolder.receiverImage);
+                Picasso.with(mContext).load(chatModel.getimageUrl()).placeholder(R.drawable.iku).resize(1080,1080).into(chatLeftImageViewHolder.receiverImage);
                 break;
         }
     }
