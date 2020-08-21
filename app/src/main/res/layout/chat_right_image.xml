@@ -16,6 +16,7 @@
         tools:ignore="UselessParent">
 
         <ImageView
+            android:layout_marginTop="5dp"
             android:id="@+id/sentImage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -39,7 +40,6 @@
             android:layout_gravity="end"
             android:layout_marginLeft="8dp"
             android:text="12:30 AM"
-
             android:layout_marginBottom="5dp"
             android:layout_marginRight="8dp"
             android:textColor="@color/white"

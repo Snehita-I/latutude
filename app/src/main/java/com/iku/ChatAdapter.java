@@ -24,6 +24,18 @@ import java.util.Date;
 
 public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerView.ViewHolder> {
 
+
+    public static final int MSG_TYPE_LEFT = 0;
+    public static final int MSG_TYPE_RIGHT = 1;
+    public static final int MSG_TYPE_IMAGE_LEFT = 2;
+    public static final int MSG_TYPE_IMAGE_RIGHT = 3;
+
+    private ChatAdapter.OnItemClickListener listener;
+
+    private Context mContext;
+
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
     private String TAG = ChatAdapter.class.getSimpleName();
 
     @Override
@@ -54,8 +66,18 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
                 chatLeftImageViewHolder.messageText.setText(chatModel.getMessage());
                 chatLeftImageViewHolder.messageTime.setText(sfdImageLeft.format(new Date(timeStampImageLeft)));
                 chatLeftImageViewHolder.senderName.setText(chatModel.getUserName());
-                Picasso.with(mContext).load(chatModel.getimageUrl()).placeholder(R.drawable.iku).resize(1080,1080).into(chatLeftImageViewHolder.receiverImage);
+                Picasso.with(mContext).load(chatModel.getimageUrl()).placeholder(R.drawable.iku).resize(1080, 1080).into(chatLeftImageViewHolder.receiverImage);
                 break;
+            case MSG_TYPE_IMAGE_RIGHT:
+                ChatRightImageViewHolder chatRightImageViewHolder = (ChatRightImageViewHolder) viewHolder;
+                SimpleDateFormat sfdImageRight = new SimpleDateFormat("hh:mm a");
+                long timeStampImageRight = chatModel.getTimestamp();
+
+                chatRightImageViewHolder.messageText.setText(chatModel.getMessage());
+                chatRightImageViewHolder.messageTime.setText(sfdImageRight.format(new Date(timeStampImageRight)));
+                Picasso.with(mContext).load(chatModel.getimageUrl()).placeholder(R.drawable.iku).resize(1080, 1080).into(chatRightImageViewHolder.sentImage);
+                break;
+
         }
     }
 
@@ -109,6 +131,21 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
         }
     }
 
+    public class ChatRightImageViewHolder extends RecyclerView.ViewHolder {
+
+        private MaterialTextView messageText, messageTime;
+        private ImageView sentImage;
+
+        public ChatRightImageViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            messageText = itemView.findViewById(R.id.message);
+            messageTime = itemView.findViewById(R.id.message_time);
+            sentImage = itemView.findViewById(R.id.sentImage);
+
+        }
+    }
+
     public class ChatRightViewHolder extends RecyclerView.ViewHolder {
 
         private MaterialTextView messageText, messageTime;
@@ -121,18 +158,6 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
 
         }
     }
-
-
-    public static final int MSG_TYPE_LEFT = 0;
-    public static final int MSG_TYPE_RIGHT = 1;
-    public static final int MSG_TYPE_IMAGE_LEFT = 2;
-    public static final int MSG_TYPE_IMAGE_RIGHT = 3;
-
-    private ChatAdapter.OnItemClickListener listener;
-
-    private Context mContext;
-
-    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
     public interface OnItemClickListener {
         void onItemClick(DocumentSnapshot documentSnapshot, int position);
@@ -161,6 +186,9 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
         } else if (viewType == MSG_TYPE_IMAGE_LEFT) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_left_image, parent, false);
             return new ChatLeftImageViewHolder(view);
+        } else if (viewType == MSG_TYPE_IMAGE_RIGHT) {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_right_image, parent, false);
+            return new ChatRightImageViewHolder(view);
         } else
             return null;
     }
@@ -176,8 +204,8 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
         } else if (!getItem(position).getUID().equals(user.getUid()) && getItem(position).getType().equals("image")) {
             Log.i(TAG, "getItemViewType: " + getItem(position).getUID() + "\n" + getItem(position).getType() + "\n" + getItem(position).getimageUrl());
             return MSG_TYPE_IMAGE_LEFT;
-        }   // else if (getItem(position).getType().equals("image") && getItem(position).getimageUrl() != null && getItem(position).getUID().equals(user.getUid()))
-        //    return MSG_TYPE_IMAGE_RIGHT;
+        } else if (getItem(position).getType().equals("image") && getItem(position).getimageUrl() != null && getItem(position).getUID().equals(user.getUid()))
+            return MSG_TYPE_IMAGE_RIGHT;
         else
             return 0;
     }
