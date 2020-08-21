@@ -66,7 +66,7 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
                 chatLeftImageViewHolder.messageText.setText(chatModel.getMessage());
                 chatLeftImageViewHolder.messageTime.setText(sfdImageLeft.format(new Date(timeStampImageLeft)));
                 chatLeftImageViewHolder.senderName.setText(chatModel.getUserName());
-                Picasso.with(mContext).load(chatModel.getimageUrl()).placeholder(R.drawable.iku).resize(1080, 1080).into(chatLeftImageViewHolder.receiverImage);
+                Picasso.with(mContext).load(chatModel.getimageUrl()).resize(1080, 1080).into(chatLeftImageViewHolder.receiverImage);
                 break;
             case MSG_TYPE_IMAGE_RIGHT:
                 ChatRightImageViewHolder chatRightImageViewHolder = (ChatRightImageViewHolder) viewHolder;
@@ -75,7 +75,7 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
 
                 chatRightImageViewHolder.messageText.setText(chatModel.getMessage());
                 chatRightImageViewHolder.messageTime.setText(sfdImageRight.format(new Date(timeStampImageRight)));
-                Picasso.with(mContext).load(chatModel.getimageUrl()).placeholder(R.drawable.iku).resize(1080, 1080).into(chatRightImageViewHolder.sentImage);
+                Picasso.with(mContext).load(chatModel.getimageUrl()).resize(1080, 1080).into(chatRightImageViewHolder.sentImage);
                 break;
 
         }
