@@ -3,23 +3,15 @@ package com.iku;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.provider.OpenableColumns;
 import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
@@ -28,60 +20,64 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.facebook.appevents.codeless.internal.Constants;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
-import com.iku.models.ChatImageModel;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.util.Random;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ChatImageActivity extends AppCompatActivity {
 
     private FirebaseStorage mStorage;
     private StorageReference mStorageRef;
     private DatabaseReference mDatabaseRef;
-    Button choose, upload;
+    Button sendImageChatbtn;
     Uri mImageUri;
     Uri mainImageUri;
     ImageView image;
-    EditText imageName;
+    EditText messageEntered;
     private FirebaseFirestore firebaseFirestore;
     int PICK_IMAGE = 1;
+
+    private FirebaseAuth mAuth;
+
+    private FirebaseUser user;
+
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_image);
 
-        imageName = (EditText) findViewById(R.id.imageName);
+        messageEntered = (EditText) findViewById(R.id.imageName);
         mStorageRef = FirebaseStorage.getInstance().getReference("images");
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("images");
 
-        choose = (Button) findViewById(R.id.choose);
-        upload = (Button) findViewById(R.id.upload);
+        sendImageChatbtn = (Button) findViewById(R.id.sendImageChatButton);
         image = (ImageView) findViewById(R.id.imageView);
-        firebaseFirestore = FirebaseFirestore.getInstance();
-        choose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openFileChooser();
-            }
-        });
-        upload.setOnClickListener(new View.OnClickListener() {
+        db = FirebaseFirestore.getInstance();
+
+        mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
+
+        openFileChooser();
+
+        sendImageChatbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 try {
@@ -140,29 +136,49 @@ public class ChatImageActivity extends AppCompatActivity {
             if (imageSelected != null)
                 mainImageUri = getImageUri(this, imageSelected);
             if (mainImageUri != null) {
-                StorageReference fileReference = mStorageRef.child(System.currentTimeMillis()
-                        + "." + getFileExtension(mainImageUri));
-
-                StorageTask mUploadTask = fileReference.putFile(mImageUri)
-                        .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                final StorageReference imageRef = mStorageRef.child(System.currentTimeMillis() + "." + getFileExtension(mainImageUri));
+                UploadTask uploadTask = imageRef.putFile(mImageUri);
+                uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Task<Uri> downloadUrl = imageRef.getDownloadUrl();
+                        downloadUrl.addOnSuccessListener(new OnSuccessListener<Uri>() {
                             @Override
-                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            public void onSuccess(Uri uri) {
+                                Date d = new Date();
+                                long timestamp = d.getTime();
+                                Map<String, Object> docData = new HashMap<>();
+                                docData.put("message", messageEntered.getText().toString());
+                                docData.put("timestamp", timestamp);
+                                docData.put("uid", user.getUid());
+                                docData.put("type", "image");
 
-                                Toast.makeText(ChatImageActivity.this, "Upload successful", Toast.LENGTH_LONG).show();
-                                ChatImageModel chatImageModel = new ChatImageModel(
-                                        taskSnapshot.getMetadata().getReference().getDownloadUrl().toString(), imageName.getText().toString().trim());
-                                String uploadId = mDatabaseRef.push().getKey();
-                                mDatabaseRef.child(uploadId).setValue(chatImageModel);
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(ChatImageActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                docData.put("imageUrl", uri.toString());
+                                docData.put("userName", user.getDisplayName());
+
+                                db.collection("iku_earth_messages")
+                                        .add(docData)
+                                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                            @Override
+                                            public void onSuccess(DocumentReference documentReference) {
+                                                messageEntered.setText("");
+                                                Toast.makeText(ChatImageActivity.this, "Image info uploaded", Toast.LENGTH_LONG).show();
+                                                messageEntered.requestFocus();
+                                                ChatImageActivity.super.onBackPressed();
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+
+                                                Toast.makeText(ChatImageActivity.this, e.toString(), Toast.LENGTH_LONG).show();
+                                            }
+                                        });
                             }
                         });
+                    }
+                });
             }
-
 
         } else {
             Toast.makeText(this, "No file selected", Toast.LENGTH_LONG).show();

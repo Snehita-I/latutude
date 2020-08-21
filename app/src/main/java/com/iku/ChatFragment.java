@@ -169,7 +169,8 @@ public class ChatFragment extends Fragment {
         addImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                openFileChooser();
+                Intent goToImageSend = new Intent(getActivity(),ChatImageActivity.class);
+                startActivity(goToImageSend);
             }
         });
 

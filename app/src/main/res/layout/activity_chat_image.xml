@@ -7,22 +7,12 @@
     android:layout_height="match_parent">
 
     <Button
-        android:id="@+id/upload"
+        android:id="@+id/sendImageChatButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="224dp"
         android:layout_marginTop="532dp"
-        android:text="Upload"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/choose"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="52dp"
-        android:layout_marginTop="532dp"
-        android:text="Choose"
+        android:text="Send"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -43,7 +33,7 @@
         android:layout_marginStart="92dp"
         android:layout_marginTop="32dp"
         android:ems="10"
-        android:hint="Enter name of the image"
+        android:hint="Enter Message"
         android:inputType="textPersonName"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView" />
