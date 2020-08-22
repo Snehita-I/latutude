@@ -28,6 +28,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.iku.models.ChatModel;
+import com.iku.utils.ItemClickSupport;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -106,6 +107,17 @@ public class ChatFragment extends Fragment {
             }
         });
         mChatList.setAdapter(chatadapter);
+        ItemClickSupport.addTo(mChatList).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+            @Override
+            public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+                Log.d("ITEM CLICK", "Item single clicked " + chatadapter.getItem(position).getMessage());
+            }
+
+            @Override
+            public void onItemDoubleClicked(RecyclerView recyclerView, int position, View v) {
+                Log.d("ITEM CLICK", "Item double clicked " + chatadapter.getItem(position).getUserName());
+            }
+        });
 
         chatadapter.setOnItemClickListener(new ChatAdapter.OnItemClickListener() {
             @Override
