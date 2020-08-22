@@ -1,5 +1,7 @@
 package com.iku.models;
 
+import java.util.ArrayList;
+
 public class ChatModel {
 
     private String message;
@@ -11,10 +13,12 @@ public class ChatModel {
 
     private long timestamp;
 
+    private ArrayList<String> userUIDs;
+
     private ChatModel() {
     }
 
-    private ChatModel(String message, long timestamp, String UID, String userName, String type, int upvoteCount, String imageUrl) {
+    private ChatModel(String message, long timestamp, String UID, String userName, String type, int upvoteCount, String imageUrl, ArrayList<String> userUIDs) {
         this.message = message;
         this.UID = UID;
         this.timestamp = timestamp;
@@ -22,6 +26,7 @@ public class ChatModel {
         this.type = type;
         this.imageUrl = imageUrl;
         this.upvoteCount = upvoteCount;
+        this.userUIDs = userUIDs;
     }
 
     public String getMessage() {
@@ -79,5 +84,13 @@ public class ChatModel {
 
     public void setUpvoteCount(int upvoteCount) {
         this.upvoteCount = upvoteCount;
+    }
+
+    public ArrayList<String> getUserUIDs() {
+        return userUIDs;
+    }
+
+    public void setUserUIDs(ArrayList<String> userUIDs) {
+        this.userUIDs = userUIDs;
     }
 }

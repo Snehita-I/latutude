@@ -115,6 +115,7 @@ public class ChatFragment extends Fragment {
                 ChatModel chatModel = documentSnapshot.toObject(ChatModel.class);
                 String id = documentSnapshot.getId();
                 String name = chatModel.getUserName();
+                Log.i(TAG, "DOCUMENT ID: " + id);
                 if (name != null) {
                     userProfileIntent.putExtra("EXTRA_PERSON_NAME", name);
                     startActivity(userProfileIntent);
