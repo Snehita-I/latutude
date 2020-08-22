@@ -68,7 +68,7 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
                 chatLeftImageViewHolder.messageText.setText(chatModel.getMessage());
                 chatLeftImageViewHolder.messageTime.setText(sfdImageLeft.format(new Date(timeStampImageLeft)));
                 chatLeftImageViewHolder.senderName.setText(chatModel.getUserName());
-                Picasso.with(mContext)
+                Picasso.get()
                         .load(chatModel.getimageUrl())
                         .noFade()
                         .networkPolicy(NetworkPolicy.OFFLINE)
@@ -79,8 +79,8 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
                             }
 
                             @Override
-                            public void onError() {
-                                Picasso.with(mContext)
+                            public void onError(Exception e) {
+                                Picasso.get()
                                         .load(chatModel.getimageUrl())
                                         .noFade()
                                         .into(chatLeftImageViewHolder.receiverImage);
@@ -94,7 +94,7 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
 
                 chatRightImageViewHolder.messageText.setText(chatModel.getMessage());
                 chatRightImageViewHolder.messageTime.setText(sfdImageRight.format(new Date(timeStampImageRight)));
-                Picasso.with(mContext)
+                Picasso.get()
                         .load(chatModel.getimageUrl())
                         .noFade()
                         .networkPolicy(NetworkPolicy.OFFLINE)
@@ -105,8 +105,8 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
                             }
 
                             @Override
-                            public void onError() {
-                                Picasso.with(mContext)
+                            public void onError(Exception e) {
+                                Picasso.get()
                                         .load(chatModel.getimageUrl())
                                         .noFade()
                                         .into(chatRightImageViewHolder.sentImage);
