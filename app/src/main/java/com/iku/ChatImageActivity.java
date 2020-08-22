@@ -201,6 +201,7 @@ public class ChatImageActivity extends AppCompatActivity {
             Log.i("ap", "onActivityResult: " + mImageUri);
             Picasso.with(this).load(mImageUri).into(image);
             image.setImageURI(mImageUri);
-        }
+        } else
+            onBackPressed();
     }
 }

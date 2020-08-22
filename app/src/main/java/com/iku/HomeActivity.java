@@ -21,6 +21,7 @@ import com.iku.databinding.ActivityHomeBinding;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import nl.joery.animatedbottombar.AnimatedBottomBar;
@@ -85,8 +86,8 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 DocumentSnapshot document = task.getResult();
-                List<String> group = (List<String>) document.get("members");
-                Log.i(TAG, "onComplete: " + group.size() + group);
+                ArrayList<String> group = (ArrayList<String>) document.get("members");
+                Log.i(TAG, "Group size: " + group.size() + group);
                 homeBinding.memberCount.setText("ikulogists: " + group.size());
 
             }

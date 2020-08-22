@@ -59,51 +59,22 @@ public class ProfileFragment extends Fragment {
         userNameText = view.findViewById(R.id.userName);
         logoutButton = view.findViewById(R.id.logout_button);
 
-        /*GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getActivity().getApplicationContext());
-        if (account != null) {
-            String personName = account.getDisplayName();
-            String personGivenName = account.getGivenName();
-            String personFamilyName = account.getFamilyName();
-            String personEmail = account.getEmail();
-            String personID = account.getId();
-            Uri personPhoto = account.getPhotoUrl();
-
-            String originalPieceOfUrl = "s96-c";
-            String newPieceOfUrlToAdd = "s400-c";
-
-            String photoPath = personPhoto.toString();
-            String highRes = photoPath.replace(originalPieceOfUrl, newPieceOfUrlToAdd);
-
-            Log.e(TAG, "onCreateView: " + highRes);
-
-            userNameText.setText(personName);
-            Picasso.with(getActivity())
-                    .load(highRes)
-                    .noFade()
-                    .into(profilePicture);
-
-            Log.e(TAG, "\nAccount: " + account + "\nEmail: " + personEmail + "\nFamilyName: " + personFamilyName + "\nPhoto: " + personPhoto + "\nGiveName: " + personGivenName + "\nID: " + personID + "\nName: " + personName);
-
-        }*/
-
         if (user != null) {
             String originalPieceOfUrl = "s96-c";
             String newPieceOfUrlToAdd = "s800-c";
 
             String personName = user.getDisplayName();
-
-            Log.i(TAG, "onCreateView: " + personName + "\n");
-
             userNameText.setText(personName);
+            Log.i(TAG, "Person Name: " + personName + "\n");
 
             Uri photoUri = user.getPhotoUrl();
             if (photoUri != null) {
+
                 photoUrl = photoUri.toString();
 
                 photoUrl = photoUrl.replace(originalPieceOfUrl, newPieceOfUrlToAdd);
 
                 photoUrl = photoUrl + "?height=500";
-
 
                 Log.e(TAG, "\nUser: " + user + "\nPhoto: " + photoUrl + "\nGiveName: " + "\nName: " + personName);
 

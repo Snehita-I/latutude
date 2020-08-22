@@ -1,17 +1,13 @@
 package com.iku;
 
 import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.provider.OpenableColumns;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -39,8 +35,6 @@ import java.util.Map;
 
 import nl.joery.animatedbottombar.AnimatedBottomBar;
 
-import static android.app.Activity.RESULT_OK;
-
 
 /**
  * A simple {@link Fragment} subclass.
@@ -64,11 +58,8 @@ public class ChatFragment extends Fragment {
     private EditText messageBox;
     private ImageView sendButton, addImageButton;
 
-    private Uri mImageUri;
 
     private ChatAdapter chatadapter;
-
-    private int PICK_IMAGE = 123;
 
     public ChatFragment() {
         // Required empty public constructor
@@ -119,16 +110,16 @@ public class ChatFragment extends Fragment {
         chatadapter.setOnItemClickListener(new ChatAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(DocumentSnapshot documentSnapshot, int position) {
-                Intent userProfileIntent = new Intent(getContext(), UserPofileActivity.class);
+                Intent userProfileIntent = new Intent(getContext(), UserProfileActivity.class);
 
                 ChatModel chatModel = documentSnapshot.toObject(ChatModel.class);
                 String id = documentSnapshot.getId();
-                String path = documentSnapshot.getReference().getPath();
                 String name = chatModel.getUserName();
                 if (name != null) {
                     userProfileIntent.putExtra("EXTRA_PERSON_NAME", name);
                     startActivity(userProfileIntent);
-                }
+                } else
+                    return;
                 //Toast displaying the document id
 
                 Toast.makeText(getActivity(),
@@ -162,14 +153,21 @@ public class ChatFragment extends Fragment {
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sendTheMessage();
+                final String message = String.valueOf(messageBox.getText());
+                if (!message.isEmpty()) {
+                    sendTheMessage(message);
+                    messageBox.setText("");
+                    messageBox.requestFocus();
+                } else {
+                    Log.i(TAG, "No message entered!");
+                }
             }
         });
 
         addImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent goToImageSend = new Intent(getActivity(),ChatImageActivity.class);
+                Intent goToImageSend = new Intent(getActivity(), ChatImageActivity.class);
                 startActivity(goToImageSend);
             }
         });
@@ -178,75 +176,35 @@ public class ChatFragment extends Fragment {
     }
 
 
-    private void sendTheMessage() {
-        final String message = String.valueOf(messageBox.getText());
+    private void sendTheMessage(String message) {
         Date d = new Date();
         long timestamp = d.getTime();
         Log.i(TAG, "onClick: " + message + "\n TIME:" + timestamp);
-        Map<String, Object> docData = new HashMap<>();
-        docData.put("message", message);
-        docData.put("timestamp", timestamp);
-        docData.put("uid", user.getUid());
-        docData.put("type", "text");
-        docData.put("userName", user.getDisplayName());
+        if (user != null) {
+            Map<String, Object> docData = new HashMap<>();
+            docData.put("message", message);
+            docData.put("timestamp", timestamp);
+            docData.put("uid", user.getUid());
+            docData.put("type", "text");
+            docData.put("userName", user.getDisplayName());
 
-        db.collection("iku_earth_messages")
-                .add(docData)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
-                        messageBox.setText("");
-                        messageBox.requestFocus();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error adding document", e);
-                    }
-                });
-    }
-
-
-    private void openFileChooser() {
-        Intent i = new Intent();
-        i.setType("image/*");
-        i.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(i, PICK_IMAGE);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_IMAGE && resultCode == RESULT_OK
-                && data != null && data.getData() != null) {
-            mImageUri = data.getData();
-            Log.i(TAG, "onActivityResult: " + mImageUri + "\nFilename" + getFileName(mImageUri));
-
+            db.collection("iku_earth_messages")
+                    .add(docData)
+                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                        @Override
+                        public void onSuccess(DocumentReference documentReference) {
+                            Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w(TAG, "Error adding document", e);
+                        }
+                    });
+        }
+        else {
+            Log.i(TAG, "sendTheMessage: No user login ");
         }
     }
-
-    public String getFileName(Uri uri) {
-        String result = null;
-        if (uri.getScheme().equals("content")) {
-            Cursor cursor = getActivity().getApplicationContext().getContentResolver().query(uri, null, null, null, null);
-            try {
-                if (cursor != null && cursor.moveToFirst()) {
-                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
-                }
-            } finally {
-                cursor.close();
-            }
-        }
-        if (result == null) {
-            result = uri.getPath();
-            int cut = result.lastIndexOf('/');
-            if (cut != -1) {
-                result = result.substring(cut + 1);
-            }
-        }
-        return result;
-    }
-
 }

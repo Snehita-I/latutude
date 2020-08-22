@@ -7,18 +7,21 @@ public class ChatModel {
 
     private String userName, type, imageUrl;
 
+    private int upvoteCount;
+
     private long timestamp;
 
     private ChatModel() {
     }
 
-    private ChatModel(String message, long timestamp, String UID, String userName, String type, String imageUrl) {
+    private ChatModel(String message, long timestamp, String UID, String userName, String type, int upvoteCount, String imageUrl) {
         this.message = message;
         this.UID = UID;
         this.timestamp = timestamp;
         this.userName = userName;
         this.type = type;
         this.imageUrl = imageUrl;
+        this.upvoteCount = upvoteCount;
     }
 
     public String getMessage() {
@@ -68,5 +71,13 @@ public class ChatModel {
 
     public void setimageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public int getUpvoteCount() {
+        return upvoteCount;
+    }
+
+    public void setUpvoteCount(int upvoteCount) {
+        this.upvoteCount = upvoteCount;
     }
 }

@@ -211,7 +211,7 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = null;
+        View view;
 
         if (viewType == MSG_TYPE_RIGHT) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_right, parent, false);

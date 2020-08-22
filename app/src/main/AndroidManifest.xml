@@ -43,7 +43,7 @@
         </service>
 
 
-        <activity android:name=".UserPofileActivity" />
+        <activity android:name=".UserProfileActivity" />
         <activity android:name=".ChatImageActivity" />
         <activity android:name=".LeaderboardActivity" />
 

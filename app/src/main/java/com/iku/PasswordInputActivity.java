@@ -46,7 +46,7 @@ public class PasswordInputActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                if (TextUtils.isEmpty(binding.enterPassword.getText().toString())) {
+                if (binding.enterPassword.getText().toString().isEmpty()) {
                     Toast.makeText(PasswordInputActivity.this, "Please enter your password", Toast.LENGTH_SHORT).show();
                     return;
                 }
