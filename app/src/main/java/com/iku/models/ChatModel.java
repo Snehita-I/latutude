@@ -13,12 +13,12 @@ public class ChatModel {
 
     private long timestamp;
 
-    private ArrayList<String> userUIDs;
+    private ArrayList<String> upvoters;
 
     private ChatModel() {
     }
 
-    private ChatModel(String message, long timestamp, String UID, String userName, String type, int upvoteCount, String imageUrl, ArrayList<String> userUIDs) {
+    private ChatModel(String message, long timestamp, String UID, String userName, String type, int upvoteCount, String imageUrl, ArrayList<String> upvoters) {
         this.message = message;
         this.UID = UID;
         this.timestamp = timestamp;
@@ -26,7 +26,7 @@ public class ChatModel {
         this.type = type;
         this.imageUrl = imageUrl;
         this.upvoteCount = upvoteCount;
-        this.userUIDs = userUIDs;
+        this.upvoters = upvoters;
     }
 
     public String getMessage() {
@@ -86,11 +86,13 @@ public class ChatModel {
         this.upvoteCount = upvoteCount;
     }
 
-    public ArrayList<String> getUserUIDs() {
-        return userUIDs;
+
+    public ArrayList<String> getupvoters() {
+        return upvoters;
     }
 
-    public void setUserUIDs(ArrayList<String> userUIDs) {
-        this.userUIDs = userUIDs;
+    public void setupvoters(ArrayList<String> upvoters) {
+        this.upvoters = upvoters;
     }
+
 }

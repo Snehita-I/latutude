@@ -36,6 +36,8 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
 
     private Context mContext;
 
+    private SimpleDateFormat sfd = new SimpleDateFormat("hh:mm a");
+
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
     private String TAG = ChatAdapter.class.getSimpleName();
@@ -45,30 +47,27 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
         switch (viewHolder.getItemViewType()) {
             case MSG_TYPE_LEFT:
                 ChatLeftViewHolder chatLeftViewHolder = (ChatLeftViewHolder) viewHolder;
-                SimpleDateFormat sfdLeft = new SimpleDateFormat("hh:mm a");
                 long timeStampLeft = chatModel.getTimestamp();
 
                 chatLeftViewHolder.messageText.setText(chatModel.getMessage());
-                chatLeftViewHolder.messageTime.setText(sfdLeft.format(new Date(timeStampLeft)));
+                chatLeftViewHolder.messageTime.setText(sfd.format(new Date(timeStampLeft)));
                 chatLeftViewHolder.senderName.setText(chatModel.getUserName());
                 chatLeftViewHolder.upvoteCount.setText(String.valueOf(chatModel.getUpvoteCount()));
                 break;
             case MSG_TYPE_RIGHT:
                 ChatRightViewHolder chatRightViewHolder = (ChatRightViewHolder) viewHolder;
-                SimpleDateFormat sfdRight = new SimpleDateFormat("hh:mm a");
                 long timeStampRight = chatModel.getTimestamp();
 
                 chatRightViewHolder.messageText.setText(chatModel.getMessage());
-                chatRightViewHolder.messageTime.setText(sfdRight.format(new Date(timeStampRight)));
+                chatRightViewHolder.messageTime.setText(sfd.format(new Date(timeStampRight)));
                 chatRightViewHolder.upvoteCount.setText(String.valueOf(chatModel.getUpvoteCount()));
                 break;
             case MSG_TYPE_IMAGE_LEFT:
                 final ChatLeftImageViewHolder chatLeftImageViewHolder = (ChatLeftImageViewHolder) viewHolder;
-                SimpleDateFormat sfdImageLeft = new SimpleDateFormat("hh:mm a");
                 long timeStampImageLeft = chatModel.getTimestamp();
 
                 chatLeftImageViewHolder.messageText.setText(chatModel.getMessage());
-                chatLeftImageViewHolder.messageTime.setText(sfdImageLeft.format(new Date(timeStampImageLeft)));
+                chatLeftImageViewHolder.messageTime.setText(sfd.format(new Date(timeStampImageLeft)));
                 chatLeftImageViewHolder.senderName.setText(chatModel.getUserName());
                 chatLeftImageViewHolder.upvoteCount.setText(String.valueOf(chatModel.getUpvoteCount()));
                 Picasso.get()
@@ -92,11 +91,10 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
                 break;
             case MSG_TYPE_IMAGE_RIGHT:
                 final ChatRightImageViewHolder chatRightImageViewHolder = (ChatRightImageViewHolder) viewHolder;
-                SimpleDateFormat sfdImageRight = new SimpleDateFormat("hh:mm a");
                 long timeStampImageRight = chatModel.getTimestamp();
 
                 chatRightImageViewHolder.messageText.setText(chatModel.getMessage());
-                chatRightImageViewHolder.messageTime.setText(sfdImageRight.format(new Date(timeStampImageRight)));
+                chatRightImageViewHolder.messageTime.setText(sfd.format(new Date(timeStampImageRight)));
                 chatRightImageViewHolder.upvoteCount.setText(String.valueOf(chatModel.getUpvoteCount()));
                 Picasso.get()
                         .load(chatModel.getimageUrl())
@@ -123,7 +121,7 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
 
     public class ChatLeftViewHolder extends RecyclerView.ViewHolder {
 
-        private MaterialTextView messageText, messageTime, senderName,upvoteCount;
+        private MaterialTextView messageText, messageTime, senderName, upvoteCount;
 
         public ChatLeftViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -148,7 +146,7 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
 
     public class ChatLeftImageViewHolder extends RecyclerView.ViewHolder {
 
-        private MaterialTextView messageText, messageTime, senderName,upvoteCount;
+        private MaterialTextView messageText, messageTime, senderName, upvoteCount;
         private ImageView receiverImage;
 
         public ChatLeftImageViewHolder(@NonNull View itemView) {
@@ -175,7 +173,7 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
 
     public class ChatRightImageViewHolder extends RecyclerView.ViewHolder {
 
-        private MaterialTextView messageText, messageTime,upvoteCount;
+        private MaterialTextView messageText, messageTime, upvoteCount;
         private ImageView sentImage;
 
         public ChatRightImageViewHolder(@NonNull View itemView) {
@@ -191,7 +189,7 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
 
     public class ChatRightViewHolder extends RecyclerView.ViewHolder {
 
-        private MaterialTextView messageText, messageTime,upvoteCount;
+        private MaterialTextView messageText, messageTime, upvoteCount;
 
         public ChatRightViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -240,13 +238,10 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
     @Override
     public int getItemViewType(int position) {
         if (getItem(position).getUID().equals(user.getUid()) && getItem(position).getType().equals("text")) {
-            Log.i(TAG, "getItemViewType: " + getItem(position).getUID() + "\n" + getItem(position).getType());
             return MSG_TYPE_RIGHT;
         } else if (!getItem(position).getUID().equals(user.getUid()) && getItem(position).getType().equals("text")) {
-            Log.i(TAG, "getItemViewType: " + getItem(position).getUID() + "\n" + getItem(position).getType());
             return MSG_TYPE_LEFT;
         } else if (!getItem(position).getUID().equals(user.getUid()) && getItem(position).getType().equals("image")) {
-            Log.i(TAG, "getItemViewType: " + getItem(position).getUID() + "\n" + getItem(position).getType() + "\n" + getItem(position).getimageUrl());
             return MSG_TYPE_IMAGE_LEFT;
         } else if (getItem(position).getType().equals("image") && getItem(position).getimageUrl() != null && getItem(position).getUID().equals(user.getUid()))
             return MSG_TYPE_IMAGE_RIGHT;

@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -20,18 +21,23 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.iku.databinding.FragmentChatBinding;
 import com.iku.models.ChatModel;
+import com.iku.models.LeaderboardModel;
 import com.iku.utils.ItemClickSupport;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -47,8 +53,6 @@ public class ChatFragment extends Fragment {
     private static final String TAG = ChatFragment.class.getSimpleName();
 
     private RecyclerView mChatList;
-
-    private FirebaseFirestore firebaseFirestore;
 
     private AnimatedBottomBar animatedBottomBar;
 
@@ -76,7 +80,7 @@ public class ChatFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        binding = FragmentChatBinding.inflate(inflater,container,false);
+        binding = FragmentChatBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
 
         db = FirebaseFirestore.getInstance();
@@ -92,9 +96,7 @@ public class ChatFragment extends Fragment {
 
         animatedBottomBar = getActivity().findViewById(R.id.animatedBottomBar);
 
-        firebaseFirestore = FirebaseFirestore.getInstance();
-
-        Query query = firebaseFirestore.collection("iku_earth_messages").orderBy("timestamp", Query.Direction.DESCENDING);
+        Query query = db.collection("iku_earth_messages").orderBy("timestamp", Query.Direction.DESCENDING);
 
         FirestoreRecyclerOptions<ChatModel> options = new FirestoreRecyclerOptions.Builder<ChatModel>()
                 .setQuery(query, ChatModel.class)
@@ -102,6 +104,7 @@ public class ChatFragment extends Fragment {
 
         mChatList.setHasFixedSize(true);
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        ((SimpleItemAnimator) mChatList.getItemAnimator()).setSupportsChangeAnimations(false);
         linearLayoutManager.setReverseLayout(true);
         mChatList.setLayoutManager(linearLayoutManager);
 
@@ -120,12 +123,65 @@ public class ChatFragment extends Fragment {
             }
 
             @Override
-            public void onItemDoubleClicked(RecyclerView recyclerView, int position, View v) {
+            public void onItemDoubleClicked(RecyclerView recyclerView, final int position, View v) {
                 int upvotesCount = chatadapter.getItem(position).getUpvoteCount();
-                Log.i(TAG, "onItemDoubleClicked: UPVOTES = " + upvotesCount);
-                if (upvotesCount > 0) {
-                    v.findViewById(R.id.upvotesLayout).setVisibility(View.GONE);
-                    chatadapter.notifyItemChanged(position);
+                ArrayList<String> upvotersList = chatadapter.getItem(position).getupvoters();
+                if (user != null) {
+                    String myUID = user.getUid();
+                    Log.i(TAG, "onItemDoubleClicked: UPVOTECOUNT" + upvotesCount + "\nMY UID: " + myUID + "\nALL UPVOTERS: " + upvotersList);
+                    if (upvotesCount > 0) {
+                        boolean isLiked = true;
+                        for (String element : upvotersList) {
+                            if (!element.contains(myUID)) {
+                                isLiked = false;
+                                break;
+                            }
+                        }
+                        if (isLiked) {
+                            DocumentSnapshot snapshot = chatadapter.getSnapshots().getSnapshot(position);
+                            String documentID = snapshot.getId();
+                            Log.i(TAG, "Document ID" + documentID);
+                            db.collection("iku_earth_messages").document(documentID)
+                                    .update("upvoteCount", chatadapter.getItem(position).getUpvoteCount() + 1,
+                                            "upvoters", FieldValue.arrayUnion(user.getUid()))
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            db.collection("users").document(chatadapter.getItem(position).getUID())
+                                                    .get()
+                                                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                                        @Override
+                                                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                                            final LeaderboardModel usersData = documentSnapshot.toObject(LeaderboardModel.class);
+                                                            db.collection("users").document(chatadapter.getItem(position).getUID())
+                                                                    .update("points", usersData.getPoints() + 1)
+                                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                        @Override
+                                                                        public void onSuccess(Void aVoid) {
+                                                                            Log.i(TAG, "INCREMENTED USER POINT " + usersData.getPoints() + 1);
+                                                                        }
+                                                                    })
+                                                                    .addOnFailureListener(new OnFailureListener() {
+                                                                        @Override
+                                                                        public void onFailure(@NonNull Exception e) {
+
+                                                                        }
+                                                                    });
+                                                        }
+                                                    });
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+
+                                        }
+                                    });
+                        }
+                    } else if (upvotesCount == 0) {
+                        v.findViewById(R.id.upvotesLayout).setVisibility(View.GONE);
+                        chatadapter.notifyItemChanged(position);
+                    }
                 }
             }
         });

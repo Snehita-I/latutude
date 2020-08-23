@@ -102,6 +102,7 @@ public class NameInputActivity extends AppCompatActivity {
                         userInfo.put("lastName", lastName);
                         userInfo.put("email", email);
                         userInfo.put("registrationToken", token);
+                        userInfo.put("points", 0);
 
                         final String userID = fAuth.getUid();
 
