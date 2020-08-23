@@ -51,6 +51,7 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
                 chatLeftViewHolder.messageText.setText(chatModel.getMessage());
                 chatLeftViewHolder.messageTime.setText(sfdLeft.format(new Date(timeStampLeft)));
                 chatLeftViewHolder.senderName.setText(chatModel.getUserName());
+                chatLeftViewHolder.upvoteCount.setText(String.valueOf(chatModel.getUpvoteCount()));
                 break;
             case MSG_TYPE_RIGHT:
                 ChatRightViewHolder chatRightViewHolder = (ChatRightViewHolder) viewHolder;
@@ -59,6 +60,7 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
 
                 chatRightViewHolder.messageText.setText(chatModel.getMessage());
                 chatRightViewHolder.messageTime.setText(sfdRight.format(new Date(timeStampRight)));
+                chatRightViewHolder.upvoteCount.setText(String.valueOf(chatModel.getUpvoteCount()));
                 break;
             case MSG_TYPE_IMAGE_LEFT:
                 final ChatLeftImageViewHolder chatLeftImageViewHolder = (ChatLeftImageViewHolder) viewHolder;
@@ -68,6 +70,7 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
                 chatLeftImageViewHolder.messageText.setText(chatModel.getMessage());
                 chatLeftImageViewHolder.messageTime.setText(sfdImageLeft.format(new Date(timeStampImageLeft)));
                 chatLeftImageViewHolder.senderName.setText(chatModel.getUserName());
+                chatLeftImageViewHolder.upvoteCount.setText(String.valueOf(chatModel.getUpvoteCount()));
                 Picasso.get()
                         .load(chatModel.getimageUrl())
                         .noFade()
@@ -94,6 +97,7 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
 
                 chatRightImageViewHolder.messageText.setText(chatModel.getMessage());
                 chatRightImageViewHolder.messageTime.setText(sfdImageRight.format(new Date(timeStampImageRight)));
+                chatRightImageViewHolder.upvoteCount.setText(String.valueOf(chatModel.getUpvoteCount()));
                 Picasso.get()
                         .load(chatModel.getimageUrl())
                         .noFade()
@@ -119,7 +123,7 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
 
     public class ChatLeftViewHolder extends RecyclerView.ViewHolder {
 
-        private MaterialTextView messageText, messageTime, senderName;
+        private MaterialTextView messageText, messageTime, senderName,upvoteCount;
 
         public ChatLeftViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -127,6 +131,7 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
             messageText = itemView.findViewById(R.id.message);
             messageTime = itemView.findViewById(R.id.message_time);
             senderName = itemView.findViewById(R.id.sendername);
+            upvoteCount = itemView.findViewById(R.id.upvoteCount);
 
             senderName.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -143,7 +148,7 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
 
     public class ChatLeftImageViewHolder extends RecyclerView.ViewHolder {
 
-        private MaterialTextView messageText, messageTime, senderName;
+        private MaterialTextView messageText, messageTime, senderName,upvoteCount;
         private ImageView receiverImage;
 
         public ChatLeftImageViewHolder(@NonNull View itemView) {
@@ -153,6 +158,7 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
             messageTime = itemView.findViewById(R.id.message_time);
             senderName = itemView.findViewById(R.id.sendername);
             receiverImage = itemView.findViewById(R.id.receivedImage);
+            upvoteCount = itemView.findViewById(R.id.upvoteCount);
 
             senderName.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -169,7 +175,7 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
 
     public class ChatRightImageViewHolder extends RecyclerView.ViewHolder {
 
-        private MaterialTextView messageText, messageTime;
+        private MaterialTextView messageText, messageTime,upvoteCount;
         private ImageView sentImage;
 
         public ChatRightImageViewHolder(@NonNull View itemView) {
@@ -178,19 +184,21 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
             messageText = itemView.findViewById(R.id.message);
             messageTime = itemView.findViewById(R.id.message_time);
             sentImage = itemView.findViewById(R.id.sentImage);
+            upvoteCount = itemView.findViewById(R.id.upvoteCount);
 
         }
     }
 
     public class ChatRightViewHolder extends RecyclerView.ViewHolder {
 
-        private MaterialTextView messageText, messageTime;
+        private MaterialTextView messageText, messageTime,upvoteCount;
 
         public ChatRightViewHolder(@NonNull View itemView) {
             super(itemView);
 
             messageText = itemView.findViewById(R.id.message);
             messageTime = itemView.findViewById(R.id.message_time);
+            upvoteCount = itemView.findViewById(R.id.upvoteCount);
 
         }
     }

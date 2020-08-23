@@ -78,7 +78,7 @@ public class ProfileFragment extends Fragment {
 
                 Log.e(TAG, "\nUser: " + user + "\nPhoto: " + photoUrl + "\nGiveName: " + "\nName: " + personName);
 
-                Picasso.with(getActivity())
+                Picasso.get()
                         .load(photoUrl)
                         .noFade()
                         .networkPolicy(NetworkPolicy.OFFLINE)
@@ -90,9 +90,9 @@ public class ProfileFragment extends Fragment {
                             }
 
                             @Override
-                            public void onError() {
+                            public void onError(Exception e) {
                                 Log.i(TAG, "PICASSO Error ");
-                                Picasso.with(getActivity())
+                                Picasso.get()
                                         .load(photoUrl)
                                         .noFade()
                                         .into(profilePicture);

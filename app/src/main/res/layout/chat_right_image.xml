@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/chat_sender_bubble"
         android:orientation="vertical"
-        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
         tools:ignore="UselessParent">
 
         <com.google.android.material.imageview.ShapeableImageView
@@ -45,6 +45,28 @@
             android:text="12:30 AM"
             android:textColor="@color/white"
             android:textSize="12sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/upvotesLayout"
+        android:layout_width="wrap_content"
+        android:layout_marginRight="8dp"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/heartImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_heart" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/upvoteCount"
+            android:layout_width="wrap_content"
+            android:layout_marginLeft="2dp"
+            android:layout_height="wrap_content"
+            android:text="58"/>
 
     </LinearLayout>
 

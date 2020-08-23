@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -27,6 +28,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.iku.databinding.FragmentChatBinding;
 import com.iku.models.ChatModel;
 import com.iku.utils.ItemClickSupport;
 
@@ -56,9 +58,12 @@ public class ChatFragment extends Fragment {
 
     private FirebaseFirestore db;
 
+    private LinearLayout upvoterLayout;
+
     private EditText messageBox;
     private ImageView sendButton, addImageButton;
 
+    private FragmentChatBinding binding;
 
     private ChatAdapter chatadapter;
 
@@ -71,7 +76,8 @@ public class ChatFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_chat, container, false);
+        binding = FragmentChatBinding.inflate(inflater,container,false);
+        View view = binding.getRoot();
 
         db = FirebaseFirestore.getInstance();
 
@@ -82,6 +88,7 @@ public class ChatFragment extends Fragment {
         sendButton = view.findViewById(R.id.sendMessageButton);
         mChatList = view.findViewById(R.id.chatRecyclerView);
         addImageButton = view.findViewById(R.id.choose);
+        upvoterLayout = view.findViewById(R.id.upvotesLayout);
 
         animatedBottomBar = getActivity().findViewById(R.id.animatedBottomBar);
 
@@ -110,12 +117,16 @@ public class ChatFragment extends Fragment {
         ItemClickSupport.addTo(mChatList).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
             @Override
             public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-                Log.d("ITEM CLICK", "Item single clicked " + chatadapter.getItem(position).getMessage());
             }
 
             @Override
             public void onItemDoubleClicked(RecyclerView recyclerView, int position, View v) {
-                Log.d("ITEM CLICK", "Item double clicked " + chatadapter.getItem(position).getUserName());
+                int upvotesCount = chatadapter.getItem(position).getUpvoteCount();
+                Log.i(TAG, "onItemDoubleClicked: UPVOTES = " + upvotesCount);
+                if (upvotesCount > 0) {
+                    v.findViewById(R.id.upvotesLayout).setVisibility(View.GONE);
+                    chatadapter.notifyItemChanged(position);
+                }
             }
         });
 
@@ -215,9 +226,15 @@ public class ChatFragment extends Fragment {
                             Log.w(TAG, "Error adding document", e);
                         }
                     });
-        }
-        else {
+        } else {
             Log.i(TAG, "sendTheMessage: No user login ");
         }
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
+
 }
