@@ -22,7 +22,6 @@ import com.iku.databinding.ActivityHomeBinding;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import nl.joery.animatedbottombar.AnimatedBottomBar;
 
@@ -39,14 +38,6 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         homeBinding = ActivityHomeBinding.inflate(getLayoutInflater());
         setContentView(homeBinding.getRoot());
-
-        homeBinding.groupIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent goToLeaderboard = new Intent(HomeActivity.this, LeaderboardActivity.class);
-                startActivity(goToLeaderboard);
-            }
-        });
 
         if (savedInstanceState == null) {
             homeBinding.animatedBottomBar.selectTabById(R.id.chat, true);
@@ -81,19 +72,5 @@ public class HomeActivity extends AppCompatActivity {
                 }
             }
         });
-
-        FirebaseFirestore.getInstance().collection("groups").document("iku_earth").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                DocumentSnapshot document = task.getResult();
-                ArrayList<String> group = (ArrayList<String>) document.get("members");
-                Log.i(TAG, "Group size: " + group.size() + group);
-                homeBinding.memberCount.setText("ikulogists: " + group.size());
-
-            }
-        });
-
-
-
     }
 }

@@ -73,10 +73,10 @@ public class LeaderboardActivity extends AppCompatActivity {
                                 Log.i("Query", document.getId() + " => " + document.getString("firstName") +
                                         document.getString("lastName"));
                                 totalPlayers++;
-                                Long l=(Long)document.get("points");
-                                Log.i("l",Long.toString(l));
+                                Long userPoints=(Long)document.get("points");
+                                Log.i("l",Long.toString(userPoints));
                                 int i;
-                                i = l.intValue();
+                                i = userPoints.intValue();
                                 totalHearts+=i;
                             }
                             Log.i("Total players",Integer.toString(totalPlayers));

@@ -5,12 +5,65 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/topAppBar"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:background="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Profile"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="@+id/topAppBar"
+                app:layout_constraintEnd_toEndOf="@+id/topAppBar"
+                app:layout_constraintStart_toStartOf="@+id/topAppBar"
+                app:layout_constraintTop_toTopOf="@+id/topAppBar"
+                tools:layout_editor_absoluteX="152dp"
+                tools:layout_editor_absoluteY="16dp" />
+
+            <ImageView
+                android:id="@+id/settingsButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="371dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                android:src="@drawable/ic_settings_24"
+                app:layout_constraintBottom_toBottomOf="@+id/topAppBar"
+                app:layout_constraintEnd_toEndOf="@+id/topAppBar"
+                app:layout_constraintStart_toStartOf="@+id/topAppBar"
+                app:layout_constraintTop_toTopOf="@+id/topAppBar" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profileImage"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:layout_marginTop="70dp"
-        android:layout_centerHorizontal="true"/>
+        android:layout_below="@id/appBar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/userName"
@@ -28,9 +81,9 @@
         android:layout_below="@+id/userName"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center"
+        android:layout_marginTop="70dp"
         android:backgroundTint="@color/white"
         android:elevation="4dp"
-        android:layout_marginTop="70dp"
         android:text="Log out"
         android:textColor="#66B2B2"
         app:strokeColor="#66B2B2"

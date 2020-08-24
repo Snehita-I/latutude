@@ -21,6 +21,8 @@ import com.google.android.material.textview.MaterialTextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.iku.databinding.FragmentChatBinding;
+import com.iku.databinding.FragmentProfileBinding;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
@@ -39,6 +41,8 @@ public class ProfileFragment extends Fragment {
 
     private String photoUrl;
 
+    private FragmentProfileBinding profileBinding;
+
     private static final String TAG = ProfileFragment.class.getSimpleName();
 
     public ProfileFragment() {
@@ -50,7 +54,8 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_profile, container, false);
+        profileBinding = FragmentProfileBinding.inflate(inflater, container, false);
+        View view = profileBinding.getRoot();
 
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
@@ -126,6 +131,20 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+        profileBinding.settingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent goToSettingsPage = new Intent(getActivity(), SettingsActivity.class);
+                startActivity(goToSettingsPage);
+            }
+        });
+
         return view;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        profileBinding = null;
     }
 }

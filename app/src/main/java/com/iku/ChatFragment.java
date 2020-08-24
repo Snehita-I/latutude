@@ -89,6 +89,25 @@ public class ChatFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
 
+        binding.groupIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent goToLeaderboard = new Intent(getActivity(), LeaderboardActivity.class);
+                startActivity(goToLeaderboard);
+            }
+        });
+
+        FirebaseFirestore.getInstance().collection("groups").document("iku_earth").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                DocumentSnapshot document = task.getResult();
+                ArrayList<String> group = (ArrayList<String>) document.get("members");
+                Log.i(TAG, "Group size: " + group.size() + group);
+                binding.memberCount.setText("ikulogists: " + group.size());
+
+            }
+        });
+
         messageBox = view.findViewById(R.id.messageTextField);
         sendButton = view.findViewById(R.id.sendMessageButton);
         mChatList = view.findViewById(R.id.chatRecyclerView);
