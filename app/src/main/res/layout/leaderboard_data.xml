@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/firstname"
         android:layout_width="350dp"
         android:layout_height="43dp"
@@ -13,7 +13,7 @@
         android:textColor="@android:color/black"
         android:textSize="18dp" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/pointsText"
         android:layout_width="50dp"
         android:layout_height="50dp"

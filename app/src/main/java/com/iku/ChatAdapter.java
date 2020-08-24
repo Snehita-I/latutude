@@ -45,6 +45,7 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
     @Override
     protected void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i, @NonNull final ChatModel chatModel) {
         switch (viewHolder.getItemViewType()) {
+
             case MSG_TYPE_LEFT:
                 ChatLeftViewHolder chatLeftViewHolder = (ChatLeftViewHolder) viewHolder;
                 long timeStampLeft = chatModel.getTimestamp();
@@ -52,16 +53,26 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
                 chatLeftViewHolder.messageText.setText(chatModel.getMessage());
                 chatLeftViewHolder.messageTime.setText(sfd.format(new Date(timeStampLeft)));
                 chatLeftViewHolder.senderName.setText(chatModel.getUserName());
+                if (chatModel.getUpvoteCount() == 0) {
+                    chatLeftViewHolder.itemView.findViewById(R.id.upvotesLayout).setVisibility(View.GONE);
+                } else
+                    chatLeftViewHolder.itemView.findViewById(R.id.upvotesLayout).setVisibility(View.VISIBLE);
                 chatLeftViewHolder.upvoteCount.setText(String.valueOf(chatModel.getUpvoteCount()));
                 break;
+
             case MSG_TYPE_RIGHT:
                 ChatRightViewHolder chatRightViewHolder = (ChatRightViewHolder) viewHolder;
                 long timeStampRight = chatModel.getTimestamp();
 
                 chatRightViewHolder.messageText.setText(chatModel.getMessage());
                 chatRightViewHolder.messageTime.setText(sfd.format(new Date(timeStampRight)));
+                if (chatModel.getUpvoteCount() == 0) {
+                    chatRightViewHolder.itemView.findViewById(R.id.upvotesLayout).setVisibility(View.GONE);
+                } else
+                    chatRightViewHolder.itemView.findViewById(R.id.upvotesLayout).setVisibility(View.VISIBLE);
                 chatRightViewHolder.upvoteCount.setText(String.valueOf(chatModel.getUpvoteCount()));
                 break;
+
             case MSG_TYPE_IMAGE_LEFT:
                 final ChatLeftImageViewHolder chatLeftImageViewHolder = (ChatLeftImageViewHolder) viewHolder;
                 long timeStampImageLeft = chatModel.getTimestamp();
@@ -69,6 +80,10 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
                 chatLeftImageViewHolder.messageText.setText(chatModel.getMessage());
                 chatLeftImageViewHolder.messageTime.setText(sfd.format(new Date(timeStampImageLeft)));
                 chatLeftImageViewHolder.senderName.setText(chatModel.getUserName());
+                if (chatModel.getUpvoteCount() == 0) {
+                    chatLeftImageViewHolder.itemView.findViewById(R.id.upvotesLayout).setVisibility(View.GONE);
+                } else
+                    chatLeftImageViewHolder.itemView.findViewById(R.id.upvotesLayout).setVisibility(View.VISIBLE);
                 chatLeftImageViewHolder.upvoteCount.setText(String.valueOf(chatModel.getUpvoteCount()));
                 Picasso.get()
                         .load(chatModel.getimageUrl())
@@ -89,12 +104,17 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
                             }
                         });
                 break;
+
             case MSG_TYPE_IMAGE_RIGHT:
                 final ChatRightImageViewHolder chatRightImageViewHolder = (ChatRightImageViewHolder) viewHolder;
                 long timeStampImageRight = chatModel.getTimestamp();
 
                 chatRightImageViewHolder.messageText.setText(chatModel.getMessage());
                 chatRightImageViewHolder.messageTime.setText(sfd.format(new Date(timeStampImageRight)));
+                if (chatModel.getUpvoteCount() == 0) {
+                    chatRightImageViewHolder.itemView.findViewById(R.id.upvotesLayout).setVisibility(View.GONE);
+                } else
+                    chatRightImageViewHolder.itemView.findViewById(R.id.upvotesLayout).setVisibility(View.VISIBLE);
                 chatRightImageViewHolder.upvoteCount.setText(String.valueOf(chatModel.getUpvoteCount()));
                 Picasso.get()
                         .load(chatModel.getimageUrl())

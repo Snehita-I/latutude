@@ -124,63 +124,100 @@ public class ChatFragment extends Fragment {
 
             @Override
             public void onItemDoubleClicked(RecyclerView recyclerView, final int position, View v) {
+                chatadapter.notifyItemChanged(position);
+                boolean isLiked = false;
                 int upvotesCount = chatadapter.getItem(position).getUpvoteCount();
                 ArrayList<String> upvotersList = chatadapter.getItem(position).getupvoters();
-                if (user != null) {
-                    String myUID = user.getUid();
-                    Log.i(TAG, "onItemDoubleClicked: UPVOTECOUNT" + upvotesCount + "\nMY UID: " + myUID + "\nALL UPVOTERS: " + upvotersList);
-                    if (upvotesCount > 0) {
-                        boolean isLiked = true;
-                        for (String element : upvotersList) {
-                            if (!element.contains(myUID)) {
-                                isLiked = false;
-                                break;
-                            }
+                String myUID = user.getUid();
+                Log.i(TAG, "onItemDoubleClicked: UPVOTECOUNT" + upvotesCount + "\nMY UID: " + myUID + "\nALL UPVOTERS: " + upvotersList);
+                if (upvotesCount > 0) {
+                    for (String element : upvotersList) {
+                        if (element.contains(myUID)) {
+                            isLiked = true;
+                            break;
                         }
-                        if (isLiked) {
-                            DocumentSnapshot snapshot = chatadapter.getSnapshots().getSnapshot(position);
-                            String documentID = snapshot.getId();
-                            Log.i(TAG, "Document ID" + documentID);
-                            db.collection("iku_earth_messages").document(documentID)
-                                    .update("upvoteCount", chatadapter.getItem(position).getUpvoteCount() + 1,
-                                            "upvoters", FieldValue.arrayUnion(user.getUid()))
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            db.collection("users").document(chatadapter.getItem(position).getUID())
-                                                    .get()
-                                                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                                        @Override
-                                                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                                            final LeaderboardModel usersData = documentSnapshot.toObject(LeaderboardModel.class);
-                                                            db.collection("users").document(chatadapter.getItem(position).getUID())
-                                                                    .update("points", usersData.getPoints() + 1)
-                                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                        @Override
-                                                                        public void onSuccess(Void aVoid) {
-                                                                            Log.i(TAG, "INCREMENTED USER POINT " + usersData.getPoints() + 1);
-                                                                        }
-                                                                    })
-                                                                    .addOnFailureListener(new OnFailureListener() {
-                                                                        @Override
-                                                                        public void onFailure(@NonNull Exception e) {
+                    }
+                    if (!isLiked) {
+                        DocumentSnapshot snapshot = chatadapter.getSnapshots().getSnapshot(position);
+                        String documentID = snapshot.getId();
+                        Log.i(TAG, "Document ID" + documentID);
+                        db.collection("iku_earth_messages").document(documentID)
+                                .update("upvoteCount", chatadapter.getItem(position).getUpvoteCount() + 1,
+                                        "upvoters", FieldValue.arrayUnion(user.getUid()))
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        db.collection("users").document(chatadapter.getItem(position).getUID())
+                                                .get()
+                                                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                                    @Override
+                                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                                        final LeaderboardModel usersData = documentSnapshot.toObject(LeaderboardModel.class);
+                                                        db.collection("users").document(chatadapter.getItem(position).getUID())
+                                                                .update("points", usersData.getPoints() + 1)
+                                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                    @Override
+                                                                    public void onSuccess(Void aVoid) {
+                                                                        Log.i(TAG, "INCREMENTED USER POINT " + usersData.getPoints() + 1);
+                                                                    }
+                                                                })
+                                                                .addOnFailureListener(new OnFailureListener() {
+                                                                    @Override
+                                                                    public void onFailure(@NonNull Exception e) {
 
-                                                                        }
-                                                                    });
-                                                        }
-                                                    });
-                                        }
-                                    })
-                                    .addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
+                                                                    }
+                                                                });
+                                                    }
+                                                });
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
 
-                                        }
-                                    });
-                        }
-                    } else if (upvotesCount == 0) {
-                        v.findViewById(R.id.upvotesLayout).setVisibility(View.GONE);
-                        chatadapter.notifyItemChanged(position);
+                                    }
+                                });
+                    }
+                    else {
+                        DocumentSnapshot snapshot = chatadapter.getSnapshots().getSnapshot(position);
+                        String documentID = snapshot.getId();
+                        Log.i(TAG, "Document ID" + documentID);
+                        db.collection("iku_earth_messages").document(documentID)
+                                .update("upvoteCount", chatadapter.getItem(position).getUpvoteCount() - 1,
+                                        "upvoters", FieldValue.arrayRemove(user.getUid()))
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        db.collection("users").document(chatadapter.getItem(position).getUID())
+                                                .get()
+                                                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                                    @Override
+                                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                                        final LeaderboardModel usersData = documentSnapshot.toObject(LeaderboardModel.class);
+                                                        db.collection("users").document(chatadapter.getItem(position).getUID())
+                                                                .update("points", usersData.getPoints() - 1)
+                                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                    @Override
+                                                                    public void onSuccess(Void aVoid) {
+                                                                        Log.i(TAG, "INCREMENTED USER POINT " + usersData.getPoints() + 1);
+                                                                    }
+                                                                })
+                                                                .addOnFailureListener(new OnFailureListener() {
+                                                                    @Override
+                                                                    public void onFailure(@NonNull Exception e) {
+
+                                                                    }
+                                                                });
+                                                    }
+                                                });
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+
+                                    }
+                                });
                     }
                 }
             }
@@ -267,6 +304,7 @@ public class ChatFragment extends Fragment {
             docData.put("uid", user.getUid());
             docData.put("type", "text");
             docData.put("userName", user.getDisplayName());
+            docData.put("upvoteCount", 0);
 
             db.collection("iku_earth_messages")
                     .add(docData)

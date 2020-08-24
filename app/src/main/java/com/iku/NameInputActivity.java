@@ -125,7 +125,7 @@ public class NameInputActivity extends AppCompatActivity {
                                                 }
                                             });
 
-                                            Log.d(TAG, "DocumentSnapshot successfully written!");
+                                            Log.d(TAG, "DocumentSnapshot successfully written!" + user.getDisplayName());
                                         }
                                     })
                                     .addOnFailureListener(new OnFailureListener() {
