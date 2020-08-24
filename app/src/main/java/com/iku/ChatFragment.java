@@ -130,7 +130,7 @@ public class ChatFragment extends Fragment {
                 ArrayList<String> upvotersList = chatadapter.getItem(position).getupvoters();
                 String myUID = user.getUid();
                 Log.i(TAG, "onItemDoubleClicked: UPVOTECOUNT" + upvotesCount + "\nMY UID: " + myUID + "\nALL UPVOTERS: " + upvotersList);
-                if (upvotesCount > 0) {
+                if (upvotesCount >= 0) {
                     for (String element : upvotersList) {
                         if (element.contains(myUID)) {
                             isLiked = true;
@@ -199,7 +199,7 @@ public class ChatFragment extends Fragment {
                                                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                                     @Override
                                                                     public void onSuccess(Void aVoid) {
-                                                                        Log.i(TAG, "INCREMENTED USER POINT " + usersData.getPoints() + 1);
+                                                                        Log.i(TAG, "DECREMENTED USER POINT BY 1");
                                                                     }
                                                                 })
                                                                 .addOnFailureListener(new OnFailureListener() {
