@@ -57,13 +57,13 @@ public class LeaderboardActivity extends AppCompatActivity {
         playerscount = findViewById(R.id.playerscount);
         mLeaderboardList = findViewById(R.id.leaderboard_recyclerview);
 
-        Query query = firebaseFirestore.collection("dummy_groups").orderBy("points", Query.Direction.DESCENDING);
+        Query query = firebaseFirestore.collection("users").orderBy("points", Query.Direction.DESCENDING);
 
         FirestoreRecyclerOptions<LeaderboardModel> options = new FirestoreRecyclerOptions.Builder<LeaderboardModel>()
                 .setQuery(query, LeaderboardModel.class)
                 .build();
 
-        firebaseFirestore.collection("dummy_groups")
+        firebaseFirestore.collection("users")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override

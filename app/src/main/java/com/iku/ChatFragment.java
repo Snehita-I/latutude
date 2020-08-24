@@ -38,6 +38,7 @@ import com.iku.models.LeaderboardModel;
 import com.iku.utils.ItemClickSupport;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -124,7 +125,6 @@ public class ChatFragment extends Fragment {
 
             @Override
             public void onItemDoubleClicked(RecyclerView recyclerView, final int position, View v) {
-                chatadapter.notifyItemChanged(position);
                 boolean isLiked = false;
                 int upvotesCount = chatadapter.getItem(position).getUpvoteCount();
                 ArrayList<String> upvotersList = chatadapter.getItem(position).getupvoters();
@@ -177,8 +177,7 @@ public class ChatFragment extends Fragment {
 
                                     }
                                 });
-                    }
-                    else {
+                    } else {
                         DocumentSnapshot snapshot = chatadapter.getSnapshots().getSnapshot(position);
                         String documentID = snapshot.getId();
                         Log.i(TAG, "Document ID" + documentID);
@@ -220,6 +219,7 @@ public class ChatFragment extends Fragment {
                                 });
                     }
                 }
+                chatadapter.notifyItemChanged(position);
             }
         });
 
@@ -305,6 +305,8 @@ public class ChatFragment extends Fragment {
             docData.put("type", "text");
             docData.put("userName", user.getDisplayName());
             docData.put("upvoteCount", 0);
+            ArrayList<Object> upvotersArray = new ArrayList<>();
+            docData.put("upvoters", upvotersArray);
 
             db.collection("iku_earth_messages")
                     .add(docData)
