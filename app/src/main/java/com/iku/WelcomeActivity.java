@@ -148,7 +148,7 @@ public class WelcomeActivity extends AppCompatActivity {
                             FirebaseUser user = mAuth.getCurrentUser();
                             if (user != null) {
                                 String displayName = user.getDisplayName();
-                                if (displayName!=null){
+                                if (displayName != null) {
                                     String firstName = displayName.substring(0, displayName.indexOf(' ')).trim();
                                     String lastName = displayName.substring(displayName.indexOf(' ')).trim();
                                     String email = user.getEmail();
@@ -287,7 +287,7 @@ public class WelcomeActivity extends AppCompatActivity {
         }
     }
 
-    private void newUserSignUp( final String firstName, final String lastName, final String email) {
+    private void newUserSignUp(final String firstName, final String lastName, final String email) {
 
         FirebaseInstanceId.getInstance().getInstanceId()
                 .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
@@ -306,7 +306,10 @@ public class WelcomeActivity extends AppCompatActivity {
                         userInfo.put("firstName", firstName);
                         userInfo.put("lastName", lastName);
                         userInfo.put("email", email);
-                        userInfo.put("registrationToken", token);
+
+                        Map<String, Object> userRegistrationTokenInfo = new HashMap<>();
+                        userRegistrationTokenInfo.put("registrationToken", token);
+                        userRegistrationTokenInfo.put("uid", mAuth.getUid());
 
 
                         final String userID = mAuth.getUid();
@@ -321,7 +324,6 @@ public class WelcomeActivity extends AppCompatActivity {
                                             FirebaseUser user = mAuth.getCurrentUser();
                                             DocumentReference groupRef = db.collection("groups").document("iku_earth");
                                             groupRef.update("members", FieldValue.arrayUnion(userID));
-
                                             updateUI(user);
                                             Log.d(TAG, "DocumentSnapshot successfully written!");
                                         }
@@ -332,8 +334,25 @@ public class WelcomeActivity extends AppCompatActivity {
                                             Log.w(TAG, "Error writing document", e);
                                         }
                                     });
+
+                            db.collection("registrationTokens").document(mAuth.getUid())
+                                    .set(userRegistrationTokenInfo)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Log.i(TAG, "onSuccess: of Reg tok");
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+
+                                        }
+                                    });
+
                         }
                     }
                 });
+
     }
 }

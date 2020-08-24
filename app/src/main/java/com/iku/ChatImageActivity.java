@@ -36,6 +36,7 @@ import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -45,7 +46,7 @@ public class ChatImageActivity extends AppCompatActivity {
     private FirebaseStorage mStorage;
     private StorageReference mStorageRef;
     private DatabaseReference mDatabaseRef;
-    Button sendImageChatbtn;
+    private ImageView sendImageChatbtn;
     Uri mImageUri;
     Uri mainImageUri;
     ImageView image;
@@ -64,12 +65,12 @@ public class ChatImageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_image);
 
-        messageEntered = (EditText) findViewById(R.id.imageName);
+        messageEntered = (EditText) findViewById(R.id.messageTextField);
         mStorageRef = FirebaseStorage.getInstance().getReference("images");
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("images");
 
-        sendImageChatbtn = (Button) findViewById(R.id.sendImageChatButton);
-        image = (ImageView) findViewById(R.id.imageView);
+        sendImageChatbtn = findViewById(R.id.sendMessageButton);
+        image = (ImageView) findViewById(R.id.chosenImage);
         db = FirebaseFirestore.getInstance();
 
         mAuth = FirebaseAuth.getInstance();
@@ -152,9 +153,11 @@ public class ChatImageActivity extends AppCompatActivity {
                                 docData.put("timestamp", timestamp);
                                 docData.put("uid", user.getUid());
                                 docData.put("type", "image");
-
                                 docData.put("imageUrl", uri.toString());
                                 docData.put("userName", user.getDisplayName());
+                                docData.put("upvoteCount", 0);
+                                ArrayList<Object> upvotersArray = new ArrayList<>();
+                                docData.put("upvoters", upvotersArray);
 
                                 db.collection("iku_earth_messages")
                                         .add(docData)

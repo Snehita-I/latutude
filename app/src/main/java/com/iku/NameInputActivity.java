@@ -101,8 +101,12 @@ public class NameInputActivity extends AppCompatActivity {
                         userInfo.put("firstName", firstName);
                         userInfo.put("lastName", lastName);
                         userInfo.put("email", email);
-                        userInfo.put("registrationToken", token);
                         userInfo.put("points", 0);
+
+                        Map<String, Object> userRegistrationTokenInfo = new HashMap<>();
+                        userRegistrationTokenInfo.put("registrationToken", token);
+                        userRegistrationTokenInfo.put("uid", fAuth.getUid());
+
 
                         final String userID = fAuth.getUid();
 
@@ -132,6 +136,21 @@ public class NameInputActivity extends AppCompatActivity {
                                         @Override
                                         public void onFailure(@NonNull Exception e) {
                                             Log.w(TAG, "Error writing document", e);
+                                        }
+                                    });
+
+                            db.collection("registrationTokens").document(fAuth.getUid())
+                                    .set(userRegistrationTokenInfo)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Log.i(TAG, "onSuccess: of Reg tok");
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+
                                         }
                                     });
                         }
