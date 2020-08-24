@@ -17,6 +17,7 @@ import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -43,16 +44,13 @@ import java.util.Map;
 
 public class ChatImageActivity extends AppCompatActivity {
 
-    private FirebaseStorage mStorage;
     private StorageReference mStorageRef;
-    private DatabaseReference mDatabaseRef;
     private ImageView sendImageChatbtn;
-    Uri mImageUri;
-    Uri mainImageUri;
-    ImageView image;
-    EditText messageEntered;
-    private FirebaseFirestore firebaseFirestore;
-    int PICK_IMAGE = 1;
+    private Uri mImageUri, mainImageUri;
+    private ImageView image;
+    private EditText messageEntered;
+    private ImageButton backButton;
+    private int PICK_IMAGE = 1;
 
     private FirebaseAuth mAuth;
 
@@ -65,18 +63,25 @@ public class ChatImageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_image);
 
-        messageEntered = (EditText) findViewById(R.id.messageTextField);
+        messageEntered = findViewById(R.id.messageTextField);
         mStorageRef = FirebaseStorage.getInstance().getReference("images");
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference("images");
 
+        backButton = findViewById(R.id.backbutton);
         sendImageChatbtn = findViewById(R.id.sendMessageButton);
-        image = (ImageView) findViewById(R.id.chosenImage);
+        image = findViewById(R.id.chosenImage);
         db = FirebaseFirestore.getInstance();
 
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
 
         openFileChooser();
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
 
         sendImageChatbtn.setOnClickListener(new View.OnClickListener() {
             @Override

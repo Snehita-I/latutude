@@ -12,27 +12,26 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="110dp">
+        android:layout_height="wrap_content">
 
         <ImageButton
             android:id="@+id/backbutton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
             android:background="?android:selectableItemBackground"
             android:tint="#fff"
-            app:srcCompat="@drawable/ic_arrow_back_36" />
-
+            app:srcCompat="@drawable/ic_arrow_back_24" />
     </LinearLayout>
 
     <ImageView
         android:id="@+id/chosenImage"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="450dp"
         android:layout_centerInParent="true"
-        android:scaleType="fitXY"
+        android:adjustViewBounds="true"
+        android:scaleType="centerInside"
         android:transitionName="openStoreImageActivity" />
 
     <LinearLayout
@@ -51,10 +50,12 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_weight="1"
-            android:inputType="textCapSentences"
             android:background="@android:color/transparent"
             android:hint="Enter message"
-            android:maxLines="6" />
+            android:textColorHint="@android:color/darker_gray"
+            android:inputType="textCapSentences"
+            android:maxLines="6"
+            android:textColor="@color/white" />
 
 
         <ImageView
