@@ -1,11 +1,11 @@
 package com.iku;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.google.android.material.textview.MaterialTextView;

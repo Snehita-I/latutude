@@ -18,8 +18,6 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textview.MaterialTextView;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -34,16 +32,13 @@ public class LeaderboardActivity extends AppCompatActivity {
 
     private FirebaseFirestore firebaseFirestore;
 
-    private FirebaseAuth mAuth;
-
-    private FirebaseUser user;
 
     private TextView heartscount;
     private TextView playerscount;
 
     private ImageView backButton;
 
-    private int totalHearts,totalPlayers;
+    private int totalHearts, totalPlayers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +47,7 @@ public class LeaderboardActivity extends AppCompatActivity {
 
         firebaseFirestore = FirebaseFirestore.getInstance();
 
-        backButton=findViewById(R.id.back_button);
+        backButton = findViewById(R.id.back_button);
         heartscount = findViewById(R.id.heartscount);
         playerscount = findViewById(R.id.playerscount);
         mLeaderboardList = findViewById(R.id.leaderboard_recyclerview);
@@ -70,17 +65,14 @@ public class LeaderboardActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.i("Query", document.getId() + " => " + document.getString("firstName") +
-                                        document.getString("lastName"));
                                 totalPlayers++;
-                                Long userPoints=(Long)document.get("points");
-                                Log.i("l",Long.toString(userPoints));
-                                int i;
-                                i = userPoints.intValue();
-                                totalHearts+=i;
+                                Long userPoints = (Long) document.get("points");
+                                if (userPoints != null) {
+                                    int i;
+                                    i = userPoints.intValue();
+                                    totalHearts += i;
+                                }
                             }
-                            Log.i("Total players",Integer.toString(totalPlayers));
-                            Log.i("Total hearts",Integer.toString(totalHearts));
                             heartscount.setText(Integer.toString(totalHearts));
                             playerscount.setText(Integer.toString(totalPlayers));
                         } else {
@@ -122,7 +114,7 @@ public class LeaderboardActivity extends AppCompatActivity {
 
     private class LeaderboardViewHolder extends RecyclerView.ViewHolder {
 
-        private MaterialTextView firstNameTextView, lastNameTextView, pointsTextView;
+        private MaterialTextView firstNameTextView, pointsTextView;
 
         public LeaderboardViewHolder(@NonNull View itemView) {
             super(itemView);

@@ -4,24 +4,19 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import androidx.fragment.app.Fragment;
+
 import com.amulyakhare.textdrawable.TextDrawable;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textview.MaterialTextView;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.iku.databinding.FragmentChatBinding;
 import com.iku.databinding.FragmentProfileBinding;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
