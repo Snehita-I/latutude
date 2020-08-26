@@ -81,18 +81,8 @@ public class ChatFragment extends Fragment {
         initItems();
         initButtons();
         watchTextBox();
+        getGroupMemberCount();
 
-
-        db.collection("groups").document("iku_earth").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                DocumentSnapshot document = task.getResult();
-                ArrayList<String> group = (ArrayList<String>) document.get("members");
-                Log.i(TAG, "Group size: " + group.size() + group);
-                binding.memberCount.setText("ikulogists: " + group.size());
-
-            }
-        });
 
         Query query = db.collection("iku_earth_messages").orderBy("timestamp", Query.Direction.DESCENDING);
 
@@ -359,6 +349,17 @@ public class ChatFragment extends Fragment {
         } else {
             Log.i(TAG, "sendTheMessage: No user login ");
         }
+    }
+
+    private void getGroupMemberCount() {
+        db.collection("groups").document("iku_earth").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                DocumentSnapshot document = task.getResult();
+                ArrayList<String> group = (ArrayList<String>) document.get("members");
+                binding.memberCount.setText("ikulogists: " + group.size());
+            }
+        });
     }
 
     @Override
