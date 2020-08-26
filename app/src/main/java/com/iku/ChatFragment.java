@@ -113,6 +113,7 @@ public class ChatFragment extends Fragment {
         });
 
         chatDay = view.findViewById(R.id.chatDate);
+        chatDay.setVisibility(View.GONE);
         messageBox = view.findViewById(R.id.messageTextField);
         sendButton = view.findViewById(R.id.sendMessageButton);
         mChatRecyclerView = view.findViewById(R.id.chatRecyclerView);

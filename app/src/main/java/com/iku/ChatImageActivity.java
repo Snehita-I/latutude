@@ -55,6 +55,8 @@ public class ChatImageActivity extends AppCompatActivity {
 
     private FirebaseFirestore db;
 
+    private String TAG = ChatImageActivity.class.getSimpleName();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,11 +85,15 @@ public class ChatImageActivity extends AppCompatActivity {
         sendImageChatbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try {
-                    uploadFile();
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
+                if (!messageEntered.getText().toString().isEmpty()) {
+                    try {
+                        uploadFile(messageEntered.getText().toString());
+                        sendImageChatbtn.setClickable(false);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                } else
+                    Log.i(TAG, "No message! ");
             }
         });
     }
@@ -133,7 +139,7 @@ public class ChatImageActivity extends AppCompatActivity {
     }
 
 
-    private void uploadFile() throws FileNotFoundException {
+    private void uploadFile(final String message) throws FileNotFoundException {
         if (mImageUri != null) {
             Bitmap imageSelected = decodeUri(this, mImageUri, 300);
             if (imageSelected != null)
@@ -151,7 +157,7 @@ public class ChatImageActivity extends AppCompatActivity {
                                 Date d = new Date();
                                 long timestamp = d.getTime();
                                 Map<String, Object> docData = new HashMap<>();
-                                docData.put("message", messageEntered.getText().toString());
+                                docData.put("message", message);
                                 docData.put("timestamp", timestamp);
                                 docData.put("uid", user.getUid());
                                 docData.put("type", "image");
@@ -175,7 +181,7 @@ public class ChatImageActivity extends AppCompatActivity {
                                         .addOnFailureListener(new OnFailureListener() {
                                             @Override
                                             public void onFailure(@NonNull Exception e) {
-
+                                                sendImageChatbtn.setClickable(true);
                                                 Toast.makeText(ChatImageActivity.this, e.toString(), Toast.LENGTH_LONG).show();
                                             }
                                         });
@@ -203,9 +209,16 @@ public class ChatImageActivity extends AppCompatActivity {
         if (requestCode == PICK_IMAGE && resultCode == RESULT_OK
                 && data != null && data.getData() != null) {
             mImageUri = data.getData();
-            Log.i("ap", "onActivityResult: " + mImageUri);
-            Picasso.get().load(mImageUri).into(image);
-            image.setImageURI(mImageUri);
+            try {
+                Bitmap imageSelected = decodeUri(this, mImageUri, 300);
+                Uri tempMainImageUri = getImageUri(this, imageSelected);
+                Log.i("ap", "Setting Image: " + tempMainImageUri);
+                Picasso.get().load(tempMainImageUri).into(image);
+                //image.setImageURI(tempMainImageUri);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+
         } else
             onBackPressed();
     }
