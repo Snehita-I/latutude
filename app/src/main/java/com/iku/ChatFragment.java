@@ -53,10 +53,6 @@ public class ChatFragment extends Fragment {
 
     private static final String TAG = ChatFragment.class.getSimpleName();
 
-    private RecyclerView mChatRecyclerView;
-
-    private AnimatedBottomBar animatedBottomBar;
-
     private SimpleDateFormat sfdMainDate = new SimpleDateFormat("MMMM dd, yyyy");
 
     private FirebaseAuth mAuth;
@@ -64,13 +60,6 @@ public class ChatFragment extends Fragment {
     private FirebaseUser user;
 
     private FirebaseFirestore db;
-
-    private LinearLayout upvoterLayout;
-
-    private MaterialTextView chatDay;
-
-    private EditText messageBox;
-    private ImageView sendButton, addImageButton;
 
     private FragmentChatBinding binding;
 
@@ -88,20 +77,13 @@ public class ChatFragment extends Fragment {
         binding = FragmentChatBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
 
-        db = FirebaseFirestore.getInstance();
 
-        mAuth = FirebaseAuth.getInstance();
-        user = mAuth.getCurrentUser();
+        initItems();
+        initButtons();
+        watchTextBox();
 
-        binding.groupIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent goToLeaderboard = new Intent(getActivity(), LeaderboardActivity.class);
-                startActivity(goToLeaderboard);
-            }
-        });
 
-        FirebaseFirestore.getInstance().collection("groups").document("iku_earth").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        db.collection("groups").document("iku_earth").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 DocumentSnapshot document = task.getResult();
@@ -112,40 +94,29 @@ public class ChatFragment extends Fragment {
             }
         });
 
-        chatDay = view.findViewById(R.id.chatDate);
-        chatDay.setVisibility(View.GONE);
-        messageBox = view.findViewById(R.id.messageTextField);
-        sendButton = view.findViewById(R.id.sendMessageButton);
-        mChatRecyclerView = view.findViewById(R.id.chatRecyclerView);
-        addImageButton = view.findViewById(R.id.choose);
-        upvoterLayout = view.findViewById(R.id.upvotesLayout);
-
-        animatedBottomBar = getActivity().findViewById(R.id.animatedBottomBar);
-
         Query query = db.collection("iku_earth_messages").orderBy("timestamp", Query.Direction.DESCENDING);
 
         FirestoreRecyclerOptions<ChatModel> options = new FirestoreRecyclerOptions.Builder<ChatModel>()
                 .setQuery(query, ChatModel.class)
                 .build();
 
-        mChatRecyclerView.setHasFixedSize(true);
+        binding.chatRecyclerView.setHasFixedSize(true);
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-        ((SimpleItemAnimator) mChatRecyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
+        ((SimpleItemAnimator) binding.chatRecyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
         linearLayoutManager.setReverseLayout(true);
+        binding.chatRecyclerView.setLayoutManager(linearLayoutManager);
 
-        mChatRecyclerView.setLayoutManager(linearLayoutManager);
-
-        mChatRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        binding.chatRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 int firstVisiblePosition = linearLayoutManager.findLastVisibleItemPosition();
                 Log.i(TAG, "onScrolled: " + firstVisiblePosition);
                 if (dy < 0) {
-                    chatDay.setVisibility(View.VISIBLE);
-                    chatDay.setText(sfdMainDate.format(new Date(chatadapter.getItem(firstVisiblePosition).getTimestamp())));
+                    binding.chatDate.setVisibility(View.VISIBLE);
+                    binding.chatDate.setText(sfdMainDate.format(new Date(chatadapter.getItem(firstVisiblePosition).getTimestamp())));
                 } else if (dy > 0) {
-                    chatDay.setVisibility(View.GONE);
+                    binding.chatDate.setVisibility(View.GONE);
                 }
             }
         });
@@ -155,11 +126,11 @@ public class ChatFragment extends Fragment {
         chatadapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
-                mChatRecyclerView.smoothScrollToPosition(0);
+                binding.chatRecyclerView.smoothScrollToPosition(0);
             }
         });
-        mChatRecyclerView.setAdapter(chatadapter);
-        ItemClickSupport.addTo(mChatRecyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+        binding.chatRecyclerView.setAdapter(chatadapter);
+        ItemClickSupport.addTo(binding.chatRecyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
             @Override
             public void onItemClicked(RecyclerView recyclerView, int position, View v) {
             }
@@ -287,7 +258,54 @@ public class ChatFragment extends Fragment {
             }
         });
 
-        messageBox.addTextChangedListener(new TextWatcher() {
+
+        return view;
+    }
+
+    private void initItems() {
+
+        db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
+        binding.chatDate.setVisibility(View.GONE);
+
+    }
+
+    private void initButtons() {
+
+        binding.groupIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent goToLeaderboard = new Intent(getActivity(), LeaderboardActivity.class);
+                startActivity(goToLeaderboard);
+            }
+        });
+
+        binding.sendMessageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final String message = String.valueOf(binding.messageTextField.getText());
+                if (!message.isEmpty()) {
+                    sendTheMessage(message);
+                    binding.messageTextField.setText("");
+                    binding.messageTextField.requestFocus();
+                } else {
+                    Log.i(TAG, "No message entered!");
+                }
+            }
+        });
+
+        binding.choose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent goToImageSend = new Intent(getActivity(), ChatImageActivity.class);
+                startActivity(goToImageSend);
+            }
+        });
+    }
+
+    private void watchTextBox() {
+        binding.messageTextField.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -296,9 +314,9 @@ public class ChatFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (charSequence.toString().isEmpty()) {
-                    addImageButton.setVisibility(View.VISIBLE);
+                    binding.choose.setVisibility(View.VISIBLE);
                 } else {
-                    addImageButton.setVisibility(View.GONE);
+                    binding.choose.setVisibility(View.GONE);
                 }
             }
 
@@ -307,33 +325,7 @@ public class ChatFragment extends Fragment {
 
             }
         });
-
-
-        sendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final String message = String.valueOf(messageBox.getText());
-                if (!message.isEmpty()) {
-                    sendTheMessage(message);
-                    messageBox.setText("");
-                    messageBox.requestFocus();
-                } else {
-                    Log.i(TAG, "No message entered!");
-                }
-            }
-        });
-
-        addImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent goToImageSend = new Intent(getActivity(), ChatImageActivity.class);
-                startActivity(goToImageSend);
-            }
-        });
-
-        return view;
     }
-
 
     private void sendTheMessage(String message) {
         Date d = new Date();
