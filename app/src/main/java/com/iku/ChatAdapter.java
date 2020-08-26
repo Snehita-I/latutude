@@ -1,12 +1,14 @@
 package com.iku;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
@@ -36,7 +38,6 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
     private Context mContext;
 
     private SimpleDateFormat sfd = new SimpleDateFormat("hh:mm a");
-
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
     private String TAG = ChatAdapter.class.getSimpleName();

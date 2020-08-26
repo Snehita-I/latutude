@@ -24,6 +24,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -36,6 +37,7 @@ import com.iku.models.ChatModel;
 import com.iku.models.LeaderboardModel;
 import com.iku.utils.ItemClickSupport;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -51,9 +53,11 @@ public class ChatFragment extends Fragment {
 
     private static final String TAG = ChatFragment.class.getSimpleName();
 
-    private RecyclerView mChatList;
+    private RecyclerView mChatRecyclerView;
 
     private AnimatedBottomBar animatedBottomBar;
+
+    private SimpleDateFormat sfdMainDate = new SimpleDateFormat("MMMM dd, yyyy");
 
     private FirebaseAuth mAuth;
 
@@ -62,6 +66,8 @@ public class ChatFragment extends Fragment {
     private FirebaseFirestore db;
 
     private LinearLayout upvoterLayout;
+
+    private MaterialTextView chatDay;
 
     private EditText messageBox;
     private ImageView sendButton, addImageButton;
@@ -106,9 +112,10 @@ public class ChatFragment extends Fragment {
             }
         });
 
+        chatDay = view.findViewById(R.id.chatDate);
         messageBox = view.findViewById(R.id.messageTextField);
         sendButton = view.findViewById(R.id.sendMessageButton);
-        mChatList = view.findViewById(R.id.chatRecyclerView);
+        mChatRecyclerView = view.findViewById(R.id.chatRecyclerView);
         addImageButton = view.findViewById(R.id.choose);
         upvoterLayout = view.findViewById(R.id.upvotesLayout);
 
@@ -120,22 +127,38 @@ public class ChatFragment extends Fragment {
                 .setQuery(query, ChatModel.class)
                 .build();
 
-        mChatList.setHasFixedSize(true);
+        mChatRecyclerView.setHasFixedSize(true);
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-        ((SimpleItemAnimator) mChatList.getItemAnimator()).setSupportsChangeAnimations(false);
+        ((SimpleItemAnimator) mChatRecyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
         linearLayoutManager.setReverseLayout(true);
-        mChatList.setLayoutManager(linearLayoutManager);
+
+        mChatRecyclerView.setLayoutManager(linearLayoutManager);
+
+        mChatRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                int firstVisiblePosition = linearLayoutManager.findLastVisibleItemPosition();
+                Log.i(TAG, "onScrolled: " + firstVisiblePosition);
+                if (dy < 0) {
+                    chatDay.setVisibility(View.VISIBLE);
+                    chatDay.setText(sfdMainDate.format(new Date(chatadapter.getItem(firstVisiblePosition).getTimestamp())));
+                } else if (dy > 0) {
+                    chatDay.setVisibility(View.GONE);
+                }
+            }
+        });
 
         chatadapter = new ChatAdapter(getContext(), options);
         chatadapter.startListening();
         chatadapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
-                mChatList.smoothScrollToPosition(0);
+                mChatRecyclerView.smoothScrollToPosition(0);
             }
         });
-        mChatList.setAdapter(chatadapter);
-        ItemClickSupport.addTo(mChatList).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+        mChatRecyclerView.setAdapter(chatadapter);
+        ItemClickSupport.addTo(mChatRecyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
             @Override
             public void onItemClicked(RecyclerView recyclerView, int position, View v) {
             }
@@ -239,6 +262,7 @@ public class ChatFragment extends Fragment {
                 chatadapter.notifyItemChanged(position);
             }
         });
+
 
         chatadapter.setOnItemClickListener(new ChatAdapter.OnItemClickListener() {
             @Override
