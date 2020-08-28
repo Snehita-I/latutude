@@ -25,6 +25,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textview.MaterialTextView;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -69,6 +70,7 @@ public class ChatFragment extends Fragment {
         // Required empty public constructor
     }
 
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -77,6 +79,7 @@ public class ChatFragment extends Fragment {
         binding = FragmentChatBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
 
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
 
         initItems();
         initButtons();
@@ -161,6 +164,11 @@ public class ChatFragment extends Fragment {
                                                                     @Override
                                                                     public void onSuccess(Void aVoid) {
                                                                         Log.i(TAG, "INCREMENTED USER POINT " + usersData.getPoints() + 1);
+
+                                                                        //Log event
+                                                                        Bundle params = new Bundle();
+                                                                        params.putString("heart_count", "heart up");
+                                                                        mFirebaseAnalytics.logEvent("heart_up", params);
                                                                     }
                                                                 })
                                                                 .addOnFailureListener(new OnFailureListener() {
@@ -201,6 +209,11 @@ public class ChatFragment extends Fragment {
                                                                     @Override
                                                                     public void onSuccess(Void aVoid) {
                                                                         Log.i(TAG, "DECREMENTED USER POINT BY 1");
+
+                                                                        //Log event
+                                                                        Bundle params = new Bundle();
+                                                                        params.putString("heart_count", "heart down");
+                                                                        mFirebaseAnalytics.logEvent("heart_down", params);
                                                                     }
                                                                 })
                                                                 .addOnFailureListener(new OnFailureListener() {
@@ -268,6 +281,12 @@ public class ChatFragment extends Fragment {
             public void onClick(View view) {
                 Intent goToLeaderboard = new Intent(getActivity(), LeaderboardActivity.class);
                 startActivity(goToLeaderboard);
+
+                /*Log event*/
+                Bundle leaderboard_bundle = new Bundle();
+                leaderboard_bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Leaderboard");
+                leaderboard_bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "View");
+                mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW, leaderboard_bundle);
             }
         });
 
@@ -338,6 +357,11 @@ public class ChatFragment extends Fragment {
                         @Override
                         public void onSuccess(DocumentReference documentReference) {
                             Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
+
+                            //Log event
+                            Bundle params = new Bundle();
+                            params.putString("messaging", "message sent");
+                            mFirebaseAnalytics.logEvent("messaging", params);
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -357,7 +381,7 @@ public class ChatFragment extends Fragment {
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 DocumentSnapshot document = task.getResult();
                 ArrayList<String> group = (ArrayList<String>) document.get("members");
-                binding.memberCount.setText("ikulogists: " + group.size());
+                binding.memberCount.setText("Ikulogists: " + group.size());
             }
         });
     }

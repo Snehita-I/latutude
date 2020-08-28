@@ -13,6 +13,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -28,11 +29,15 @@ public class NewPasswordInputActivity extends AppCompatActivity {
 
     private String TAG = NewPasswordInputActivity.class.getSimpleName();
 
+    private FirebaseAnalytics mFirebaseAnalytics;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityNewPasswordInputBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         fAuth = FirebaseAuth.getInstance();
 
@@ -70,6 +75,12 @@ public class NewPasswordInputActivity extends AppCompatActivity {
                                 if (task.isSuccessful()) {
                                     Log.i("Register", "User registered ");
 
+                                    //log event
+                                    Bundle bundle = new Bundle();
+                                    bundle.putString(FirebaseAnalytics.Param.METHOD, "Email");
+                                    bundle.putString("auth_status", "created");
+                                    mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SIGN_UP, bundle);
+
                                     FirebaseUser user = fAuth.getCurrentUser();
 
                                     if (user != null) {
@@ -79,11 +90,24 @@ public class NewPasswordInputActivity extends AppCompatActivity {
                                             public void onSuccess(Void aVoid) {
                                                 Toast.makeText(NewPasswordInputActivity.this, "Verification email sent", Toast.LENGTH_SHORT).show();
 
+                                                //log event
+                                                Bundle password_bundle = new Bundle();
+                                                password_bundle.putString(FirebaseAnalytics.Param.METHOD, "Email");
+                                                password_bundle.putString("verification_email_status", "sent");
+                                                mFirebaseAnalytics.logEvent("email_verified", password_bundle);
+
+
                                             }
                                         }).addOnFailureListener(new OnFailureListener() {
                                             @Override
                                             public void onFailure(@NonNull Exception e) {
                                                 Log.i("Register", "email not sent " + e.getMessage());
+
+                                                //log event
+                                                Bundle password_bundle = new Bundle();
+                                                password_bundle.putString(FirebaseAnalytics.Param.METHOD, "Email");
+                                                password_bundle.putString("verification_email_status", "failed");
+                                                mFirebaseAnalytics.logEvent("verification_email_failed", password_bundle);
                                             }
                                         });
 

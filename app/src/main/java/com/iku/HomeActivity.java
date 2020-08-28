@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.iku.databinding.ActivityHomeBinding;
 
 import org.jetbrains.annotations.NotNull;
@@ -22,11 +23,15 @@ public class HomeActivity extends AppCompatActivity {
 
     private static final String TAG = HomeActivity.class.getSimpleName();
 
+    private FirebaseAnalytics mFirebaseAnalytics;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         homeBinding = ActivityHomeBinding.inflate(getLayoutInflater());
         setContentView(homeBinding.getRoot());
+
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         if (savedInstanceState == null) {
             homeBinding.animatedBottomBar.selectTabById(R.id.chat, true);
@@ -43,12 +48,26 @@ public class HomeActivity extends AppCompatActivity {
                 switch (newTab.getId()) {
                     case R.id.chat:
                         fragment = new ChatFragment();
+
+                        /*Log event*/
+                        Bundle chat_bundle = new Bundle();
+                        chat_bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Main Chat");
+                        chat_bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "View");
+                        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW, chat_bundle);
                         break;
+
                     /*case R.id.social:
                         fragment = new SocialFragment();
                         break;*/
+
                     case R.id.profile:
                         fragment = new ProfileFragment();
+
+                        /*Log event*/
+                        Bundle profile_bundle = new Bundle();
+                        profile_bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "My Profile");
+                        profile_bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "View");
+                        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW, profile_bundle);
                         break;
                 }
 
