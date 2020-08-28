@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -34,11 +35,14 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 public class ChatImageActivity extends AppCompatActivity {
 
@@ -152,52 +156,44 @@ public class ChatImageActivity extends AppCompatActivity {
             if (mainImageUri != null) {
                 final StorageReference imageRef = mStorageRef.child(System.currentTimeMillis() + "." + getFileExtension(mainImageUri));
                 UploadTask uploadTask = imageRef.putFile(mainImageUri);
-                uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        Task<Uri> downloadUrl = imageRef.getDownloadUrl();
-                        downloadUrl.addOnSuccessListener(new OnSuccessListener<Uri>() {
-                            @Override
-                            public void onSuccess(Uri uri) {
-                                Date d = new Date();
-                                long timestamp = d.getTime();
-                                Map<String, Object> docData = new HashMap<>();
-                                docData.put("message", message);
-                                docData.put("timestamp", timestamp);
-                                docData.put("uid", user.getUid());
-                                docData.put("type", "image");
-                                docData.put("imageUrl", uri.toString());
-                                docData.put("userName", user.getDisplayName());
-                                docData.put("upvoteCount", 0);
-                                ArrayList<Object> upvotersArray = new ArrayList<>();
-                                docData.put("upvoters", upvotersArray);
+                uploadTask.addOnSuccessListener(taskSnapshot -> {
+                    Task<Uri> downloadUrl = imageRef.getDownloadUrl();
+                    downloadUrl.addOnSuccessListener(uri -> {
+                        Date d = new Date();
+                        long timestamp = d.getTime();
+                        Map<String, Object> docData = new HashMap<>();
+                        docData.put("message", message);
+                        docData.put("timestamp", timestamp);
+                        docData.put("uid", user.getUid());
+                        docData.put("type", "image");
+                        docData.put("imageUrl", uri.toString());
+                        docData.put("userName", user.getDisplayName());
+                        docData.put("upvoteCount", 0);
+                        ArrayList<Object> upvotersArray = new ArrayList<>();
+                        docData.put("upvoters", upvotersArray);
 
-                                db.collection("iku_earth_messages")
-                                        .add(docData)
-                                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                            @Override
-                                            public void onSuccess(DocumentReference documentReference) {
-                                                messageEntered.setText("");
-                                                Toast.makeText(ChatImageActivity.this, "Image info uploaded", Toast.LENGTH_LONG).show();
-                                                messageEntered.requestFocus();
-                                                ChatImageActivity.super.onBackPressed();
+                        db.collection("iku_earth_messages")
+                                .add(docData)
+                                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                    @Override
+                                    public void onSuccess(DocumentReference documentReference) {
+                                        messageEntered.setText("");
+                                        Toast.makeText(ChatImageActivity.this, "Image info uploaded", Toast.LENGTH_LONG).show();
+                                        messageEntered.requestFocus();
+                                        SaveImage(imageSelected);
+                                        ChatImageActivity.super.onBackPressed();
 
-                                                //log event
-                                                Bundle params = new Bundle();
-                                                params.putString("messaging", "image message");
-                                                mFirebaseAnalytics.logEvent("image_sent", params);
-                                            }
-                                        })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                sendImageChatbtn.setClickable(true);
-                                                Toast.makeText(ChatImageActivity.this, e.toString(), Toast.LENGTH_LONG).show();
-                                            }
-                                        });
-                            }
-                        });
-                    }
+                                        //log event
+                                        Bundle params = new Bundle();
+                                        params.putString("messaging", "image message");
+                                        mFirebaseAnalytics.logEvent("image_sent", params);
+                                    }
+                                })
+                                .addOnFailureListener(e -> {
+                                    sendImageChatbtn.setClickable(true);
+                                    Toast.makeText(ChatImageActivity.this, e.toString(), Toast.LENGTH_LONG).show();
+                                });
+                    });
                 });
             }
 
@@ -211,6 +207,31 @@ public class ChatImageActivity extends AppCompatActivity {
         i.setType("image/*");
         i.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(i, PICK_IMAGE);
+    }
+
+    private void SaveImage(Bitmap finalBitmap) {
+
+        String root = Environment.getExternalStorageDirectory().toString();
+        File myDir = new File(root + "/iku/images/sent_images");
+        if (!myDir.exists()) {
+            myDir.mkdirs();
+        }
+        Random generator = new Random();
+        int n = 10000;
+        n = generator.nextInt(n);
+        String fname = "Image-"+ n +".jpg";
+        File file = new File (myDir, fname);
+        if (file.exists ())
+            file.delete ();
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+            out.flush();
+            out.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

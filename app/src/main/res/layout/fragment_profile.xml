@@ -74,14 +74,22 @@
         android:layout_marginTop="20dp"
         android:textSize="18sp" />
 
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/userHearts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/userName"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true" />
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/logout_button"
         android:layout_width="150dp"
         android:layout_height="45dp"
-        android:layout_below="@+id/userName"
+        android:layout_below="@+id/userHearts"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="30dp"
         android:backgroundTint="@color/white"
         android:elevation="4dp"
         android:text="Log out"

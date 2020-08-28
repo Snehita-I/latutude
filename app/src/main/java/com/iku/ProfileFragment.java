@@ -17,10 +17,14 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.iku.databinding.FragmentProfileBinding;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -30,9 +34,14 @@ public class ProfileFragment extends Fragment {
     private FirebaseAuth mAuth;
 
     private ImageView profilePicture;
+
     private MaterialTextView userNameText;
 
     private MaterialButton logoutButton;
+
+    private FirebaseFirestore db;
+
+    private FirebaseUser user;
 
     private String photoUrl;
 
@@ -53,7 +62,8 @@ public class ProfileFragment extends Fragment {
         View view = profileBinding.getRoot();
 
         mAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = mAuth.getCurrentUser();
+        db = FirebaseFirestore.getInstance();
+        user = mAuth.getCurrentUser();
 
         profilePicture = view.findViewById(R.id.profileImage);
         userNameText = view.findViewById(R.id.userName);
@@ -117,24 +127,32 @@ public class ProfileFragment extends Fragment {
             }
         }
 
-        logoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mAuth.signOut();
-                Intent intent = new Intent(getActivity(), SplashActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        profileBinding.settingsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent goToSettingsPage = new Intent(getActivity(), SettingsActivity.class);
-                startActivity(goToSettingsPage);
-            }
-        });
+        initButtons();
+        getUserHearts();
 
         return view;
+    }
+
+    private void initButtons() {
+        logoutButton.setOnClickListener(view -> {
+            mAuth.signOut();
+            Intent intent = new Intent(getActivity(), SplashActivity.class);
+            startActivity(intent);
+        });
+
+        profileBinding.settingsButton.setOnClickListener(view -> {
+            Intent goToSettingsPage = new Intent(getActivity(), SettingsActivity.class);
+            startActivity(goToSettingsPage);
+        });
+    }
+
+    private void getUserHearts() {
+        if (user != null) {
+            db.collection("users").document(user.getUid()).get().addOnCompleteListener(task -> {
+                DocumentSnapshot document = task.getResult();
+                profileBinding.userHearts.setText("Hearts Won: " + document.get("points"));
+            });
+        }
     }
 
     @Override
