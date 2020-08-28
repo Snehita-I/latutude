@@ -1,6 +1,8 @@
 package com.iku;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -8,23 +10,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -43,8 +41,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import nl.joery.animatedbottombar.AnimatedBottomBar;
 
 
 /**
@@ -65,6 +61,8 @@ public class ChatFragment extends Fragment {
     private FragmentChatBinding binding;
 
     private ChatAdapter chatadapter;
+
+    private int STORAGE_PERMISSION_CODE = 10;
 
     public ChatFragment() {
         // Required empty public constructor
@@ -239,26 +237,23 @@ public class ChatFragment extends Fragment {
         });
 
 
-        chatadapter.setOnItemClickListener(new ChatAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(DocumentSnapshot documentSnapshot, int position) {
-                Intent userProfileIntent = new Intent(getContext(), UserProfileActivity.class);
+        chatadapter.setOnItemClickListener((documentSnapshot, position) -> {
+            Intent userProfileIntent = new Intent(getContext(), UserProfileActivity.class);
 
-                ChatModel chatModel = documentSnapshot.toObject(ChatModel.class);
-                String id = documentSnapshot.getId();
-                String name = chatModel.getUserName();
-                Log.i(TAG, "DOCUMENT ID: " + id);
-                if (name != null) {
-                    userProfileIntent.putExtra("EXTRA_PERSON_NAME", name);
-                    startActivity(userProfileIntent);
-                } else
-                    return;
-                //Toast displaying the document id
+            ChatModel chatModel = documentSnapshot.toObject(ChatModel.class);
+            String id = documentSnapshot.getId();
+            String name = chatModel.getUserName();
+            Log.i(TAG, "DOCUMENT ID: " + id);
+            if (name != null) {
+                userProfileIntent.putExtra("EXTRA_PERSON_NAME", name);
+                startActivity(userProfileIntent);
+            } else
+                return;
+            //Toast displaying the document id
 
-                Toast.makeText(getActivity(),
-                        "Position: " + position + " ID: " + id + "Name" + name, Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(),
+                    "Position: " + position + " ID: " + id + "Name" + name, Toast.LENGTH_LONG).show();
 
-            }
         });
 
 
@@ -276,37 +271,33 @@ public class ChatFragment extends Fragment {
 
     private void initButtons() {
 
-        binding.groupIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent goToLeaderboard = new Intent(getActivity(), LeaderboardActivity.class);
-                startActivity(goToLeaderboard);
+        binding.groupIcon.setOnClickListener(view -> {
+            Intent goToLeaderboard = new Intent(getActivity(), LeaderboardActivity.class);
+            startActivity(goToLeaderboard);
 
-                /*Log event*/
-                Bundle leaderboard_bundle = new Bundle();
-                leaderboard_bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Leaderboard");
-                leaderboard_bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "View");
-                mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW, leaderboard_bundle);
+            /*Log event*/
+            Bundle leaderboard_bundle = new Bundle();
+            leaderboard_bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Leaderboard");
+            leaderboard_bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "View");
+            mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW, leaderboard_bundle);
+        });
+
+        binding.sendMessageButton.setOnClickListener(view -> {
+            final String message = String.valueOf(binding.messageTextField.getText());
+            if (!message.isEmpty()) {
+                sendTheMessage(message);
+                binding.messageTextField.setText("");
+                binding.messageTextField.requestFocus();
+            } else {
+                Log.i(TAG, "No message entered!");
             }
         });
 
-        binding.sendMessageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final String message = String.valueOf(binding.messageTextField.getText());
-                if (!message.isEmpty()) {
-                    sendTheMessage(message);
-                    binding.messageTextField.setText("");
-                    binding.messageTextField.requestFocus();
-                } else {
-                    Log.i(TAG, "No message entered!");
-                }
-            }
-        });
-
-        binding.choose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        binding.choose.setOnClickListener(view -> {
+            if (ContextCompat.checkSelfPermission(getActivity(),
+                    Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                requestStoragePermission();
+            } else {
                 Intent goToImageSend = new Intent(getActivity(), ChatImageActivity.class);
                 startActivity(goToImageSend);
             }
@@ -376,14 +367,27 @@ public class ChatFragment extends Fragment {
     }
 
     private void getGroupMemberCount() {
-        db.collection("groups").document("iku_earth").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                DocumentSnapshot document = task.getResult();
-                ArrayList<String> group = (ArrayList<String>) document.get("members");
-                binding.memberCount.setText("Ikulogists: " + group.size());
-            }
+        db.collection("groups").document("iku_earth").get().addOnCompleteListener(task -> {
+            DocumentSnapshot document = task.getResult();
+            ArrayList<String> group = (ArrayList<String>) document.get("members");
+            binding.memberCount.setText("Ikulogists: " + group.size());
         });
+    }
+
+    private void requestStoragePermission() {
+
+        ActivityCompat.requestPermissions(getActivity(),
+                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == STORAGE_PERMISSION_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Intent goToImageSend = new Intent(getActivity(), ChatImageActivity.class);
+                startActivity(goToImageSend);
+            }
+        }
     }
 
     @Override
