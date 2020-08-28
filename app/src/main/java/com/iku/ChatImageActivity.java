@@ -23,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -57,10 +58,14 @@ public class ChatImageActivity extends AppCompatActivity {
 
     private String TAG = ChatImageActivity.class.getSimpleName();
 
+    private FirebaseAnalytics mFirebaseAnalytics;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_image);
+
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         messageEntered = findViewById(R.id.messageTextField);
         mStorageRef = FirebaseStorage.getInstance().getReference("images");
@@ -176,6 +181,11 @@ public class ChatImageActivity extends AppCompatActivity {
                                                 Toast.makeText(ChatImageActivity.this, "Image info uploaded", Toast.LENGTH_LONG).show();
                                                 messageEntered.requestFocus();
                                                 ChatImageActivity.super.onBackPressed();
+
+                                                //log event
+                                                Bundle params = new Bundle();
+                                                params.putString("messaging", "image message");
+                                                mFirebaseAnalytics.logEvent("image_sent", params);
                                             }
                                         })
                                         .addOnFailureListener(new OnFailureListener() {

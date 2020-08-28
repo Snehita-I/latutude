@@ -13,6 +13,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
@@ -40,11 +41,15 @@ public class NameInputActivity extends AppCompatActivity {
 
     public static final String TAG = NameInputActivity.class.getSimpleName();
 
+    private FirebaseAnalytics mFirebaseAnalytics;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityNameInputBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         fAuth = FirebaseAuth.getInstance();
 
@@ -61,7 +66,7 @@ public class NameInputActivity extends AppCompatActivity {
                 if (!user.isEmailVerified()) {
                     Toast.makeText(NameInputActivity.this, "Verify your email via the email sent to you before proceeding.", Toast.LENGTH_SHORT).show();
                 } else {
-                    Log.i(TAG, "VERIFIED USER. ");
+                    Log.i(TAG, "VERIFIED USER.");
                     newUserSignUp(binding.enterFirstName.getText().toString(), binding.enterLastName.getText().toString(), email);
                 }
             }
@@ -127,6 +132,11 @@ public class NameInputActivity extends AppCompatActivity {
                                             });
 
                                             Log.d(TAG, "DocumentSnapshot successfully written!" + user.getDisplayName());
+
+                                            /*Log event*/
+                                            Bundle signup_bundle = new Bundle();
+                                            signup_bundle.putString(FirebaseAnalytics.Param.METHOD, "Email");
+                                            mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SIGN_UP, signup_bundle);
                                         }
                                     })
                                     .addOnFailureListener(new OnFailureListener() {

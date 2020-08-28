@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.SignInMethodQueryResult;
 import com.iku.databinding.ActivityEmailInputBinding;
@@ -23,11 +24,15 @@ public class EmailInputActivity extends AppCompatActivity {
     private FirebaseAuth fAuth;
     private String TAG = EmailInputActivity.class.getSimpleName();
 
+    private FirebaseAnalytics mFirebaseAnalytics;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityEmailInputBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         fAuth = FirebaseAuth.getInstance();
 
@@ -59,8 +64,14 @@ public class EmailInputActivity extends AppCompatActivity {
 
                                     Log.i(TAG, "Email not exists");
 
+                                    //log event
+                                    Bundle signup_bundle = new Bundle();
+                                    signup_bundle.putString(FirebaseAnalytics.Param.METHOD, "Email");
+                                    signup_bundle.putString("user_type", "new user");
+                                    mFirebaseAnalytics.logEvent("email_signup", signup_bundle);
+
                                     // email not existed
-                                    //Go to Sigup page
+                                    //Go to Signup page
                                     Intent goToNewPasswordActivity = new Intent(EmailInputActivity.this, NewPasswordInputActivity.class);
                                     goToNewPasswordActivity.putExtra("email", email);
                                     startActivity(goToNewPasswordActivity);
@@ -68,6 +79,13 @@ public class EmailInputActivity extends AppCompatActivity {
                                 } else {
 
                                     Log.i(TAG, "Email exists");
+
+                                    //log event
+                                    Bundle signin_bundle = new Bundle();
+                                    signin_bundle.putString(FirebaseAnalytics.Param.METHOD, "Email");
+                                    signin_bundle.putString("user_type", "existing user");
+                                    mFirebaseAnalytics.logEvent("email_signin", signin_bundle);
+
                                     // email existed
                                     // Go to Login page
                                     Intent goToPasswordActivity = new Intent(EmailInputActivity.this, PasswordInputActivity.class);

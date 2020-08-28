@@ -58,11 +58,11 @@ public class WelcomeActivity extends AppCompatActivity {
 
     private FirebaseFirestore db;
 
-    private FirebaseAnalytics mFirebaseAnalytics;
-
     public static final String TAG = WelcomeActivity.class.getSimpleName();
 
     private int RC_SIGN_IN = 121;
+
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +70,8 @@ public class WelcomeActivity extends AppCompatActivity {
 
         binding = ActivityWelcomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         db = FirebaseFirestore.getInstance();
         // Obtain the FirebaseAnalytics instance.
@@ -154,6 +156,11 @@ public class WelcomeActivity extends AppCompatActivity {
                                     String email = user.getEmail();
                                     newUserSignUp(firstName, lastName, email);
                                     Log.i(TAG, "ABC: " + displayName + "\n" + firstName + lastName);
+
+                                    /*Log event*/
+                                    Bundle signup_bundle = new Bundle();
+                                    signup_bundle.putString(FirebaseAnalytics.Param.METHOD, "Facebook");
+                                    mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SIGN_UP, signup_bundle);
                                 }
                             }
                         } else {
@@ -268,6 +275,11 @@ public class WelcomeActivity extends AppCompatActivity {
                         email = acct.getEmail();
                         Log.i(TAG, "onComplete: " + firstName + lastName);
                         newUserSignUp(firstName, lastName, email);
+
+                        /*Log event*/
+                        Bundle signup_bundle = new Bundle();
+                        signup_bundle.putString(FirebaseAnalytics.Param.METHOD, "Google");
+                        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SIGN_UP, signup_bundle);
                     }
                 } else {
                     Log.e(TAG, "onComplete: failed");
