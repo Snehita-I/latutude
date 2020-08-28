@@ -318,6 +318,7 @@ public class WelcomeActivity extends AppCompatActivity {
                         userInfo.put("firstName", firstName);
                         userInfo.put("lastName", lastName);
                         userInfo.put("email", email);
+                        userInfo.put("points",0);
 
                         Map<String, Object> userRegistrationTokenInfo = new HashMap<>();
                         userRegistrationTokenInfo.put("registrationToken", token);
