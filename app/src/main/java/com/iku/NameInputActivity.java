@@ -3,16 +3,11 @@ package com.iku;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -21,7 +16,6 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
 import com.iku.databinding.ActivityNameInputBinding;
 
 import java.util.HashMap;
@@ -67,7 +61,15 @@ public class NameInputActivity extends AppCompatActivity {
                 Toast.makeText(NameInputActivity.this, "Verify your email via the email sent to you before proceeding.", Toast.LENGTH_SHORT).show();
             } else {
                 Log.i(TAG, "VERIFIED USER.");
-                newUserSignUp(binding.enterFirstName.getText().toString(), binding.enterLastName.getText().toString(), email);
+
+                String firstName = binding.enterFirstName.getText().toString().trim();
+                firstName = firstName.substring(0, 1).toUpperCase() + firstName.substring(1).toLowerCase();
+
+                String lastName = binding.enterLastName.getText().toString().trim();
+                lastName = lastName.substring(0, 1).toUpperCase() + lastName.substring(1).toLowerCase();
+
+                if (!firstName.isEmpty() && !lastName.isEmpty())
+                    newUserSignUp(firstName, lastName, email);
             }
         });
     }
@@ -100,7 +102,7 @@ public class NameInputActivity extends AppCompatActivity {
                     userInfo.put("firstName", firstName);
                     userInfo.put("lastName", lastName);
                     userInfo.put("email", email);
-                    userInfo.put("uid",fAuth.getUid());
+                    userInfo.put("uid", fAuth.getUid());
                     userInfo.put("points", 0);
 
                     Map<String, Object> userRegistrationTokenInfo = new HashMap<>();
@@ -122,12 +124,7 @@ public class NameInputActivity extends AppCompatActivity {
                                         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                                                 .setDisplayName(firstName + " " + lastName).build();
 
-                                        user.updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                updateUI(user);
-                                            }
-                                        });
+                                        user.updateProfile(profileUpdates).addOnCompleteListener(task1 -> updateUI(user));
 
                                         Log.d(TAG, "DocumentSnapshot successfully written!" + user.getDisplayName());
 
@@ -141,13 +138,12 @@ public class NameInputActivity extends AppCompatActivity {
 
                         db.collection("registrationTokens").document(fAuth.getUid())
                                 .set(userRegistrationTokenInfo)
-                                .addOnSuccessListener(aVoid -> Log.i(TAG, "onSuccess: of Reg tok"))
+                                .addOnSuccessListener(aVoid -> {
+                                })
                                 .addOnFailureListener(e -> {
 
                                 });
                     }
                 });
-
-
     }
 }
