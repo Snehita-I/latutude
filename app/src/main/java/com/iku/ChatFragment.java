@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -26,11 +27,16 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.MetadataChanges;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.iku.databinding.FragmentChatBinding;
 import com.iku.models.ChatModel;
 import com.iku.models.LeaderboardModel;
@@ -367,11 +373,25 @@ public class ChatFragment extends Fragment {
     }
 
     private void getGroupMemberCount() {
-        db.collection("groups").document("iku_earth").get().addOnCompleteListener(task -> {
-            DocumentSnapshot document = task.getResult();
-            ArrayList<String> group = (ArrayList<String>) document.get("members");
-            binding.memberCount.setText("Ikulogists: " + group.size());
-        });
+        db.collection("groups").whereEqualTo("name", "iku Experiment")
+                .addSnapshotListener(MetadataChanges.INCLUDE, new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot querySnapshot,
+                                        @Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            Log.w(TAG, "Listen error", e);
+                            return;
+                        }
+
+                        for (DocumentChange change : querySnapshot.getDocumentChanges()) {
+                            if (change.getType() == DocumentChange.Type.ADDED) {
+                                ArrayList<String> group = (ArrayList<String>) change.getDocument().get("members");
+                                binding.memberCount.setText("Ikulogists: " + group.size());
+                            }
+                        }
+
+                    }
+                });
     }
 
     private void requestStoragePermission() {

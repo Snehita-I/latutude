@@ -8,23 +8,25 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.amulyakhare.textdrawable.TextDrawable;
-import com.google.android.material.button.MaterialButton;
-import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
+import com.google.firebase.firestore.MetadataChanges;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.iku.databinding.FragmentProfileBinding;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
-
-import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -32,12 +34,6 @@ import java.util.ArrayList;
 public class ProfileFragment extends Fragment {
 
     private FirebaseAuth mAuth;
-
-    private ImageView profilePicture;
-
-    private MaterialTextView userNameText;
-
-    private MaterialButton logoutButton;
 
     private FirebaseFirestore db;
 
@@ -65,16 +61,33 @@ public class ProfileFragment extends Fragment {
         db = FirebaseFirestore.getInstance();
         user = mAuth.getCurrentUser();
 
-        profilePicture = view.findViewById(R.id.profileImage);
-        userNameText = view.findViewById(R.id.userName);
-        logoutButton = view.findViewById(R.id.logout_button);
+        initButtons();
+        getUserHearts();
+        getProfileDetails();
 
+        return view;
+    }
+
+    private void initButtons() {
+        profileBinding.logoutButton.setOnClickListener(view -> {
+            mAuth.signOut();
+            Intent intent = new Intent(getActivity(), SplashActivity.class);
+            startActivity(intent);
+        });
+
+        profileBinding.settingsButton.setOnClickListener(view -> {
+            Intent goToSettingsPage = new Intent(getActivity(), SettingsActivity.class);
+            startActivity(goToSettingsPage);
+        });
+    }
+
+    private void getProfileDetails(){
         if (user != null) {
             String originalPieceOfUrl = "s96-c";
             String newPieceOfUrlToAdd = "s800-c";
 
             String personName = user.getDisplayName();
-            userNameText.setText(personName);
+            profileBinding.userName.setText(personName);
             Log.i(TAG, "Person Name: " + personName + "\n");
 
             Uri photoUri = user.getPhotoUrl();
@@ -92,7 +105,7 @@ public class ProfileFragment extends Fragment {
                         .load(photoUrl)
                         .noFade()
                         .networkPolicy(NetworkPolicy.OFFLINE)
-                        .into(profilePicture, new Callback() {
+                        .into(profileBinding.profileImage, new Callback() {
 
                             @Override
                             public void onSuccess() {
@@ -105,7 +118,7 @@ public class ProfileFragment extends Fragment {
                                 Picasso.get()
                                         .load(photoUrl)
                                         .noFade()
-                                        .into(profilePicture);
+                                        .into(profileBinding.profileImage);
                             }
                         });
             } else {
@@ -122,36 +135,36 @@ public class ProfileFragment extends Fragment {
                             .endConfig()
                             .buildRect(firstLetter + secondLetter, Color.DKGRAY);
 
-                    profilePicture.setImageDrawable(drawable);
+                    profileBinding.profileImage.setImageDrawable(drawable);
                 }
             }
         }
-
-        initButtons();
-        getUserHearts();
-
-        return view;
-    }
-
-    private void initButtons() {
-        logoutButton.setOnClickListener(view -> {
-            mAuth.signOut();
-            Intent intent = new Intent(getActivity(), SplashActivity.class);
-            startActivity(intent);
-        });
-
-        profileBinding.settingsButton.setOnClickListener(view -> {
-            Intent goToSettingsPage = new Intent(getActivity(), SettingsActivity.class);
-            startActivity(goToSettingsPage);
-        });
     }
 
     private void getUserHearts() {
         if (user != null) {
-            db.collection("users").document(user.getUid()).get().addOnCompleteListener(task -> {
-                DocumentSnapshot document = task.getResult();
-                profileBinding.userHearts.setText("Hearts Won: " + document.get("points"));
-            });
+            db.collection("users").whereEqualTo("uid", user.getUid())
+                    .addSnapshotListener(MetadataChanges.INCLUDE, new EventListener<QuerySnapshot>() {
+                        @Override
+                        public void onEvent(@Nullable QuerySnapshot querySnapshot,
+                                            @Nullable FirebaseFirestoreException e) {
+                            if (e != null) {
+                                Log.w(TAG, "Listen error", e);
+                                return;
+                            }
+
+                            for (DocumentChange change : querySnapshot.getDocumentChanges()) {
+                                if (change.getType() == DocumentChange.Type.ADDED) {
+                                    profileBinding.userHearts.setText("Hearts Won: " + change.getDocument().get("points"));
+                                }
+
+                                String source = querySnapshot.getMetadata().isFromCache() ?
+                                        "local cache" : "server";
+                                Log.i(TAG, "Cache Hearts Won: " + source);
+                            }
+
+                        }
+                    });
         }
     }
 

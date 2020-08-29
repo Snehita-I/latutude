@@ -1,5 +1,6 @@
 package com.iku;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -25,6 +26,8 @@ public class PasswordInputActivity extends AppCompatActivity {
 
     private FirebaseAnalytics mFirebaseAnalytics;
 
+    private ProgressDialog mProgress;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,68 +41,49 @@ public class PasswordInputActivity extends AppCompatActivity {
 
         firebaseAuth = FirebaseAuth.getInstance();
 
-        binding.backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
+        initProgressDialog();
 
-        binding.signinButton.setOnClickListener(new View.OnClickListener() {
+        binding.backButton.setOnClickListener(view -> onBackPressed());
 
-            @Override
-            public void onClick(View view) {
+        binding.signinButton.setOnClickListener(view -> {
 
-                if (binding.enterPassword.getText().toString().isEmpty()) {
-                    Toast.makeText(PasswordInputActivity.this, "Please enter your password", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
+            if (binding.enterPassword.getText().toString().isEmpty()) {
+                Toast.makeText(PasswordInputActivity.this, "Please enter your password", Toast.LENGTH_SHORT).show();
+                return;
+            } else {
+                mProgress.show();
                 firebaseAuth.signInWithEmailAndPassword(enteredEmail, binding.enterPassword.getText().toString())
-                        .addOnCompleteListener(PasswordInputActivity.this, new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()) {
-                                    Toast.makeText(PasswordInputActivity.this, "Login successful", Toast.LENGTH_LONG).show();
-                                    //sending to Home Activity
-                                    Intent goToHomeActivity = new Intent(PasswordInputActivity.this, HomeActivity.class);
-                                    goToHomeActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    startActivity(goToHomeActivity);
+                        .addOnCompleteListener(PasswordInputActivity.this, task -> {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(PasswordInputActivity.this, "Login successful", Toast.LENGTH_LONG).show();
+                                //sending to Home Activity
+                                mProgress.dismiss();
+                                Intent goToHomeActivity = new Intent(PasswordInputActivity.this, HomeActivity.class);
+                                goToHomeActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(goToHomeActivity);
 
 
-                                    //log event
-                                    Bundle password_bundle = new Bundle();
-                                    password_bundle.putString(FirebaseAnalytics.Param.METHOD, "Email");
-                                    mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.LOGIN, password_bundle);
+                                //log event
+                                Bundle password_bundle = new Bundle();
+                                password_bundle.putString(FirebaseAnalytics.Param.METHOD, "Email");
+                                mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.LOGIN, password_bundle);
 
-                                } else {
-                                    Toast.makeText(PasswordInputActivity.this, "Incorrect password", Toast.LENGTH_LONG).show();
-                                }
+                            } else {
+                                Toast.makeText(PasswordInputActivity.this, "Incorrect password", Toast.LENGTH_LONG).show();
                             }
                         });
             }
         });
 
-        binding.forgotPasswordTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                firebaseAuth.sendPasswordResetEmail(enteredEmail).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Toast.makeText(PasswordInputActivity.this, "Verification Email Sent", Toast.LENGTH_LONG).show();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
+        binding.forgotPasswordTextView.setOnClickListener(view -> firebaseAuth.sendPasswordResetEmail(enteredEmail).addOnSuccessListener(aVoid -> Toast.makeText(PasswordInputActivity.this, "Verification Email Sent", Toast.LENGTH_LONG).show()).addOnFailureListener(e -> Toast.makeText(PasswordInputActivity.this, "Email Not Sent" + e.getMessage(), Toast.LENGTH_LONG).show()));
 
-                        Toast.makeText(PasswordInputActivity.this, "Email Not Sent" + e.getMessage(), Toast.LENGTH_LONG).show();
+    }
 
-                    }
-                });
-
-
-            }
-        });
-
+    private void initProgressDialog() {
+        mProgress = new ProgressDialog(this);
+        mProgress.setTitle("Logging in..");
+        mProgress.setMessage("");
+        mProgress.setCancelable(false);
+        mProgress.setIndeterminate(true);
     }
 }

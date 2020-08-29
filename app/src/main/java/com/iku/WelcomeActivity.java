@@ -1,5 +1,6 @@
 package com.iku;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -54,6 +55,8 @@ public class WelcomeActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
 
+    private ProgressDialog mProgress;
+
     private FirebaseFunctions mFunctions;
 
     private FirebaseFirestore db;
@@ -88,6 +91,8 @@ public class WelcomeActivity extends AppCompatActivity {
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
+        initProgressDialog();
+
         binding.googleSigninButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -108,6 +113,7 @@ public class WelcomeActivity extends AppCompatActivity {
         binding.facebookLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mProgress.show();
                 LoginManager.getInstance().logInWithReadPermissions(WelcomeActivity.this,
                         Arrays.asList("email", "public_profile"));
                 LoginManager.getInstance().registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
@@ -274,6 +280,7 @@ public class WelcomeActivity extends AppCompatActivity {
                         lastName = acct.getFamilyName();
                         email = acct.getEmail();
                         Log.i(TAG, "onComplete: " + firstName + lastName);
+                        mProgress.show();
                         newUserSignUp(firstName, lastName, email);
 
                         /*Log event*/
@@ -290,6 +297,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
     private void updateUI(FirebaseUser user) {
         if (user != null) {
+            mProgress.dismiss();
             Intent intent = new Intent(WelcomeActivity.this, HomeActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
@@ -318,7 +326,8 @@ public class WelcomeActivity extends AppCompatActivity {
                         userInfo.put("firstName", firstName);
                         userInfo.put("lastName", lastName);
                         userInfo.put("email", email);
-                        userInfo.put("points",0);
+                        userInfo.put("uid", mAuth.getUid());
+                        userInfo.put("points", 0);
 
                         Map<String, Object> userRegistrationTokenInfo = new HashMap<>();
                         userRegistrationTokenInfo.put("registrationToken", token);
@@ -367,5 +376,13 @@ public class WelcomeActivity extends AppCompatActivity {
                     }
                 });
 
+    }
+
+    private void initProgressDialog() {
+        mProgress = new ProgressDialog(this);
+        mProgress.setTitle("Logging in..");
+        mProgress.setMessage("");
+        mProgress.setCancelable(false);
+        mProgress.setIndeterminate(true);
     }
 }

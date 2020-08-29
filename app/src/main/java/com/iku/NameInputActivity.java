@@ -59,16 +59,15 @@ public class NameInputActivity extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
 
-        binding.namesNextButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                user.reload();
-                if (!user.isEmailVerified()) {
-                    Toast.makeText(NameInputActivity.this, "Verify your email via the email sent to you before proceeding.", Toast.LENGTH_SHORT).show();
-                } else {
-                    Log.i(TAG, "VERIFIED USER.");
-                    newUserSignUp(binding.enterFirstName.getText().toString(), binding.enterLastName.getText().toString(), email);
-                }
+        user.reload();
+
+        binding.namesNextButton.setOnClickListener(view -> {
+            user.reload();
+            if (!user.isEmailVerified()) {
+                Toast.makeText(NameInputActivity.this, "Verify your email via the email sent to you before proceeding.", Toast.LENGTH_SHORT).show();
+            } else {
+                Log.i(TAG, "VERIFIED USER.");
+                newUserSignUp(binding.enterFirstName.getText().toString(), binding.enterLastName.getText().toString(), email);
             }
         });
     }
@@ -87,80 +86,65 @@ public class NameInputActivity extends AppCompatActivity {
     private void newUserSignUp(final String firstName, final String lastName, final String email) {
 
         FirebaseInstanceId.getInstance().getInstanceId()
-                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                        if (!task.isSuccessful()) {
-                            Log.w(TAG, "getInstanceId failed", task.getException());
-                            return;
-                        }
+                .addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) {
+                        Log.w(TAG, "getInstanceId failed", task.getException());
+                        return;
+                    }
 
-                        // Get new Instance ID token
-                        String token = task.getResult().getToken();
-                        Toast.makeText(NameInputActivity.this, token, Toast.LENGTH_SHORT).show();
-                        // Create the arguments to the callable function.
-                        Map<String, Object> userInfo = new HashMap<>();
-                        userInfo.put("firstName", firstName);
-                        userInfo.put("lastName", lastName);
-                        userInfo.put("email", email);
-                        userInfo.put("points", 0);
+                    // Get new Instance ID token
+                    String token = task.getResult().getToken();
+                    Toast.makeText(NameInputActivity.this, token, Toast.LENGTH_SHORT).show();
+                    // Create the arguments to the callable function.
+                    Map<String, Object> userInfo = new HashMap<>();
+                    userInfo.put("firstName", firstName);
+                    userInfo.put("lastName", lastName);
+                    userInfo.put("email", email);
+                    userInfo.put("uid",fAuth.getUid());
+                    userInfo.put("points", 0);
 
-                        Map<String, Object> userRegistrationTokenInfo = new HashMap<>();
-                        userRegistrationTokenInfo.put("registrationToken", token);
-                        userRegistrationTokenInfo.put("uid", fAuth.getUid());
+                    Map<String, Object> userRegistrationTokenInfo = new HashMap<>();
+                    userRegistrationTokenInfo.put("registrationToken", token);
+                    userRegistrationTokenInfo.put("uid", fAuth.getUid());
 
 
-                        final String userID = fAuth.getUid();
+                    final String userID = fAuth.getUid();
 
-                        if (userID != null) {
+                    if (userID != null) {
 
-                            db.collection("users").document(fAuth.getUid())
-                                    .set(userInfo)
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            DocumentReference groupRef = db.collection("groups").document("iku_earth");
-                                            groupRef.update("members", FieldValue.arrayUnion(userID));
-                                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                                                    .setDisplayName(firstName + " " + lastName).build();
+                        db.collection("users").document(fAuth.getUid())
+                                .set(userInfo)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        DocumentReference groupRef = db.collection("groups").document("iku_earth");
+                                        groupRef.update("members", FieldValue.arrayUnion(userID));
+                                        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                                .setDisplayName(firstName + " " + lastName).build();
 
-                                            user.updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Void> task) {
-                                                    updateUI(user);
-                                                }
-                                            });
+                                        user.updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                updateUI(user);
+                                            }
+                                        });
 
-                                            Log.d(TAG, "DocumentSnapshot successfully written!" + user.getDisplayName());
+                                        Log.d(TAG, "DocumentSnapshot successfully written!" + user.getDisplayName());
 
-                                            /*Log event*/
-                                            Bundle signup_bundle = new Bundle();
-                                            signup_bundle.putString(FirebaseAnalytics.Param.METHOD, "Email");
-                                            mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SIGN_UP, signup_bundle);
-                                        }
-                                    })
-                                    .addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            Log.w(TAG, "Error writing document", e);
-                                        }
-                                    });
+                                        /*Log event*/
+                                        Bundle signup_bundle = new Bundle();
+                                        signup_bundle.putString(FirebaseAnalytics.Param.METHOD, "Email");
+                                        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SIGN_UP, signup_bundle);
+                                    }
+                                })
+                                .addOnFailureListener(e -> Log.w(TAG, "Error writing document", e));
 
-                            db.collection("registrationTokens").document(fAuth.getUid())
-                                    .set(userRegistrationTokenInfo)
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            Log.i(TAG, "onSuccess: of Reg tok");
-                                        }
-                                    })
-                                    .addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
+                        db.collection("registrationTokens").document(fAuth.getUid())
+                                .set(userRegistrationTokenInfo)
+                                .addOnSuccessListener(aVoid -> Log.i(TAG, "onSuccess: of Reg tok"))
+                                .addOnFailureListener(e -> {
 
-                                        }
-                                    });
-                        }
+                                });
                     }
                 });
 
