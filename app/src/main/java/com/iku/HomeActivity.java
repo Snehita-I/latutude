@@ -1,9 +1,11 @@
 package com.iku;
 
 import android.app.Activity;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.Nullable;
@@ -35,6 +37,36 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(homeBinding.getRoot());
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
+
+        findViewById(android.R.id.content).getRootView().getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                Rect r = new Rect();
+                findViewById(android.R.id.content).getRootView().getWindowVisibleDisplayFrame(r);
+                int heightDiff = findViewById(android.R.id.content).getRootView().getRootView().getHeight() - (r.bottom - r.top);
+
+                if (heightDiff > 100) { // if more than 100 pixels, its probably a keyboard...
+                    //ok now we know the keyboard is up...
+                    homeBinding.animatedBottomBar.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            //ok now we know the keyboard is down...
+                            homeBinding.animatedBottomBar.setVisibility(View.GONE);
+                        }
+                    });
+
+                } else {
+                    homeBinding.animatedBottomBar.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            //ok now we know the keyboard is down...
+                            homeBinding.animatedBottomBar.setVisibility(View.VISIBLE);
+                        }
+                    });
+                }
+            }
+        });
 
         if (savedInstanceState == null) {
             homeBinding.animatedBottomBar.selectTabById(R.id.chat, true);

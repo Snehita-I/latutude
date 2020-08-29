@@ -148,16 +148,13 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
 
             messageText = itemView.findViewById(R.id.message);
             messageTime = itemView.findViewById(R.id.message_time);
-            senderName = itemView.findViewById(R.id.sendername);
+            senderName = itemView.findViewById(R.id.sender_name);
             upvoteCount = itemView.findViewById(R.id.upvoteCount);
 
-            senderName.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int position = getAdapterPosition();
-                    if (position != RecyclerView.NO_POSITION && listener != null) {
-                        listener.onItemClick(getSnapshots().getSnapshot(position), position);
-                    }
+            senderName.setOnClickListener(v -> {
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION && listener != null) {
+                    listener.onItemClick(getSnapshots().getSnapshot(position), position);
                 }
             });
 
