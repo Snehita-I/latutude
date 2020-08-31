@@ -249,7 +249,7 @@ public class ChatFragment extends Fragment {
         });
 
 
-        chatadapter.setOnItemClickListener((documentSnapshot, position) -> {
+        /*chatadapter.setOnItemClickListener((documentSnapshot, position) -> {
             Intent userProfileIntent = new Intent(getContext(), UserProfileActivity.class);
 
             ChatModel chatModel = documentSnapshot.toObject(ChatModel.class);
@@ -266,7 +266,7 @@ public class ChatFragment extends Fragment {
             Toast.makeText(getActivity(),
                     "Position: " + position + " ID: " + id + "Name" + name, Toast.LENGTH_LONG).show();
 
-        });
+        });*/
 
 
         return view;
