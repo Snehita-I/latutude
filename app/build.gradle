@@ -74,6 +74,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging:20.2.4'
     // Add the dependency for the Performance Monitoring library
     implementation 'com.google.firebase:firebase-perf:19.0.8'
+    //ViewPager2
+    implementation "androidx.viewpager2:viewpager2:1.0.0"
 }
 repositories {
     mavenCentral()
