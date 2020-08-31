@@ -1,77 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/welcome_background"
-    android:orientation="vertical"
     android:fitsSystemWindows="true"
-    tools:context=".EmailInputActivity">
+    android:orientation="vertical"
+    tools:context=".PasswordInputActivity">
 
     <ImageView
-        android:layout_width="140dp"
-        android:layout_height="140dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:id="@+id/iku_earth"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_centerHorizontal="true"
-        android:background="?android:selectableItemBackground"
+        android:layout_marginTop="52dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/iku" />
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/card_first_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_gravity="center"
-        android:clipToPadding="true"
-        app:cardCornerRadius="10dp"
-        app:cardElevation="4dp"
-        app:cardUseCompatPadding="true">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/enter_first_name"
-            android:layout_width="305dp"
-            android:layout_height="61dp"
-            android:background="@null"
-            android:hint="Enter First Name"
-            android:inputType="textPersonName"
-            android:textAlignment="center" />
-    </com.google.android.material.card.MaterialCardView>
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/card_last_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_below="@id/card_first_name"
-        android:layout_gravity="center"
-        android:clipToPadding="true"
-        app:cardCornerRadius="10dp"
-        app:cardElevation="4dp"
-        app:cardUseCompatPadding="true">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/enter_last_name"
-            android:layout_width="305dp"
-            android:layout_height="61dp"
-            android:background="@null"
-            android:hint="Enter Last Name"
-            android:inputType="textPersonName"
-            android:textAlignment="center" />
-    </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/names_next_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/card_last_name"
         android:layout_centerInParent="true"
         android:layout_gravity="center"
+        android:layout_marginTop="13dp"
         android:backgroundTint="@color/white"
         android:elevation="4dp"
         android:text="Next"
         android:textColor="#66B2B2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/enter_last_name"
         app:strokeColor="#66B2B2"
         app:strokeWidth="1dp" />
-</RelativeLayout>
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/enter_first_name"
+        android:layout_width="250dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="13dp"
+        android:hint="First Name"
+        android:inputType="textPersonName"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iku_earth" />
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/enter_last_name"
+        android:layout_width="250dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="13dp"
+        android:hint="Last Name"
+        android:inputType="textCapCharacters|textPersonName"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/enter_first_name" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

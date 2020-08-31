@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.SimpleItemAnimator;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -62,6 +63,8 @@ public class ChatFragment extends Fragment {
 
     private FirebaseUser user;
 
+    private MaterialTextView memberCount;
+
     private FirebaseFirestore db;
 
     private FragmentChatBinding binding;
@@ -84,6 +87,8 @@ public class ChatFragment extends Fragment {
         View view = binding.getRoot();
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
+
+        memberCount = view.findViewById(R.id.memberCount);
 
         initItems();
         initButtons();
@@ -386,10 +391,9 @@ public class ChatFragment extends Fragment {
                         for (DocumentChange change : querySnapshot.getDocumentChanges()) {
                             if (change.getType() == DocumentChange.Type.ADDED) {
                                 ArrayList<String> group = (ArrayList<String>) change.getDocument().get("members");
-                                binding.memberCount.setText("Ikulogists: " + group.size());
+                                memberCount.setText("Ikulogists: " + group.size());
                             }
                         }
-
                     }
                 });
     }

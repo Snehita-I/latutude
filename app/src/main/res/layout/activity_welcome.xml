@@ -74,6 +74,7 @@
         android:layout_centerHorizontal="true"
         android:text="@string/welcome_policy"
         android:textAlignment="center"
-        android:textColor="#858585" />
+        android:textColor="#858585"
+        android:textSize="12sp" />
 
 </RelativeLayout>

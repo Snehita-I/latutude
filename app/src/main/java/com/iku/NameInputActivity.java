@@ -53,9 +53,8 @@ public class NameInputActivity extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
 
-        user.reload();
-
         binding.namesNextButton.setOnClickListener(view -> {
+            user.reload();
             user.reload();
             if (!user.isEmailVerified()) {
                 Toast.makeText(NameInputActivity.this, "Verify your email via the email sent to you before proceeding.", Toast.LENGTH_SHORT).show();
