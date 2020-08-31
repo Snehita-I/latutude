@@ -5,25 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorBackground"
-    tools:context=".MainActivity">
+    tools:context=".OnboardingActivity">
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/buttonOnboardingAction"
+    <ImageView
+        android:id="@+id/dismissOnboardingAction"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="15dp"
-        android:textSize="15sp"
-        app:cornerRadius="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/onboardingViewPager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    </androidx.viewpager2.widget.ViewPager2>
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="25dp"
+        android:background="@color/colorBackground"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_clear_32" />
 
     <LinearLayout
         android:id="@+id/layoutOnboardingIndicators"
@@ -36,20 +29,25 @@
         app:layout_constraintBottom_toBottomOf="@id/buttonOnboardingAction"
         app:layout_constraintEnd_toStartOf="@id/buttonOnboardingAction"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/buttonOnboardingAction"
-        />
+        app:layout_constraintTop_toTopOf="@id/buttonOnboardingAction" />
 
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/onboardingViewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <ImageButton
-        android:id="@+id/dismissOnboardingAction"
+    </androidx.viewpager2.widget.ViewPager2>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/buttonOnboardingAction"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        android:layout_marginEnd="25dp"
-        android:background="@color/colorBackground"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_clear_24px" />
-
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="15dp"
+        android:textAllCaps="false"
+        android:textSize="15sp"
+        app:cornerRadius="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,10 +1,12 @@
 package com.iku;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
@@ -43,7 +45,7 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setContentView(R.layout.activity_splash);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             final WindowInsetsController insetsController = getWindow().getInsetsController();
@@ -59,8 +61,6 @@ public class SplashActivity extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
 
-        setContentView(R.layout.activity_splash);
-
         mAuth = FirebaseAuth.getInstance();
 
         FirebaseUser user = mAuth.getCurrentUser();
@@ -69,6 +69,8 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void updateUI(FirebaseUser user) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        boolean previouslyStarted = prefs.getBoolean(getString(R.string.prev_started), false);
         if (user != null) {
             DocumentReference docRef = db.collection("users").document(user.getUid());
             docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -95,7 +97,18 @@ public class SplashActivity extends AppCompatActivity {
                     }
                 }
             });
-
+        } else if (!previouslyStarted) {
+            SharedPreferences.Editor edit = prefs.edit();
+            edit.putBoolean(getString(R.string.prev_started), true);
+            edit.apply();
+            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Intent intent = new Intent(SplashActivity.this, OnboardingActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                }
+            }, 2000);
 
         } else {
             new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {

@@ -38,6 +38,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.MetadataChanges;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.iku.adapter.ChatAdapter;
 import com.iku.databinding.FragmentChatBinding;
 import com.iku.models.ChatModel;
 import com.iku.models.LeaderboardModel;

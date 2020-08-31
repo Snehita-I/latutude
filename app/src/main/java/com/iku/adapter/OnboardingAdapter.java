@@ -1,6 +1,5 @@
-package com.example.onboardingscreens;
+package com.iku.adapter;
 
-import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,15 +10,18 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.iku.models.OnboardingScreenModel;
+import com.iku.R;
+
 import java.util.List;
 
 public class OnboardingAdapter extends RecyclerView.Adapter<OnboardingAdapter.OnboardingViewHolder>{
 
-private List<OnboardingItem> onboardingItems;
+private List<OnboardingScreenModel> onboardingScreenModels;
 
-    public OnboardingAdapter(List<OnboardingItem> onboardingItems) {
-        Log.i("TAG", "OnboardingAdapter: " + onboardingItems);
-        this.onboardingItems = onboardingItems;
+    public OnboardingAdapter(List<OnboardingScreenModel> onboardingScreenModels) {
+        Log.i("TAG", "OnboardingAdapter: " + onboardingScreenModels);
+        this.onboardingScreenModels = onboardingScreenModels;
     }
 
     @NonNull
@@ -35,14 +37,14 @@ private List<OnboardingItem> onboardingItems;
     @Override
     public void onBindViewHolder(@NonNull OnboardingViewHolder holder, int position) {
 
-        holder.setOnboardingData(onboardingItems.get(position));
+        holder.setOnboardingData(onboardingScreenModels.get(position));
 
 
     }
 
     @Override
     public int getItemCount() {
-        return onboardingItems.size();
+        return onboardingScreenModels.size();
     }
 
     class OnboardingViewHolder extends RecyclerView.ViewHolder{
@@ -58,10 +60,10 @@ private List<OnboardingItem> onboardingItems;
             imageOnboarding = itemView.findViewById(R.id.imageOnboarding);
         }
 
-        void setOnboardingData(OnboardingItem onboardingItem){
+        void setOnboardingData(OnboardingScreenModel onboardingScreenModel){
             //textTitle.setText(onboardingItem.getTitle());
-            textDescription.setText(onboardingItem.getDescription());
-            imageOnboarding.setImageResource(onboardingItem.getImage());
+            textDescription.setText(onboardingScreenModel.getDescription());
+            imageOnboarding.setImageResource(onboardingScreenModel.getImage());
         }
     }
 }

@@ -20,7 +20,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ReportBugActivity"></activity>
+        <activity android:name=".ReportBugActivity" />
         <!--
      Set custom default icon. This is used when no icon is set for incoming notification messages.
      See README(https://goo.gl/l4GJaQ) for more.
@@ -58,6 +58,7 @@
         <activity android:name=".PasswordInputActivity" />
         <activity android:name=".NewPasswordInputActivity" />
         <activity android:name=".EmailInputActivity" />
+        <activity android:name=".OnboardingActivity"/>
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"

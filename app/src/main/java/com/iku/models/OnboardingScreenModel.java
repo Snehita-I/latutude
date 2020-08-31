@@ -1,9 +1,9 @@
-package com.example.onboardingscreens;
+package com.iku.models;
 
-public class OnboardingItem {
+public class OnboardingScreenModel {
 
     private int image;
-    //private String title;
+
     private String description;
 
     public int getImage() {
@@ -13,14 +13,6 @@ public class OnboardingItem {
     public void setImage(int image) {
         this.image = image;
     }
-
-//    public String getTitle() {
-//        return title;
-//    }
-//
-//    public void setTitle(String title) {
-//        this.title = title;
-//    }
 
     public String getDescription() {
         return description;

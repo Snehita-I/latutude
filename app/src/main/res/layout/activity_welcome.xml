@@ -31,8 +31,9 @@
         android:backgroundTint="@color/white"
         android:drawableLeft="@drawable/facebook"
         android:elevation="4dp"
-        android:textColor="@android:color/black"
+        android:letterSpacing="0"
         android:text="Continue with Facebook"
+        android:textColor="@android:color/black"
         android:textSize="12sp"
         android:textStyle="normal" />
 
@@ -47,6 +48,7 @@
         android:backgroundTint="@color/white"
         android:drawableLeft="@drawable/google_icon"
         android:elevation="4dp"
+        android:letterSpacing="0"
         android:text="Continue with Google"
         android:textColor="@android:color/black"
         android:textSize="12sp" />
@@ -62,9 +64,10 @@
         android:backgroundTint="@color/white"
         android:drawableLeft="@drawable/ic_email_24"
         android:elevation="4dp"
-        android:textSize="12sp"
+        android:letterSpacing="0"
         android:text="Continue with Email"
-        android:textColor="@android:color/black" />
+        android:textColor="@android:color/black"
+        android:textSize="12sp" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/policyText"
