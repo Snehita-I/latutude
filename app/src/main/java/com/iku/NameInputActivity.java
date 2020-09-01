@@ -3,10 +3,13 @@ package com.iku;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
@@ -51,24 +54,60 @@ public class NameInputActivity extends AppCompatActivity {
 
         email = user.getEmail();
 
+
         db = FirebaseFirestore.getInstance();
+
+
+        binding.resendEmailButton.setOnClickListener(view -> {
+            user.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Toast.makeText(NameInputActivity.this, "Verification email sent", Toast.LENGTH_SHORT).show();
+
+                    //log event
+                    Bundle password_bundle = new Bundle();
+                    password_bundle.putString(FirebaseAnalytics.Param.METHOD, "Email");
+                    password_bundle.putString("verification_email_status", "sent");
+                    mFirebaseAnalytics.logEvent("email_verified", password_bundle);
+
+
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.i("Register", "email not sent " + e.getMessage());
+
+                    //log event
+                    Bundle password_bundle = new Bundle();
+                    password_bundle.putString(FirebaseAnalytics.Param.METHOD, "Email");
+                    password_bundle.putString("verification_email_status", "failed");
+                    mFirebaseAnalytics.logEvent("verification_email_failed", password_bundle);
+                }
+            });
+
+        });
 
         binding.namesNextButton.setOnClickListener(view -> {
             user.reload();
             user.reload();
-            if (!user.isEmailVerified()) {
-                Toast.makeText(NameInputActivity.this, "Verify your email via the email sent to you before proceeding.", Toast.LENGTH_SHORT).show();
-            } else {
-                Log.i(TAG, "VERIFIED USER.");
+            if (binding.enterFirstName.getText().toString().length() > 0 &&
+                    binding.enterLastName.getText().toString().length() > 0) {
+                if (!user.isEmailVerified()) {
+                    Toast.makeText(NameInputActivity.this, "Verify your email via the email sent to you before proceeding.", Toast.LENGTH_SHORT).show();
 
-                String firstName = binding.enterFirstName.getText().toString().trim();
-                firstName = firstName.substring(0, 1).toUpperCase() + firstName.substring(1).toLowerCase();
 
-                String lastName = binding.enterLastName.getText().toString().trim();
-                lastName = lastName.substring(0, 1).toUpperCase() + lastName.substring(1).toLowerCase();
+                } else {
+                    Log.i(TAG, "VERIFIED USER.");
 
-                if (!firstName.isEmpty() && !lastName.isEmpty())
-                    newUserSignUp(firstName, lastName, email);
+                    String firstName = binding.enterFirstName.getText().toString().trim();
+                    firstName = firstName.substring(0, 1).toUpperCase() + firstName.substring(1).toLowerCase();
+
+                    String lastName = binding.enterLastName.getText().toString().trim();
+                    lastName = lastName.substring(0, 1).toUpperCase() + lastName.substring(1).toLowerCase();
+
+                    if (!firstName.isEmpty() && !lastName.isEmpty())
+                        newUserSignUp(firstName, lastName, email);
+                }
             }
         });
     }

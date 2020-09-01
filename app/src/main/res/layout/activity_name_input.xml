@@ -8,17 +8,6 @@
     android:orientation="vertical"
     tools:context=".PasswordInputActivity">
 
-    <ImageView
-        android:id="@+id/iku_earth"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="52dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/iku" />
-
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/names_next_button"
@@ -32,6 +21,36 @@
         android:text="Next"
         android:textColor="#66B2B2"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/enter_last_name"
+        app:strokeColor="#66B2B2"
+        app:strokeWidth="1dp" />
+
+    <ImageView
+        android:id="@+id/iku_earth"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="52dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/iku" />
+
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/resendEmailButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:layout_marginTop="100dp"
+        android:backgroundTint="@color/white"
+        android:elevation="4dp"
+        android:text="RESEND EMAIL"
+        android:textColor="#66B2B2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/enter_last_name"
         app:strokeColor="#66B2B2"
