@@ -91,6 +91,7 @@
         android:backgroundTint="@color/white"
         android:elevation="4dp"
         android:text="Log out"
+        android:textAllCaps="false"
         android:textColor="#66B2B2"
         app:strokeColor="#66B2B2"
         app:strokeWidth="1dp" />

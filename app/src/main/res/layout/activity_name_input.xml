@@ -8,24 +8,6 @@
     android:orientation="vertical"
     tools:context=".PasswordInputActivity">
 
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/names_next_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_gravity="center"
-        android:layout_marginTop="13dp"
-        android:backgroundTint="@color/white"
-        android:elevation="4dp"
-        android:text="Next"
-        android:textColor="#66B2B2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/enter_last_name"
-        app:strokeColor="#66B2B2"
-        app:strokeWidth="1dp" />
-
     <ImageView
         android:id="@+id/iku_earth"
         android:layout_width="100dp"
@@ -38,47 +20,106 @@
         app:srcCompat="@drawable/iku" />
 
 
+    <TextView
+        android:id="@+id/verification_message"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="25dp"
+        android:text="Check your inbox for verification email.\nClick the link to verify your email before proceeding"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iku_earth" />
+
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/resendEmailButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_gravity="center"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="15dp"
         android:backgroundTint="@color/white"
         android:elevation="4dp"
-        android:text="RESEND EMAIL"
+        android:text="Resend Verification Email"
         android:textColor="#66B2B2"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/enter_last_name"
+        app:layout_constraintTop_toBottomOf="@+id/verification_message"
         app:strokeColor="#66B2B2"
         app:strokeWidth="1dp" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/enter_first_name_layout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iku_earth">
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/enter_first_name"
         android:layout_width="250dp"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="13dp"
         android:hint="First Name"
         android:inputType="textPersonName"
         android:textAlignment="center"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/iku_earth" />
 
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/enter_last_name"
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/enter_last_name_layout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="250dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="13dp"
-        android:hint="Last Name"
-        android:inputType="textCapCharacters|textPersonName"
-        android:textAlignment="center"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/enter_first_name" />
+        app:layout_constraintTop_toBottomOf="@+id/enter_first_name_layout">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/enter_last_name"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="13dp"
+            android:hint="Last Name"
+            android:inputType="textPersonName"
+            android:textAlignment="center"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/enter_first_name_layout" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/names_next_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:layout_marginTop="15dp"
+        android:backgroundTint="@color/white"
+        android:elevation="4dp"
+        android:text="Next"
+        android:textColor="#66B2B2"
+        android:textAllCaps="false"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/enter_last_name_layout"
+        app:strokeColor="#66B2B2"
+        app:strokeWidth="1dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

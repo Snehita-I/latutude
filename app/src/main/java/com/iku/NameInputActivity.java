@@ -2,7 +2,9 @@ package com.iku;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -58,6 +60,27 @@ public class NameInputActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
 
 
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(!user.isEmailVerified()) {
+                    handler.postDelayed(this, 1000);
+                    user.reload();
+                } else {
+                    // do actions
+                    binding.resendEmailButton.setVisibility(View.GONE);
+                    binding.verificationMessage.setVisibility(View.GONE);
+                    binding.enterFirstName.setVisibility(View.VISIBLE);
+                    binding.enterLastName.setVisibility(View.VISIBLE);
+                    binding.namesNextButton.setVisibility(View.VISIBLE);
+                    Toast.makeText(NameInputActivity.this, "Email verified!", Toast.LENGTH_SHORT).show();
+
+                }
+            }
+        }, 1000);
+
+
         binding.resendEmailButton.setOnClickListener(view -> {
             user.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
@@ -87,15 +110,14 @@ public class NameInputActivity extends AppCompatActivity {
 
         });
 
+
+
         binding.namesNextButton.setOnClickListener(view -> {
-            user.reload();
             user.reload();
             if (binding.enterFirstName.getText().toString().length() > 0 &&
                     binding.enterLastName.getText().toString().length() > 0) {
                 if (!user.isEmailVerified()) {
                     Toast.makeText(NameInputActivity.this, "Verify your email via the email sent to you before proceeding.", Toast.LENGTH_SHORT).show();
-
-
                 } else {
                     Log.i(TAG, "VERIFIED USER.");
 
