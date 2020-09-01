@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -24,6 +25,8 @@ import androidx.recyclerview.widget.SimpleItemAnimator;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
@@ -72,6 +75,10 @@ public class ChatFragment extends Fragment {
 
     private RecyclerView mChatRecyclerview;
 
+    private BottomSheetBehavior mBottomSheetBehavior;
+
+    private LinearLayout mBottomSheet;
+
     private ChatAdapter chatadapter;
 
     private int STORAGE_PERMISSION_CODE = 10;
@@ -94,6 +101,7 @@ public class ChatFragment extends Fragment {
         memberCount = view.findViewById(R.id.memberCount);
 
         mChatRecyclerview = view.findViewById(R.id.chatRecyclerView);
+        mBottomSheet = view.findViewById(R.id.user_bottom_sheet);
 
         initItems();
         initButtons();
@@ -253,24 +261,38 @@ public class ChatFragment extends Fragment {
         });
 
 
-        /*chatadapter.setOnItemClickListener((documentSnapshot, position) -> {
-            Intent userProfileIntent = new Intent(getContext(), UserProfileActivity.class);
+        chatadapter.setOnItemLongClickListener(new ChatAdapter.onItemLongClickListener() {
+            @Override
+            public void onItemLongClick(DocumentSnapshot documentSnapshot, int position) {
+                Log.i(TAG, "Long Click");
+                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext());
+                View parentView = getLayoutInflater().inflate(R.layout.user_bottom_sheet, null);
+                LinearLayout profileView = parentView.findViewById(R.id.profile_layout);
+                profileView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent userProfileIntent = new Intent(ChatFragment.this.getContext(), UserProfileActivity.class);
 
-            ChatModel chatModel = documentSnapshot.toObject(ChatModel.class);
-            String id = documentSnapshot.getId();
-            String name = chatModel.getUserName();
-            Log.i(TAG, "DOCUMENT ID: " + id);
-            if (name != null) {
-                userProfileIntent.putExtra("EXTRA_PERSON_NAME", name);
-                startActivity(userProfileIntent);
-            } else
-                return;
-            //Toast displaying the document id
+                        ChatModel chatModel = documentSnapshot.toObject(ChatModel.class);
+                        String id = documentSnapshot.getId();
+                        String name = chatModel.getUserName();
+                        Log.i(TAG, "DOCUMENT ID: " + id);
+                        if (name != null) {
+                            userProfileIntent.putExtra("EXTRA_PERSON_NAME", name);
+                            ChatFragment.this.startActivity(userProfileIntent);
+                        } else
+                            return;
+                        //Toast displaying the document id
 
-            Toast.makeText(getActivity(),
-                    "Position: " + position + " ID: " + id + "Name" + name, Toast.LENGTH_LONG).show();
+                        Toast.makeText(ChatFragment.this.getActivity(),
+                                "Position: " + position + " ID: " + id + "Name" + name, Toast.LENGTH_LONG).show();
+                    }
+                });
+                bottomSheetDialog.setContentView(parentView);
+                bottomSheetDialog.show();
+            }
+        });
 
-        });*/
 
 
         return view;
