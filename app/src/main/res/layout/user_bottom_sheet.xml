@@ -29,7 +29,7 @@
             android:layout_gravity="center"
             android:layout_marginLeft="12dp"
             android:text="View Profile"
-            android:textColor="@color/colorTextSecondary"
+            android:textColor="@android:color/black"
             android:textSize="18sp" />
 
     </LinearLayout>

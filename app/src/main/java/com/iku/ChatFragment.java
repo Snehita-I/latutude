@@ -115,13 +115,13 @@ public class ChatFragment extends Fragment {
                 .setQuery(query, ChatModel.class)
                 .build();
 
-        binding.chatRecyclerView.setHasFixedSize(true);
+        mChatRecyclerview.setHasFixedSize(true);
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-        ((SimpleItemAnimator) binding.chatRecyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
+        ((SimpleItemAnimator) mChatRecyclerview.getItemAnimator()).setSupportsChangeAnimations(false);
         linearLayoutManager.setReverseLayout(true);
-        binding.chatRecyclerView.setLayoutManager(linearLayoutManager);
+        mChatRecyclerview.setLayoutManager(linearLayoutManager);
 
-        binding.chatRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        mChatRecyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
@@ -144,8 +144,8 @@ public class ChatFragment extends Fragment {
                 mChatRecyclerview.smoothScrollToPosition(0);
             }
         });
-        binding.chatRecyclerView.setAdapter(chatadapter);
-        ItemClickSupport.addTo(binding.chatRecyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+        mChatRecyclerview.setAdapter(chatadapter);
+        ItemClickSupport.addTo(mChatRecyclerview).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
             @Override
             public void onItemClicked(RecyclerView recyclerView, int position, View v) {
             }
