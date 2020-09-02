@@ -26,7 +26,7 @@ public class FeedbackImageModel {
         return html;
     }
 
-    public List<String> getArrangements() {
+    public List<String> getAttachments() {
         return attachments;
     }
 }

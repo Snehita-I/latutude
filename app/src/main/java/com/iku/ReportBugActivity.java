@@ -26,7 +26,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -34,6 +33,7 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -43,13 +43,14 @@ import java.util.Map;
 
 public class ReportBugActivity extends AppCompatActivity {
 
+
+    private SimpleDateFormat formatter;
     private EditText feedbackText;
     private FirebaseAuth fAuth;
     private FirebaseFirestore firebaseFirestore;
     private String html;
     private String feedbackText_val;
     private String type;
-    private String uid;
     private String to;
     private Button button;
     private String TAG;
@@ -60,8 +61,6 @@ public class ReportBugActivity extends AppCompatActivity {
     ImageView d1, d2, d3;
     EditText messageEntered;
     Button upload;
-    int PICK_IMAGE = 1;
-    int stars = 0;
     private FirebaseAuth mAuth;
 
     private FirebaseFirestore db;
@@ -75,10 +74,14 @@ public class ReportBugActivity extends AppCompatActivity {
 
     Uri mainUri;
 
+    private Date d;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_report_bug);
+
+        d = new Date();
 
         TAG = "ReportBug";
         firebaseFirestore = FirebaseFirestore.getInstance();
@@ -90,25 +93,21 @@ public class ReportBugActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                feedbackText_val = feedbackText.getText().toString();
+                long timestamp = d.getTime();
+
+                feedbackText_val = feedbackText.getText().toString().trim();
+
                 to = "tech@printola.in";
                 subject = "bug reported by " + user.getDisplayName();
-                html =  "<h3>Bug details</h3>" +
+                html = "<h3>Bug details</h3>" +
                         "<table> " +
-                        "<tr><th>Name</th> <th>"+user.getDisplayName()+ "</th> </tr>" +
-                        "<tr> <th>Version</th> " + "<th>"+ BuildConfig.VERSION_CODE +"</th> </tr> " +
-                        "<tr> <th>Message</th> <th>"+ feedbackText_val+"</th> </tr> " +
-                        "<tr> <th>UID</th> <th>"+ user.getUid() +"</th> </tr> " +
-                        "<tr> <th>Email ID</th> <th>"+ user.getEmail()+"</th> </tr> " +
-                        "<tr> <th>Time</th> <th>" + FieldValue.serverTimestamp() +"</th> </tr>" +
+                        "<tr><th>Name</th> <th>" + user.getDisplayName() + "</th> </tr>" +
+                        "<tr> <th>Version</th> " + "<th>" + BuildConfig.VERSION_CODE + "</th> </tr> " +
+                        "<tr> <th>Message</th> <th>" + feedbackText_val + "</th> </tr> " +
+                        "<tr> <th>UID</th> <th>" + user.getUid() + "</th> </tr> " +
+                        "<tr> <th>Email ID</th> <th>" + user.getEmail() + "</th> </tr> " +
+                        "<tr> <th>Time</th> <th>" + formatter.format(timestamp) + "</th> </tr>" +
                         " </table>";
-//                text = "Bug details:" +
-//                        "\nName :" + user.getDisplayName() +
-//                        "\nVersion :" + BuildConfig.VERSION_CODE +
-//                        "\nMessage :" + feedbackText_val +
-//                        "\nUID:" + user.getUid() +
-//                        "\nEmail ID: " + user.getEmail() +
-//                        "\nTimestamp :" + new Timestamp(new Date());
 
                 type = "bug";
                 Map<String, Object> docData = new HashMap<>();
@@ -407,35 +406,28 @@ public class ReportBugActivity extends AppCompatActivity {
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
-
         }
-
-
     }
 
     private void uploadToDB() {
 
         Map<String, Object> docData = new HashMap<>();
-        Map<String, List<String>> array = new HashMap<>();
+
+        long timestamp = d.getTime();
+        formatter = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss z");
+
         feedbackText_val = messageEntered.getText().toString();
         to = "tech@printola.in";
         subject = "bug reported by " + user.getDisplayName();
-        html =  "<h3>Bug details</h3>" +
+        html = "<h3>Bug details</h3>" +
                 "<table> " +
-                "<tr><th>Name</th> <th>"+user.getDisplayName()+ "</th> </tr>" +
-                "<tr> <th>Version</th> " + "<th>"+ BuildConfig.VERSION_CODE +"</th> </tr> " +
-                "<tr> <th>Message</th> <th>"+ feedbackText_val+"</th> </tr> " +
-                "<tr> <th>UID</th> <th>"+ user.getUid() +"</th> </tr> " +
-                "<tr> <th>Email ID</th> <th>"+ user.getEmail()+"</th> </tr> " +
-                "<tr> <th>Time</th> <th>" + FieldValue.serverTimestamp() +"</th> </tr>" +
+                "<tr><th>Name</th> <th>" + user.getDisplayName() + "</th> </tr>" +
+                "<tr> <th>Version</th> " + "<th>" + BuildConfig.VERSION_CODE + "</th> </tr> " +
+                "<tr> <th>Message</th> <th>" + feedbackText_val + "</th> </tr> " +
+                "<tr> <th>UID</th> <th>" + user.getUid() + "</th> </tr> " +
+                "<tr> <th>Email ID</th> <th>" + user.getEmail() + "</th> </tr> " +
+                "<tr> <th>Time</th> <th>" + d.getTime() + "</th> </tr>" +
                 " </table>";
-//        text = "Bug details:" +
-//                "\nName :" + user.getDisplayName() +
-//                "\nVersion :" + BuildConfig.VERSION_CODE +
-//                "\nMessage :" + feedbackText_val +
-//                "\nUID:" + user.getUid() +
-//                "\nEmail ID: " + user.getEmail() +
-//                "\nTimestamp :" + new Timestamp(new Date());
         type = "bug";
 
         docData.put("to: ", to);
@@ -463,10 +455,5 @@ public class ReportBugActivity extends AppCompatActivity {
                     }
                 });
 
-
     }
-
-
 }
-
-

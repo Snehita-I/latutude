@@ -1,9 +1,5 @@
 package com.iku;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -18,9 +14,12 @@ import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -29,7 +28,6 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -40,6 +38,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -52,11 +51,13 @@ public class SettingsActivity extends AppCompatActivity {
 
     private StorageReference mStorageRef;
 
+    private SimpleDateFormat formatter;
+
     ImageView d1, d2, d3;
     EditText messageEntered;
     Button upload;
     int PICK_IMAGE = 1;
-    int stars=0;
+    int stars = 0;
     private FirebaseAuth mAuth;
 
     private FirebaseUser user;
@@ -64,9 +65,9 @@ public class SettingsActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private ImageView img1, img2, img3, img4;
     String myArray[] = new String[3];
-    Uri UriArray[]= new Uri[3];
-    ImageView s[]=new ImageView[5];
-    private int counter=0;
+    Uri UriArray[] = new Uri[3];
+    ImageView s[] = new ImageView[5];
+    private int counter = 0;
     List<Uri> myList = new ArrayList<>();
     List<String> finalUrl = new ArrayList<>();
     String text;
@@ -79,18 +80,20 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        for(int i=0;i<5;i++)
-        {
-            switch(i)
-            {
-                case 0:s[0]=findViewById(R.id.star1);
-                case 1:s[1]=findViewById(R.id.star2);
-                case 2:s[2]=findViewById(R.id.star3);
-                case 3:s[3]=findViewById(R.id.star4);
-                case 4:s[4]=findViewById(R.id.star5);
+        for (int i = 0; i < 5; i++) {
+            switch (i) {
+                case 0:
+                    s[0] = findViewById(R.id.star1);
+                case 1:
+                    s[1] = findViewById(R.id.star2);
+                case 2:
+                    s[2] = findViewById(R.id.star3);
+                case 3:
+                    s[3] = findViewById(R.id.star4);
+                case 4:
+                    s[4] = findViewById(R.id.star5);
             }
         }
-
 
 
         messageEntered = (EditText) findViewById(R.id.feedbackText);
@@ -116,8 +119,8 @@ public class SettingsActivity extends AppCompatActivity {
         d2.setVisibility(View.INVISIBLE);
         d3.setVisibility(View.INVISIBLE);
 
-        final ImageView[] imageBoxes = {img1, img2, img3,img4};
-        final ImageView[] deleteButtons = {d1,d2,d3};
+        final ImageView[] imageBoxes = {img1, img2, img3, img4};
+        final ImageView[] deleteButtons = {d1, d2, d3};
 
         img1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -174,7 +177,7 @@ public class SettingsActivity extends AppCompatActivity {
                         deleteButtons[i].setVisibility(View.VISIBLE);
                         deleteButtons[i].setEnabled(true);
                         imageBoxes[i + 1].setImageDrawable(null);
-                        if(i<=1) {
+                        if (i <= 1) {
                             deleteButtons[i + 1].setVisibility(View.INVISIBLE);
                             deleteButtons[i + 1].setEnabled(false);
                         }
@@ -184,7 +187,8 @@ public class SettingsActivity extends AppCompatActivity {
 
                 }
                 imageBoxes[lastImage].setEnabled(true);
-                if(lastImage<=2) { deleteButtons[lastImage].setEnabled(false);
+                if (lastImage <= 2) {
+                    deleteButtons[lastImage].setEnabled(false);
                     deleteButtons[lastImage].setVisibility(View.INVISIBLE);
                 }
 
@@ -204,7 +208,7 @@ public class SettingsActivity extends AppCompatActivity {
                         deleteButtons[i].setVisibility(View.VISIBLE);
                         deleteButtons[i].setEnabled(true);
                         imageBoxes[i + 1].setImageDrawable(null);
-                        if(i<=1) {
+                        if (i <= 1) {
                             deleteButtons[i + 1].setVisibility(View.INVISIBLE);
                             deleteButtons[i + 1].setEnabled(false);
                         }
@@ -214,7 +218,8 @@ public class SettingsActivity extends AppCompatActivity {
 
                 }
                 imageBoxes[lastImage].setEnabled(true);
-                if(lastImage<=2) { deleteButtons[lastImage].setEnabled(false);
+                if (lastImage <= 2) {
+                    deleteButtons[lastImage].setEnabled(false);
                     deleteButtons[lastImage].setVisibility(View.INVISIBLE);
                 }
 
@@ -234,7 +239,7 @@ public class SettingsActivity extends AppCompatActivity {
                         deleteButtons[i].setVisibility(View.VISIBLE);
                         deleteButtons[i].setEnabled(true);
                         imageBoxes[i + 1].setImageDrawable(null);
-                        if(i<=1) {
+                        if (i <= 1) {
                             deleteButtons[i + 1].setVisibility(View.INVISIBLE);
                             deleteButtons[i + 1].setEnabled(false);
                         }
@@ -244,7 +249,8 @@ public class SettingsActivity extends AppCompatActivity {
 
                 }
                 imageBoxes[lastImage].setEnabled(true);
-                if(lastImage<=2) { deleteButtons[lastImage].setEnabled(false);
+                if (lastImage <= 2) {
+                    deleteButtons[lastImage].setEnabled(false);
                     deleteButtons[lastImage].setVisibility(View.INVISIBLE);
                 }
 
@@ -254,32 +260,30 @@ public class SettingsActivity extends AppCompatActivity {
 
     }
 
-    public void starfn(View view)
-    {
-        if(view==s[0])stars=1;
-        else if(view==s[1])stars=2;
-        else if(view==s[2])stars=3;
-        else if(view==s[3])stars=4;
-        else if(view==s[4])stars=5;
-        starfnutil(stars-1);
+    public void starfn(View view) {
+        if (view == s[0]) stars = 1;
+        else if (view == s[1]) stars = 2;
+        else if (view == s[2]) stars = 3;
+        else if (view == s[3]) stars = 4;
+        else if (view == s[4]) stars = 5;
+        starfnutil(stars - 1);
     }
-    public void starfnutil(int stars)
-    {
-        for(int i=0;i<=stars;i++)
-        {
+
+    public void starfnutil(int stars) {
+        for (int i = 0; i <= stars; i++) {
             s[i].setImageResource(R.drawable.ic_filled_star);
-            Log.i("zero",Integer.toString(i)+"clicked");
+            Log.i("zero", Integer.toString(i) + "clicked");
         }
-        for(int i=stars+1;i<5;i++)
-        {
+        for (int i = stars + 1; i < 5; i++) {
             s[i].setImageResource(R.drawable.ic_unfilled_star);
         }
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        ImageView[] imageBoxes = {img1, img2, img3,img4};
-        ImageView[] deleteButtons = {d1,d2,d3};
+        ImageView[] imageBoxes = {img1, img2, img3, img4};
+        ImageView[] deleteButtons = {d1, d2, d3};
 
         if (resultCode == RESULT_OK && data != null) {
             Uri uri = data.getData();
@@ -292,9 +296,9 @@ public class SettingsActivity extends AppCompatActivity {
             if (requestCode <= 2) {
                 imageBoxes[requestCode + 1].setImageResource(R.drawable.addimages);
                 imageBoxes[requestCode + 1].setEnabled(true);
-                if(requestCode<=1) {
+                if (requestCode <= 1) {
                     deleteButtons[requestCode + 1].setEnabled(false);
-                    deleteButtons[requestCode+1].setVisibility(View.INVISIBLE);
+                    deleteButtons[requestCode + 1].setVisibility(View.INVISIBLE);
                 }
             }
 
@@ -347,11 +351,10 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void uploadToStorage() {
 
-        for (Uri uri : myList)
-        {
+        for (Uri uri : myList) {
             try {
                 final Bitmap imageSelected = decodeUri(this, uri, 1080);
-                mainUri= getImageUri(SettingsActivity.this, imageSelected);
+                mainUri = getImageUri(SettingsActivity.this, imageSelected);
 
                 final StorageReference imageRef = mStorageRef.child(System.currentTimeMillis() + "." + getFileExtension(mainUri));
                 UploadTask uploadTask = imageRef.putFile(uri);
@@ -368,8 +371,7 @@ public class SettingsActivity extends AppCompatActivity {
                                 finalUrl.add(uri.toString());
 
                                 Toast.makeText(SettingsActivity.this, "uri added", Toast.LENGTH_LONG).show();
-                                if (counter == myList.size())
-                                {
+                                if (counter == myList.size()) {
                                     uploadToDB();
                                 }
                             }
@@ -386,29 +388,25 @@ public class SettingsActivity extends AppCompatActivity {
 
 
     }
-    private void uploadToDB()
-    {
+
+    private void uploadToDB() {
+
+        Date d = new Date();
+        long timestamp = d.getTime();
+        formatter = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss z");
 
         Map<String, Object> docData = new HashMap<>();
-        Map<String, List<String>> array = new HashMap<>();
         subject = "Feedback by " + user.getDisplayName();
-        html =  "<h3>Feedback details:</h3>" +
+        html = "<h3>Feedback details:</h3>" +
                 "<table> " +
-                "<tr><th>Name</th> <th>"+user.getDisplayName()+ "</th> </tr>" +
-                "<tr> <th>Version</th> " + "<th>"+ BuildConfig.VERSION_CODE +"</th> </tr> " +
-                "<tr> <th>Message</th> <th>"+ messageEntered+"</th> </tr> " +
-                "<tr> <th>UID</th> <th>"+ user.getUid() +"</th> </tr> " +
-                "<tr> <th>Email ID</th> <th>"+ user.getEmail()+"</th> </tr> " +
-                "<tr> <th>Time</th> <th>" + FieldValue.serverTimestamp() +"</th> </tr>" +
+                "<tr><th>Name: </th> <th>" + user.getDisplayName() + "</th> </tr>" +
+                "<tr> <th>Version: </th> " + "<th>" + BuildConfig.VERSION_CODE + "</th> </tr> " +
+                "<tr> <th>Message: </th> <th>" + messageEntered.getText().toString().trim() + "</th> </tr> " +
+                "<tr> <th>UID: </th> <th>" + user.getUid() + "</th> </tr> " +
+                "<tr> <th>Email ID: </th> <th>" + user.getEmail() + "</th> </tr> " +
+                "<tr> <th>Time: </th> <th>" + formatter.format(timestamp) + "</th> </tr>" +
                 " </table>";
-//        text= "Feedback details:" +
-//                "\nVersion :"+BuildConfig.VERSION_CODE+
-//                "\nMessage :"+text+
-//                "\nStar:"+stars+
-//                "\nUID:"+user.getUid()+
-//                "\nEmail ID: "+user.getEmail()+
-//                "\nTimestamp :"+new Timestamp(new Date());
-        FeedbackImageModel feedbackImageModel = new FeedbackImageModel(finalUrl,subject,html);
+        FeedbackImageModel feedbackImageModel = new FeedbackImageModel(finalUrl, subject, html);
         docData.put("message", feedbackImageModel);
         docData.put("timestamp", new Timestamp(new Date()));
         docData.put("to", "tech@printola.in");
@@ -436,8 +434,6 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
 
-
-
     private void SaveImage(Bitmap finalBitmap) {
 
         String root = Environment.getExternalStorageDirectory().toString();
@@ -448,10 +444,10 @@ public class SettingsActivity extends AppCompatActivity {
         Random generator = new Random();
         int n = 10000;
         n = generator.nextInt(n);
-        String fname = "Image-"+ n +".jpg";
-        File file = new File (myDir, fname);
-        if (file.exists ())
-            file.delete ();
+        String fname = "Image-" + n + ".jpg";
+        File file = new File(myDir, fname);
+        if (file.exists())
+            file.delete();
         try {
             FileOutputStream out = new FileOutputStream(file);
             finalBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
