@@ -91,7 +91,7 @@
     <RelativeLayout
         android:id="@+id/relativeLayout3"
         android:layout_width="match_parent"
-        android:layout_height="140dp"
+        android:layout_height="120dp"
         android:orientation="horizontal"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
@@ -101,24 +101,24 @@
 
             <ImageView
                 android:id="@+id/firstImage"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
                 android:layout_marginRight="20dp"
                 android:layout_centerVertical="true"
                 android:background="@drawable/feedback_image_rounded_border" />
 
             <ImageView
                 android:id="@+id/secondImage"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
                 android:layout_centerInParent="true"
                 android:layout_toRightOf="@+id/firstImage"
                 android:background="@drawable/feedback_image_rounded_border" />
 
             <ImageView
                 android:id="@+id/thirdImage"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
                 android:layout_marginLeft="20dp"
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@+id/secondImage"
@@ -136,7 +136,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignTop="@id/firstImage"
                 android:layout_alignStart="@id/firstImage"
-                android:layout_marginStart="80dp"
+                android:layout_marginStart="64dp"
                 android:layout_marginTop="-8dp"
                 android:src="@drawable/ic_baseline_cancel_24" />
 
@@ -146,7 +146,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignTop="@id/secondImage"
                 android:layout_alignStart="@id/secondImage"
-                android:layout_marginStart="80dp"
+                android:layout_marginStart="64dp"
                 android:layout_marginTop="-8dp"
                 android:src="@drawable/ic_baseline_cancel_24" />
 
@@ -156,7 +156,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignStart="@id/thirdImage"
                 android:layout_alignTop="@id/thirdImage"
-                android:layout_marginStart="80dp"
+                android:layout_marginStart="64dp"
                 android:layout_marginTop="-8dp"
                 android:src="@drawable/ic_baseline_cancel_24" />
         </RelativeLayout>
