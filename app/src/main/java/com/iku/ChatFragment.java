@@ -267,35 +267,69 @@ public class ChatFragment extends Fragment {
                 Log.i(TAG, "Long Click");
                 BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext());
                 View parentView = getLayoutInflater().inflate(R.layout.user_bottom_sheet, null);
+                ChatModel chatModel = documentSnapshot.toObject(ChatModel.class);
                 LinearLayout profileView = parentView.findViewById(R.id.profile_layout);
-                profileView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent userProfileIntent = new Intent(ChatFragment.this.getContext(), UserProfileActivity.class);
+                LinearLayout deleteMessageView = parentView.findViewById(R.id.delete_layout);
+                String UID = chatModel.getUID();
+                Log.i(TAG, "MESSAGE UID=" + UID + "\nMINE=" + user.getUid());
+                if (UID.equals(user.getUid())) {
+                    profileView.setVisibility(View.GONE);
+                    deleteMessageView.setVisibility(View.VISIBLE);
+                    deleteMessageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            deleteMessage(documentSnapshot.getId());
+                            bottomSheetDialog.dismiss();
+                        }
+                    });
+                    bottomSheetDialog.setContentView(parentView);
+                    bottomSheetDialog.show();
+                } else {
+                    profileView.setVisibility(View.VISIBLE);
+                    bottomSheetDialog.setContentView(parentView);
+                    bottomSheetDialog.show();
 
-                        ChatModel chatModel = documentSnapshot.toObject(ChatModel.class);
-                        String id = documentSnapshot.getId();
-                        String name = chatModel.getUserName();
-                        Log.i(TAG, "DOCUMENT ID: " + id);
-                        if (name != null) {
-                            userProfileIntent.putExtra("EXTRA_PERSON_NAME", name);
-                            ChatFragment.this.startActivity(userProfileIntent);
-                        } else
-                            return;
-                        //Toast displaying the document id
+                    profileView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent userProfileIntent = new Intent(ChatFragment.this.getContext(), UserProfileActivity.class);
 
-                        Toast.makeText(ChatFragment.this.getActivity(),
-                                "Position: " + position + " ID: " + id + "Name" + name, Toast.LENGTH_LONG).show();
-                    }
-                });
-                bottomSheetDialog.setContentView(parentView);
-                bottomSheetDialog.show();
+                            String name = chatModel.getUserName();
+                            if (name != null) {
+                                userProfileIntent.putExtra("EXTRA_PERSON_NAME", name);
+                                ChatFragment.this.startActivity(userProfileIntent);
+                            } else
+                                return;
+                            //Toast displaying the document id
+
+                            Toast.makeText(ChatFragment.this.getActivity(),
+                                    "Position: " + position + "\nName" + name, Toast.LENGTH_LONG).show();
+                        }
+                    });
+
+                }
             }
         });
 
 
-
         return view;
+    }
+
+    private void deleteMessage(String messageDocumentID) {
+        db.collection("iku_earth_messages").document(messageDocumentID)
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(getActivity(), "Message deleted!", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error deleting document", e);
+                    }
+                });
     }
 
     private void initItems() {

@@ -209,6 +209,17 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
             sentImage = itemView.findViewById(R.id.sentImage);
             upvoteCount = itemView.findViewById(R.id.upvoteCount);
 
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION && longClickListener != null) {
+                        longClickListener.onItemLongClick(getSnapshots().getSnapshot(position), position);
+                    }
+                    return false;
+                }
+            });
+
         }
     }
 
@@ -222,6 +233,17 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
             messageText = itemView.findViewById(R.id.message);
             messageTime = itemView.findViewById(R.id.message_time);
             upvoteCount = itemView.findViewById(R.id.upvoteCount);
+
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION && longClickListener != null) {
+                        longClickListener.onItemLongClick(getSnapshots().getSnapshot(position), position);
+                    }
+                    return false;
+                }
+            });
 
         }
     }
