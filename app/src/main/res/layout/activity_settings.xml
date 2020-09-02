@@ -7,15 +7,56 @@
     tools:context=".SettingsActivity">
 
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="@drawable/feedback_top_bar_background"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="14dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:src="@drawable/ic_baseline_arrow_back_24" />
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="86dp"
+            android:layout_marginTop="16dp"
+            android:src="@drawable/ic_baseline_settings_24"
+            app:layout_constraintStart_toEndOf="@+id/imageView"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="24dp"
+            android:text="Settings"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.552"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/starlayout"
         android:layout_width="360dp"
         android:layout_height="130dp"
-        android:layout_marginStart="28dp"
         android:layout_marginTop="128dp"
         android:background="@drawable/feedback_star_border"
         android:orientation="vertical"
         android:paddingTop="20dp"
         android:paddingBottom="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -26,7 +67,7 @@
             android:text="How to rate your overall experience?"
             android:textAlignment="center"
             android:textColor="@android:color/black"
-            android:textSize="20dp" />
+            android:textSize="16sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -34,7 +75,7 @@
             android:layout_marginTop="15dp"
             android:orientation="horizontal">
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/star1"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
@@ -43,7 +84,7 @@
                 android:onClick="starfn"
                 android:src="@drawable/ic_unfilled_star" />
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/star2"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
@@ -52,7 +93,7 @@
                 android:onClick="starfn"
                 android:src="@drawable/ic_unfilled_star" />
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/star3"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
@@ -61,7 +102,7 @@
                 android:onClick="starfn"
                 android:src="@drawable/ic_unfilled_star" />
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/star4"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
@@ -70,7 +111,7 @@
                 android:onClick="starfn"
                 android:src="@drawable/ic_unfilled_star" />
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/star5"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
@@ -86,8 +127,7 @@
         android:id="@+id/feedbackText"
         android:layout_width="360dp"
         android:layout_height="160dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="15dp"
         android:background="@drawable/feedback_edittext_border"
         android:ems="10"
         android:gravity="start|top"
@@ -97,79 +137,104 @@
         android:paddingTop="10dp"
         android:paddingRight="10dp"
         android:paddingBottom="10dp"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/starlayout" />
 
     <RelativeLayout
         android:id="@+id/relativeLayout3"
-        android:layout_width="380dp"
-        android:layout_height="130dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="19dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:orientation="horizontal"
         android:paddingTop="25dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
         app:layout_constraintTop_toBottomOf="@+id/feedbackText">
 
-        <ImageView
-            android:id="@+id/firstImage"
-            android:layout_width="100dp"
-            android:layout_height="80dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="10dp" />
-
-        <ImageView
-            android:id="@+id/secondImage"
-            android:layout_width="100dp"
-            android:layout_height="80dp"
-            android:layout_marginLeft="140dp"
-            android:layout_marginRight="10dp" />
-
-        <ImageView
-            android:id="@+id/thirdImage"
-            android:layout_width="100dp"
-            android:layout_height="80dp"
-            android:layout_alignParentTop="true"
-            android:layout_marginLeft="260dp"
-            android:layout_marginRight="10dp"
-             />
-
-        <ImageView
-            android:id="@+id/hiddenImageView"
-            android:layout_width="43dp"
-            android:layout_height="44dp"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginLeft="260dp"
-            android:layout_marginTop="111dp"
-            android:layout_marginEnd="-4dp"
-            android:layout_marginRight="10dp"
-            android:visibility="invisible" />
-
-        <ImageView
-            android:id="@+id/delete3"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="327dp"
-            android:src="@drawable/ic_baseline_cancel_24" />
+            android:layout_centerInParent="true"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center">
 
-        <ImageView
-            android:id="@+id/delete1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="91dp"
-            android:src="@drawable/ic_baseline_cancel_24" />
+            <ImageView
+                android:id="@+id/firstImage"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/feedback_image_rounded_border" />
 
-        <ImageView
-            android:id="@+id/delete2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="213dp"
-            android:src="@drawable/ic_baseline_cancel_24" />
+            <ImageView
+                android:id="@+id/secondImage"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/firstImage"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/feedback_image_rounded_border" />
 
+            <ImageView
+                android:id="@+id/thirdImage"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/secondImage"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/feedback_image_rounded_border" />
+
+            <ImageView
+                android:id="@+id/hiddenImageView"
+                android:layout_width="43dp"
+                android:layout_height="44dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginLeft="260dp"
+                android:layout_marginTop="111dp"
+                android:layout_marginEnd="-4dp"
+                android:layout_marginRight="10dp"
+                android:visibility="invisible" />
+
+            <ImageView
+                android:id="@+id/delete1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="84dp"
+                android:layout_marginTop="13dp"
+                android:src="@drawable/ic_baseline_cancel_24" />
+
+            <ImageView
+                android:id="@+id/delete2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="207dp"
+                android:layout_marginTop="12dp"
+                android:src="@drawable/ic_baseline_cancel_24" />
+
+            <ImageView
+                android:id="@+id/delete3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="321dp"
+                android:layout_marginTop="13dp"
+                android:src="@drawable/ic_baseline_cancel_24" />
+        </RelativeLayout>
 
     </RelativeLayout>
 
@@ -177,41 +242,31 @@
         android:id="@+id/submitButton"
         android:layout_width="90dp"
         android:layout_height="40dp"
-        android:layout_marginTop="43dp"
-        android:layout_marginBottom="164dp"
-        android:background="@drawable/feedback_button_border"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/feed_back_button_border"
+        android:backgroundTint="@android:color/white"
         android:text="Submit"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.52"
+        android:textAllCaps="false"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/relativeLayout3" />
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
         android:layout_marginTop="88dp"
         android:text="Feedback:"
         android:textColor="@android:color/black"
-        android:textSize="20dp"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="350dp"
-        android:layout_height="2dp"
-        android:layout_marginTop="12dp"
-        android:background="@android:color/black"
-        android:text=""
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/textView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
@@ -223,24 +278,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/backButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="14dp"
-        android:layout_marginTop="14dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:src="@drawable/ic_arrow_back_36" />
 
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="86dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintStart_toEndOf="@+id/backButton"
-        app:layout_constraintTop_toTopOf="parent"
-        android:src="@drawable/ic_baseline_settings_24" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

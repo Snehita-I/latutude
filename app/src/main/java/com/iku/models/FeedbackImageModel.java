@@ -2,16 +2,16 @@ package com.iku.models;
 
 import java.util.List;
 
-public class feedbackImageModel {
+public class FeedbackImageModel {
 
     List<String> attachments;
     String subject, text;
 
-    public feedbackImageModel() {
+    public FeedbackImageModel() {
 
     }
 
-    public feedbackImageModel(List<String> asList, String subject, String text) {
+    public FeedbackImageModel(List<String> asList, String subject, String text) {
         this.attachments = asList;
         this.subject = subject;
         this.text = text;
