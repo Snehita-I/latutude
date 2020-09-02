@@ -16,11 +16,6 @@ jobs:
       run: ./gradlew build
     - name: Build Debug APK
       run: ./gradlew assembleDebug
-    - name: Upload a Build Artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: Upload app-debug
-        path: ./app/build/outputs/apk/debug/app-debug.apk
     - name: send APK build on success
       uses: appleboy/telegram-action@master
       with:
