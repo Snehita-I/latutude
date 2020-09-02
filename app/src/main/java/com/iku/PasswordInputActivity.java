@@ -69,6 +69,7 @@ public class PasswordInputActivity extends AppCompatActivity {
                                 mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.LOGIN, password_bundle);
 
                             } else {
+                                mProgress.dismiss();
                                 Toast.makeText(PasswordInputActivity.this, "Incorrect password", Toast.LENGTH_LONG).show();
                             }
                         });
@@ -81,8 +82,6 @@ public class PasswordInputActivity extends AppCompatActivity {
 
     private void initProgressDialog() {
         mProgress = new ProgressDialog(this);
-        mProgress.setTitle("Logging in..");
-        mProgress.setMessage("");
         mProgress.setCancelable(false);
         mProgress.setIndeterminate(true);
     }
