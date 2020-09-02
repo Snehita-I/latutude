@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.amulyakhare.textdrawable.TextDrawable;
+import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentChange;
@@ -41,6 +42,8 @@ public class ProfileFragment extends Fragment {
 
     private String photoUrl;
 
+    private MaterialTextView userHeartsTextView;
+
     private FragmentProfileBinding profileBinding;
 
     private static final String TAG = ProfileFragment.class.getSimpleName();
@@ -60,6 +63,8 @@ public class ProfileFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         user = mAuth.getCurrentUser();
+
+        userHeartsTextView = view.findViewById(R.id.userHearts);
 
         initButtons();
         getUserHearts();
@@ -155,7 +160,7 @@ public class ProfileFragment extends Fragment {
 
                             for (DocumentChange change : querySnapshot.getDocumentChanges()) {
                                 if (change.getType() == DocumentChange.Type.ADDED) {
-                                    profileBinding.userHearts.setText("Hearts Won: " + change.getDocument().get("points"));
+                                    userHeartsTextView.setText("Hearts Won: " + change.getDocument().get("points"));
                                 }
 
                                 String source = querySnapshot.getMetadata().isFromCache() ?
