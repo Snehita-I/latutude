@@ -70,6 +70,8 @@ public class ChatFragment extends Fragment {
 
     private FragmentChatBinding binding;
 
+    private RecyclerView mChatRecyclerview;
+
     private ChatAdapter chatadapter;
 
     private int STORAGE_PERMISSION_CODE = 10;
@@ -90,6 +92,8 @@ public class ChatFragment extends Fragment {
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
 
         memberCount = view.findViewById(R.id.memberCount);
+
+        mChatRecyclerview = view.findViewById(R.id.chatRecyclerView);
 
         initItems();
         initButtons();
@@ -129,7 +133,7 @@ public class ChatFragment extends Fragment {
         chatadapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
-                binding.chatRecyclerView.smoothScrollToPosition(0);
+                mChatRecyclerview.smoothScrollToPosition(0);
             }
         });
         binding.chatRecyclerView.setAdapter(chatadapter);
