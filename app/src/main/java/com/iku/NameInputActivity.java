@@ -2,6 +2,7 @@ package com.iku;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
@@ -23,8 +24,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.iku.databinding.ActivityNameInputBinding;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class NameInputActivity extends AppCompatActivity {
 
@@ -74,43 +79,55 @@ public class NameInputActivity extends AppCompatActivity {
                     binding.enterFirstName.setVisibility(View.VISIBLE);
                     binding.enterLastName.setVisibility(View.VISIBLE);
                     binding.namesNextButton.setVisibility(View.VISIBLE);
-                    Toast.makeText(NameInputActivity.this, "Email verified!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(NameInputActivity.this, "Email verification successful!", Toast.LENGTH_SHORT).show();
 
                 }
             }
         }, 1000);
 
+        binding.resendEmailButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                user.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(NameInputActivity.this, "Verification email sent", Toast.LENGTH_SHORT).show();
+                        //log event
+                        Bundle password_bundle = new Bundle();
+                        password_bundle.putString(FirebaseAnalytics.Param.METHOD, "Email");
+                        password_bundle.putString("verification_email_status", "sent");
+                        mFirebaseAnalytics.logEvent("email_verified", password_bundle);
 
-        binding.resendEmailButton.setOnClickListener(view -> {
-            user.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void aVoid) {
-                    Toast.makeText(NameInputActivity.this, "Verification email sent", Toast.LENGTH_SHORT).show();
 
-                    //log event
-                    Bundle password_bundle = new Bundle();
-                    password_bundle.putString(FirebaseAnalytics.Param.METHOD, "Email");
-                    password_bundle.putString("verification_email_status", "sent");
-                    mFirebaseAnalytics.logEvent("email_verified", password_bundle);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.i("Register", "email not sent " + e.getMessage());
+                        //log event
+                        Bundle password_bundle = new Bundle();
+                        password_bundle.putString(FirebaseAnalytics.Param.METHOD, "Email");
+                        password_bundle.putString("verification_email_status", "failed");
+                        mFirebaseAnalytics.logEvent("verification_email_failed", password_bundle);
+                    }
+                });
+                new CountDownTimer(1*60000, 1000) {
 
+                    public void onTick(long millisUntilFinished) {
+                        binding.resendEmailButton.setEnabled(false);
+                        binding.resendEmailButton.setText("Resend in " +new SimpleDateFormat("ss").format(new Date( millisUntilFinished)) + "s");
+                        binding.resendEmailButton.setTextColor(getResources().getColor(R.color.colorTextSecondary));
+                    }
 
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.i("Register", "email not sent " + e.getMessage());
+                    public void onFinish() {
+                        binding.resendEmailButton.setText("Resend Verification Email");
+                        binding.resendEmailButton.setEnabled(true);
+                        binding.resendEmailButton.setTextColor(getResources().getColor(R.color.colorAccent));
 
-                    //log event
-                    Bundle password_bundle = new Bundle();
-                    password_bundle.putString(FirebaseAnalytics.Param.METHOD, "Email");
-                    password_bundle.putString("verification_email_status", "failed");
-                    mFirebaseAnalytics.logEvent("verification_email_failed", password_bundle);
-                }
-            });
-
+                    }
+                }.start();
+            }
         });
-
-
 
         binding.namesNextButton.setOnClickListener(view -> {
             user.reload();
@@ -120,7 +137,6 @@ public class NameInputActivity extends AppCompatActivity {
                     Toast.makeText(NameInputActivity.this, "Verify your email via the email sent to you before proceeding.", Toast.LENGTH_SHORT).show();
                 } else {
                     Log.i(TAG, "VERIFIED USER.");
-
                     String firstName = binding.enterFirstName.getText().toString().trim();
                     firstName = firstName.substring(0, 1).toUpperCase() + firstName.substring(1).toLowerCase();
 
