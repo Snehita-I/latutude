@@ -30,6 +30,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.iku.databinding.ActivityReportBugBinding;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
@@ -76,10 +77,13 @@ public class ReportBugActivity extends AppCompatActivity {
 
     private Date d;
 
+    private ActivityReportBugBinding reportBugBinding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_report_bug);
+        reportBugBinding = ActivityReportBugBinding.inflate(getLayoutInflater());
+        setContentView(reportBugBinding.getRoot());
 
         d = new Date();
 
@@ -135,9 +139,16 @@ public class ReportBugActivity extends AppCompatActivity {
                                 Log.w(TAG, "Error writing document", e);
                             }
                         });
-
             }
         });
+
+        reportBugBinding.backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
+
         messageEntered = (EditText) findViewById(R.id.feedbackText);
         upload = (Button) findViewById(R.id.submitButton);
         img1 = (ImageView) findViewById(R.id.firstImage);

@@ -284,11 +284,32 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     public void starfn(View view) {
-        if (view == s[0]) stars = 1;
-        else if (view == s[1]) stars = 2;
-        else if (view == s[2]) stars = 3;
-        else if (view == s[3]) stars = 4;
-        else if (view == s[4]) stars = 5;
+        if (view == s[0]) {
+            settingsBinding.feedbackText.setVisibility(View.GONE);
+            settingsBinding.imagesLayout.setVisibility(View.GONE);
+            settingsBinding.submitButton.setVisibility(View.VISIBLE);
+            stars = 1;
+        } else if (view == s[1]) {
+            settingsBinding.feedbackText.setVisibility(View.GONE);
+            settingsBinding.imagesLayout.setVisibility(View.GONE);
+            settingsBinding.submitButton.setVisibility(View.VISIBLE);
+            stars = 2;
+        } else if (view == s[2]) {
+            settingsBinding.feedbackText.setVisibility(View.GONE);
+            settingsBinding.imagesLayout.setVisibility(View.GONE);
+            settingsBinding.submitButton.setVisibility(View.VISIBLE);
+            stars = 3;
+        } else if (view == s[3]) {
+            settingsBinding.feedbackText.setVisibility(View.GONE);
+            settingsBinding.imagesLayout.setVisibility(View.GONE);
+            settingsBinding.submitButton.setVisibility(View.VISIBLE);
+            stars = 4;
+        } else if (view == s[4]) {
+            stars = 5;
+            settingsBinding.feedbackText.setVisibility(View.VISIBLE);
+            settingsBinding.imagesLayout.setVisibility(View.VISIBLE);
+            settingsBinding.submitButton.setVisibility(View.VISIBLE);
+        }
         starfnutil(stars - 1);
     }
 
