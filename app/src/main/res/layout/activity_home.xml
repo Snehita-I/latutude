@@ -15,18 +15,18 @@
     <nl.joery.animatedbottombar.AnimatedBottomBar
         android:id="@+id/animatedBottomBar"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="52dp"
         android:layout_alignParentBottom="true"
         android:background="#fff"
         android:elevation="12dp"
         app:abb_indicatorAppearance="round"
-        app:abb_indicatorColor="#419A88"
+        app:abb_indicatorColor="@color/colorPrimary"
         app:abb_indicatorHeight="4dp"
         app:abb_indicatorLocation="bottom"
         app:abb_indicatorMargin="16dp"
         app:abb_selectedTabType="text"
         app:abb_tabColor="#454545"
-        app:abb_tabColorSelected="#419A88"
+        app:abb_tabColorSelected="@color/colorPrimary"
         app:abb_tabs="@menu/menu" />
 
 </RelativeLayout>

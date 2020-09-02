@@ -39,8 +39,9 @@
 
                 <ImageView
                     android:id="@+id/group_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:padding="6dp"
                     android:src="@drawable/ic_baseline_settings_24"
                     tools:layout_editor_absoluteX="114dp"
                     tools:layout_editor_absoluteY="13dp" />
@@ -49,7 +50,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="5dp"
                     android:text="Report a bug"
                     android:textSize="18sp"
                     tools:layout_editor_absoluteX="152dp"
@@ -74,130 +74,105 @@
 
     <EditText
         android:id="@+id/feedbackText"
-        android:layout_width="360dp"
-        android:layout_height="220dp"
-        android:layout_marginTop="20dp"
+        android:layout_width="0dp"
+        android:layout_height="400dp"
+        android:layout_margin="20dp"
         android:background="@drawable/feedback_edittext_border"
         android:ems="10"
         android:gravity="start|top"
         android:hint="Your messege(1000 characters)"
         android:inputType="textMultiLine"
-        android:paddingLeft="10dp"
-        android:paddingTop="10dp"
-        android:paddingRight="10dp"
-        android:paddingBottom="10dp"
+        android:padding="10dp"
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.49"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/topBar" />
 
     <RelativeLayout
         android:id="@+id/relativeLayout3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
         android:orientation="horizontal"
-        android:paddingTop="25dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/feedbackText">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_centerHorizontal="true"
-            android:gravity="center">
 
             <ImageView
                 android:id="@+id/firstImage"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
+                android:layout_marginRight="20dp"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
                 android:background="@drawable/feedback_image_rounded_border" />
 
             <ImageView
                 android:id="@+id/secondImage"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:layout_centerVertical="true"
+                android:layout_centerInParent="true"
                 android:layout_toRightOf="@+id/firstImage"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
                 android:background="@drawable/feedback_image_rounded_border" />
 
             <ImageView
                 android:id="@+id/thirdImage"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:layout_alignParentTop="true"
+                android:layout_marginLeft="20dp"
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@+id/secondImage"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
                 android:background="@drawable/feedback_image_rounded_border" />
 
             <ImageView
                 android:id="@+id/hiddenImageView"
-                android:layout_width="43dp"
-                android:layout_height="44dp"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginLeft="260dp"
-                android:layout_marginTop="111dp"
-                android:layout_marginEnd="-4dp"
-                android:layout_marginRight="10dp"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 android:visibility="invisible" />
 
             <ImageView
                 android:id="@+id/delete1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="84dp"
-                android:layout_marginTop="13dp"
+                android:layout_alignTop="@id/firstImage"
+                android:layout_alignStart="@id/firstImage"
+                android:layout_marginStart="80dp"
+                android:layout_marginTop="-8dp"
                 android:src="@drawable/ic_baseline_cancel_24" />
 
             <ImageView
                 android:id="@+id/delete2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="207dp"
-                android:layout_marginTop="12dp"
+                android:layout_alignTop="@id/secondImage"
+                android:layout_alignStart="@id/secondImage"
+                android:layout_marginStart="80dp"
+                android:layout_marginTop="-8dp"
                 android:src="@drawable/ic_baseline_cancel_24" />
 
             <ImageView
                 android:id="@+id/delete3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="321dp"
-                android:layout_marginTop="13dp"
+                android:layout_alignStart="@id/thirdImage"
+                android:layout_alignTop="@id/thirdImage"
+                android:layout_marginStart="80dp"
+                android:layout_marginTop="-8dp"
                 android:src="@drawable/ic_baseline_cancel_24" />
         </RelativeLayout>
 
-    </RelativeLayout>
 
     <Button
         android:id="@+id/submitButton"
-        android:layout_width="90dp"
+        android:layout_width="150dp"
         android:layout_height="40dp"
-        android:layout_marginTop="15dp"
         android:background="@drawable/feed_back_button_border"
         android:backgroundTint="@android:color/white"
         android:text="Submit"
         android:textAllCaps="false"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/relativeLayout3" />
 
 
