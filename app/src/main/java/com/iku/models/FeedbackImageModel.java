@@ -5,16 +5,16 @@ import java.util.List;
 public class FeedbackImageModel {
 
     List<String> attachments;
-    String subject, text;
+    String subject, html;
 
     public FeedbackImageModel() {
 
     }
 
-    public FeedbackImageModel(List<String> asList, String subject, String text) {
+    public FeedbackImageModel(List<String> asList, String subject, String html) {
         this.attachments = asList;
         this.subject = subject;
-        this.text = text;
+        this.html = html;
     }
 
 
@@ -22,8 +22,8 @@ public class FeedbackImageModel {
         return subject;
     }
 
-    public String getText() {
-        return text;
+    public String getHtml() {
+        return html;
     }
 
     public List<String> getArrangements() {

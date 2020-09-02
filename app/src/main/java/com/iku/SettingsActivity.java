@@ -29,6 +29,7 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -69,6 +70,8 @@ public class SettingsActivity extends AppCompatActivity {
     List<Uri> myList = new ArrayList<>();
     List<String> finalUrl = new ArrayList<>();
     String text;
+    private String html;
+    private String subject;
     Uri mainUri;
 
     @Override
@@ -388,17 +391,29 @@ public class SettingsActivity extends AppCompatActivity {
 
         Map<String, Object> docData = new HashMap<>();
         Map<String, List<String>> array = new HashMap<>();
-        text= "Feedback details:" +
-                "\nVersion :"+BuildConfig.VERSION_CODE+
-                "\nMessage :"+text+
-                "\nStar:"+stars+
-                "\nUID:"+user.getUid()+
-                "\nEmail ID: "+user.getEmail()+
-                "\nTimestamp :"+new Timestamp(new Date());
-        FeedbackImageModel feedbackImageModel = new FeedbackImageModel(finalUrl, user.getUid(),text);
+        subject = "Feedback by " + user.getDisplayName();
+        html =  "<h3>Feedback details:</h3>" +
+                "<table> " +
+                "<tr><th>Name</th> <th>"+user.getDisplayName()+ "</th> </tr>" +
+                "<tr> <th>Version</th> " + "<th>"+ BuildConfig.VERSION_CODE +"</th> </tr> " +
+                "<tr> <th>Message</th> <th>"+ messageEntered+"</th> </tr> " +
+                "<tr> <th>UID</th> <th>"+ user.getUid() +"</th> </tr> " +
+                "<tr> <th>Email ID</th> <th>"+ user.getEmail()+"</th> </tr> " +
+                "<tr> <th>Time</th> <th>" + FieldValue.serverTimestamp() +"</th> </tr>" +
+                " </table>";
+//        text= "Feedback details:" +
+//                "\nVersion :"+BuildConfig.VERSION_CODE+
+//                "\nMessage :"+text+
+//                "\nStar:"+stars+
+//                "\nUID:"+user.getUid()+
+//                "\nEmail ID: "+user.getEmail()+
+//                "\nTimestamp :"+new Timestamp(new Date());
+        FeedbackImageModel feedbackImageModel = new FeedbackImageModel(finalUrl,subject,html);
         docData.put("message", feedbackImageModel);
         docData.put("timestamp", new Timestamp(new Date()));
-        docData.put("to", "abhishek@printola.in");
+        docData.put("to", "tech@printola.in");
+        docData.put("type", "feedback");
+        docData.put("uid", user.getUid());
 
         db.collection("mail")
                 .add(docData)

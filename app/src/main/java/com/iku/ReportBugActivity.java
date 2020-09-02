@@ -26,6 +26,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -45,7 +46,7 @@ public class ReportBugActivity extends AppCompatActivity {
     private EditText feedbackText;
     private FirebaseAuth fAuth;
     private FirebaseFirestore firebaseFirestore;
-    private String text;
+    private String html;
     private String feedbackText_val;
     private String type;
     private String uid;
@@ -92,19 +93,29 @@ public class ReportBugActivity extends AppCompatActivity {
                 feedbackText_val = feedbackText.getText().toString();
                 to = "tech@printola.in";
                 subject = "bug reported by " + user.getDisplayName();
-                text = "Bug details:" +
-                        "\nName :" + user.getDisplayName() +
-                        "\nVersion :" + BuildConfig.VERSION_CODE +
-                        "\nMessage :" + feedbackText_val +
-                        "\nUID:" + user.getUid() +
-                        "\nEmail ID: " + user.getEmail() +
-                        "\nTimestamp :" + new Timestamp(new Date());
+                html =  "<h3>Bug details</h3>" +
+                        "<table> " +
+                        "<tr><th>Name</th> <th>"+user.getDisplayName()+ "</th> </tr>" +
+                        "<tr> <th>Version</th> " + "<th>"+ BuildConfig.VERSION_CODE +"</th> </tr> " +
+                        "<tr> <th>Message</th> <th>"+ feedbackText_val+"</th> </tr> " +
+                        "<tr> <th>UID</th> <th>"+ user.getUid() +"</th> </tr> " +
+                        "<tr> <th>Email ID</th> <th>"+ user.getEmail()+"</th> </tr> " +
+                        "<tr> <th>Time</th> <th>" + FieldValue.serverTimestamp() +"</th> </tr>" +
+                        " </table>";
+//                text = "Bug details:" +
+//                        "\nName :" + user.getDisplayName() +
+//                        "\nVersion :" + BuildConfig.VERSION_CODE +
+//                        "\nMessage :" + feedbackText_val +
+//                        "\nUID:" + user.getUid() +
+//                        "\nEmail ID: " + user.getEmail() +
+//                        "\nTimestamp :" + new Timestamp(new Date());
+
                 type = "bug";
                 Map<String, Object> docData = new HashMap<>();
                 docData.put("to: ", to);
                 Map<String, Object> nestedData = new HashMap<>();
                 nestedData.put("attachments", Arrays.asList(1, 2, 3));
-                nestedData.put("text", text);
+                nestedData.put("html", html);
                 nestedData.put("subject", subject);
                 docData.put("message", nestedData);
                 docData.put("type", "bug");
@@ -409,19 +420,28 @@ public class ReportBugActivity extends AppCompatActivity {
         feedbackText_val = messageEntered.getText().toString();
         to = "tech@printola.in";
         subject = "bug reported by " + user.getDisplayName();
-        text = "Bug details:" +
-                "\nName :" + user.getDisplayName() +
-                "\nVersion :" + BuildConfig.VERSION_CODE +
-                "\nMessage :" + feedbackText_val +
-                "\nUID:" + user.getUid() +
-                "\nEmail ID: " + user.getEmail() +
-                "\nTimestamp :" + new Timestamp(new Date());
+        html =  "<h3>Bug details</h3>" +
+                "<table> " +
+                "<tr><th>Name</th> <th>"+user.getDisplayName()+ "</th> </tr>" +
+                "<tr> <th>Version</th> " + "<th>"+ BuildConfig.VERSION_CODE +"</th> </tr> " +
+                "<tr> <th>Message</th> <th>"+ feedbackText_val+"</th> </tr> " +
+                "<tr> <th>UID</th> <th>"+ user.getUid() +"</th> </tr> " +
+                "<tr> <th>Email ID</th> <th>"+ user.getEmail()+"</th> </tr> " +
+                "<tr> <th>Time</th> <th>" + FieldValue.serverTimestamp() +"</th> </tr>" +
+                " </table>";
+//        text = "Bug details:" +
+//                "\nName :" + user.getDisplayName() +
+//                "\nVersion :" + BuildConfig.VERSION_CODE +
+//                "\nMessage :" + feedbackText_val +
+//                "\nUID:" + user.getUid() +
+//                "\nEmail ID: " + user.getEmail() +
+//                "\nTimestamp :" + new Timestamp(new Date());
         type = "bug";
 
         docData.put("to: ", to);
         Map<String, Object> nestedData = new HashMap<>();
         nestedData.put("attachments", finalUrl);
-        nestedData.put("text", text);
+        nestedData.put("html", html);
         nestedData.put("subject", subject);
         docData.put("message", nestedData);
         docData.put("type", "bug");
