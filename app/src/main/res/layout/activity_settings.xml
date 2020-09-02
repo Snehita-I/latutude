@@ -41,7 +41,7 @@
                 app:layout_constraintTop_toTopOf="@+id/topAppBar">
 
                 <ImageView
-                    android:id="@+id/group_icon"
+                    android:id="@+id/settings_icon"
                     android:layout_width="45dp"
                     android:layout_height="45dp"
                     android:padding="6dp"
@@ -78,10 +78,10 @@
     <LinearLayout
         android:id="@+id/starlayout"
         android:layout_width="0dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
         android:layout_height="120dp"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
         android:background="@drawable/feedback_star_border"
         android:orientation="vertical"
         android:paddingTop="20dp"
@@ -102,9 +102,9 @@
         <LinearLayout
             android:layout_width="300dp"
             android:layout_height="40dp"
+            android:layout_gravity="center"
             android:layout_marginTop="15dp"
             android:orientation="horizontal"
-            android:layout_gravity="center"
             android:weightSum="5">
 
             <ImageView
@@ -271,14 +271,23 @@
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/option1" />
+        app:layout_constraintTop_toBottomOf="@+id/report_a_bug_button" />
 
-    <Button
-        android:id="@+id/option1"
-        android:layout_width="wrap_content"
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/report_a_bug_button"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="Button"
+        android:layout_marginTop="15dp"
+        android:background="@null"
+        android:backgroundTint="@android:color/white"
+        android:gravity="center|left"
+        android:text="Report a bug"
+        android:textAllCaps="false"
+        android:textColor="@android:color/black"
+        app:icon="@drawable/ic_bug_report_24"
+        app:iconTint="#FF4C4C"
+        app:iconTintMode="src_atop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appBar" />

@@ -24,6 +24,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.button.MaterialButton;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -32,6 +33,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.iku.databinding.ActivitySettingsBinding;
 import com.iku.models.FeedbackImageModel;
 
 import java.io.ByteArrayOutputStream;
@@ -52,6 +54,8 @@ public class SettingsActivity extends AppCompatActivity {
     private StorageReference mStorageRef;
 
     private SimpleDateFormat formatter;
+
+    private MaterialButton goToReportABugActivity;
 
     ImageView d1, d2, d3;
     EditText messageEntered;
@@ -75,10 +79,13 @@ public class SettingsActivity extends AppCompatActivity {
     private String subject;
     Uri mainUri;
 
+    private ActivitySettingsBinding settingsBinding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
+        settingsBinding = ActivitySettingsBinding.inflate(getLayoutInflater());
+        setContentView(settingsBinding.getRoot());
 
         for (int i = 0; i < 5; i++) {
             switch (i) {
@@ -95,6 +102,12 @@ public class SettingsActivity extends AppCompatActivity {
             }
         }
 
+        settingsBinding.backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
 
         messageEntered = (EditText) findViewById(R.id.feedbackText);
         upload = (Button) findViewById(R.id.submitButton);
@@ -111,6 +124,16 @@ public class SettingsActivity extends AppCompatActivity {
         user = mAuth.getCurrentUser();
 
         mStorageRef = FirebaseStorage.getInstance().getReference("feedback");
+
+        goToReportABugActivity = findViewById(R.id.report_a_bug_button);
+
+        goToReportABugActivity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(SettingsActivity.this, ReportBugActivity.class);
+                startActivity(intent);
+            }
+        });
 
         img1.setImageResource(R.drawable.addimages);
         img2.setEnabled(false);

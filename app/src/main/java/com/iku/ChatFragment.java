@@ -300,10 +300,7 @@ public class ChatFragment extends Fragment {
                                 ChatFragment.this.startActivity(userProfileIntent);
                             } else
                                 return;
-                            //Toast displaying the document id
-
-                            Toast.makeText(ChatFragment.this.getActivity(),
-                                    "Position: " + position + "\nName" + name, Toast.LENGTH_LONG).show();
+                            bottomSheetDialog.dismiss();
                         }
                     });
 
