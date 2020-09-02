@@ -160,7 +160,7 @@
         android:background="@drawable/feedback_edittext_border"
         android:ems="10"
         android:gravity="start|top"
-        android:hint="Your messege(1000 characters)"
+        android:hint="Your message (1000 characters)"
         android:inputType="textMultiLine"
         android:paddingLeft="10dp"
         android:paddingTop="10dp"
@@ -254,12 +254,12 @@
         android:background="@drawable/feed_back_button_border"
         android:backgroundTint="@android:color/white"
         android:text="Submit"
-        android:textAllCaps="false"
         android:visibility="gone"
+        android:textAllCaps="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/relativeLayout3" />
+        app:layout_constraintTop_toBottomOf="@+id/imagesLayout" />
 
     <TextView
         android:id="@+id/textView2"

@@ -80,7 +80,7 @@
         android:background="@drawable/feedback_edittext_border"
         android:ems="10"
         android:gravity="start|top"
-        android:hint="Your messege(1000 characters)"
+        android:hint="Your message (1000 characters)"
         android:inputType="textMultiLine"
         android:padding="10dp"
         android:textSize="12sp"
