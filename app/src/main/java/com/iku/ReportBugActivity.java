@@ -55,6 +55,8 @@ public class ReportBugActivity extends AppCompatActivity {
     private FirebaseFirestore firebaseFirestore;
     private String html;
     private String feedbackText_val;
+    private String images;
+    private String imageSrc;
     private String type;
     private String to;
     private String TAG;
@@ -355,7 +357,9 @@ public class ReportBugActivity extends AppCompatActivity {
 
 
     private void uploadToStorage() {
-
+        if (myList.size()==0 && finalUrl.size()==0){
+            uploadToDB();
+        }
         for (Uri uri : myList) {
             try {
                 final Bitmap imageSelected = decodeUri(this, uri, 1080);
@@ -375,7 +379,7 @@ public class ReportBugActivity extends AppCompatActivity {
 
                                 finalUrl.add(uri.toString());
 
-                                Toast.makeText(ReportBugActivity.this, "uri added", Toast.LENGTH_LONG).show();
+                                //Toast.makeText(ReportBugActivity.this, "uri added", Toast.LENGTH_LONG).show();
                                 if (counter == myList.size()) {
                                     uploadToDB();
                                 }
@@ -398,23 +402,34 @@ public class ReportBugActivity extends AppCompatActivity {
         long timestamp = d.getTime();
         formatter = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss z");
 
+        int finalUrl_size= finalUrl.size();
+        int num;
+        if(finalUrl_size > 0) {
+            imageSrc = "";
+            for (int i = 0; i < finalUrl_size; i++) {
+                num = i+1;
+                images +=  "<tr> <th style=\"text-align:left;\">Image " + num +"</th> <th style=\"text-align:left;\">"+  finalUrl.get(i) + "</th> </tr> ";
+                imageSrc += "<h3>Image "+ num +"</h3>" + "<img src=\"" + finalUrl.get(i) + "\" style=\"max-height:512px;\"> ";
+            }
+        }
+
         feedbackText_val = messageEntered.getText().toString();
-        to = "tech@printola.in";
-        subject = "bug reported by " + user.getDisplayName();
-        html = "<h3>Bug details</h3>" +
+        to = "tech@iku.earth";
+        subject = "Bug reported by " + user.getDisplayName();
+        html = "<style> th { text-align:left; } </style><h3>Bug details</h3>" +
                 "<table> " +
-                "<tr><th>Name</th> <th>" + user.getDisplayName() + "</th> </tr>" +
-                "<tr> <th>Version</th> " + "<th>" + BuildConfig.VERSION_CODE + "</th> </tr> " +
-                "<tr> <th>Message</th> <th>" + feedbackText_val + "</th> </tr> " +
-                "<tr> <th>UID</th> <th>" + user.getUid() + "</th> </tr> " +
-                "<tr> <th>Email ID</th> <th>" + user.getEmail() + "</th> </tr> " +
-                "<tr> <th>Time</th> <th>" + d.getTime() + "</th> </tr>" +
-                " </table>";
+                "<tr> <th style=\"text-align:left;\">Name:</th> <th style=\"text-align:left;\">" + user.getDisplayName() + "</th> </tr>" +
+                "<tr> <th style=\"text-align:left;\">Version:</th> " + "<th style=\"text-align:left;\">" + BuildConfig.VERSION_CODE + "</th> </tr> " +
+                "<tr> <th style=\"text-align:left;\">Message:</th> <th style=\"text-align:left;\"> <b>" + feedbackText_val + "</b></th> </tr> " +
+                "<tr> <th style=\"text-align:left;\">UID:</th> <th style=\"text-align:left;\">" + user.getUid() + "</th> </tr> " +
+                "<tr> <th style=\"text-align:left;\">Email ID:</th> <th style=\"text-align:left;\">" + user.getEmail() + "</th> </tr> " +
+                "<tr> <th style=\"text-align:left;\">Time:</th> <th style=\"text-align:left;\">" + d.getTime() + "</th> </tr>"
+                +images+
+                " </table>"+imageSrc;
         type = "bug";
 
-        docData.put("to: ", to);
+        docData.put("to", to);
         Map<String, Object> nestedData = new HashMap<>();
-        nestedData.put("attachments", finalUrl);
         nestedData.put("html", html);
         nestedData.put("subject", subject);
         docData.put("message", nestedData);
@@ -427,13 +442,18 @@ public class ReportBugActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
+                        messageEntered.setText("");
                         Log.d(TAG, "DocumentSnapshot successfully written!");
+                        Toast.makeText(ReportBugActivity.this, "Ugh.. those pesky bugs!", Toast.LENGTH_LONG).show();
+                        startActivity(new Intent(ReportBugActivity.this, HomeActivity.class));
+                        finish();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.w(TAG, "Error writing document", e);
+                        Toast.makeText(ReportBugActivity.this, "err.. can you try that again?", Toast.LENGTH_LONG).show();
                     }
                 });
 

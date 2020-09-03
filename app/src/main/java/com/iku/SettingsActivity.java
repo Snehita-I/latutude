@@ -83,6 +83,8 @@ public class SettingsActivity extends AppCompatActivity {
     String text;
     private String html;
     private String subject;
+    private String images;
+    private String imageSrc;
     Uri mainUri;
 
     private ActivitySettingsBinding settingsBinding;
@@ -415,7 +417,9 @@ public class SettingsActivity extends AppCompatActivity {
 
 
     private void uploadToStorage() {
-
+        if (myList.size()==0 && finalUrl.size()==0){
+            uploadToDB();
+        }
         for (Uri uri : myList) {
             try {
                 final Bitmap imageSelected = decodeUri(this, uri, 1080);
@@ -435,7 +439,7 @@ public class SettingsActivity extends AppCompatActivity {
 
                                 finalUrl.add(uri.toString());
 
-                                Toast.makeText(SettingsActivity.this, "uri added", Toast.LENGTH_LONG).show();
+                                //Toast.makeText(SettingsActivity.this, "uri added", Toast.LENGTH_LONG).show();
                                 if (counter == myList.size()) {
                                     uploadToDB();
                                 }
@@ -460,21 +464,34 @@ public class SettingsActivity extends AppCompatActivity {
         long timestamp = d.getTime();
         formatter = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss z");
 
+        int finalUrl_size= finalUrl.size();
+        int num;
+        if(finalUrl_size > 0) {
+            imageSrc = "";
+            for (int i = 0; i < finalUrl_size; i++) {
+                num = i+1;
+                images +=  "<tr> <th style=\"text-align:left;\" >Image " + num +"</th> <th style=\"text-align:left;\">"+  finalUrl.get(i) + "</th> </tr> ";
+                imageSrc += "<h3>Image "+ num +"</h3>" + "<img src=\"" + finalUrl.get(i) + "\" style=\"max-height:512px;\"> ";
+            }
+        }
+
         Map<String, Object> docData = new HashMap<>();
         subject = "Feedback by " + user.getDisplayName();
         html = "<h3>Feedback details:</h3>" +
                 "<table> " +
-                "<tr><th>Name: </th> <th>" + user.getDisplayName() + "</th> </tr>" +
-                "<tr> <th>Version: </th> " + "<th>" + BuildConfig.VERSION_CODE + "</th> </tr> " +
-                "<tr> <th>Message: </th> <th>" + messageEntered.getText().toString().trim() + "</th> </tr> " +
-                "<tr> <th>UID: </th> <th>" + user.getUid() + "</th> </tr> " +
-                "<tr> <th>Email ID: </th> <th>" + user.getEmail() + "</th> </tr> " +
-                "<tr> <th>Time: </th> <th>" + formatter.format(timestamp) + "</th> </tr>" +
-                " </table>";
-        FeedbackImageModel feedbackImageModel = new FeedbackImageModel(finalUrl, subject, html);
+                "<tr> <th style=\"text-align:left;\">Name: </th> <th style=\"text-align:left;\">" + user.getDisplayName() + "</th> </tr>" +
+                "<tr> <th style=\"text-align:left;\">Version: </th> " + "<th style=\"text-align:left;\" >" + BuildConfig.VERSION_CODE + "</th> </tr> " +
+                "<tr> <th style=\"text-align:left;\">Rating: </th> " + "<th style=\"text-align:left;\" >" + stars + "</th> </tr> " +
+                "<tr> <th style=\"text-align:left;\">Message: </th> <th style=\"text-align:left;\"> <b>" + messageEntered.getText().toString().trim() + "</b></th> </tr> " +
+                "<tr> <th style=\"text-align:left;\">UID: </th> <th style=\"text-align:left;\">" + user.getUid() + "</th> </tr> " +
+                "<tr> <th style=\"text-align:left;\">Email ID: </th> <th style=\"text-align:left;\">" + user.getEmail() + "</th> </tr> " +
+                "<tr> <th style=\"text-align:left;\">Time: </th> <th style=\"text-align:left;\">" + formatter.format(timestamp) + "</th> </tr>" + images +
+                " </table>"+ imageSrc;
+        FeedbackImageModel feedbackImageModel = new FeedbackImageModel(subject, html);
         docData.put("message", feedbackImageModel);
+        docData.put("rating", stars);
         docData.put("timestamp", new Timestamp(new Date()));
-        docData.put("to", "tech@printola.in");
+        docData.put("to", "tech@iku.earth");
         docData.put("type", "feedback");
         docData.put("uid", user.getUid());
 
@@ -484,15 +501,21 @@ public class SettingsActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
                         messageEntered.setText("");
-                        Toast.makeText(SettingsActivity.this, "Image info uploaded", Toast.LENGTH_LONG).show();
+                        Toast.makeText(SettingsActivity.this, "Thank you for that!", Toast.LENGTH_LONG).show();
                         //SaveImage(imageSelected);
+                        stars = 0;
+                        for (int i = 0; i < 5; i++) {
+                            s[i].setImageResource(R.drawable.ic_unfilled_star);
+                        }
+                        startActivity(new Intent(SettingsActivity.this, HomeActivity.class));
+                        finish();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-
-                        Toast.makeText(SettingsActivity.this, e.toString(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(SettingsActivity.this, "err.. can you try that again?", Toast.LENGTH_LONG).show();
+                        //Toast.makeText(SettingsActivity.this, e.toString(), Toast.LENGTH_LONG).show();
                     }
                 });
 

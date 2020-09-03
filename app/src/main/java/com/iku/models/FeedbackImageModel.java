@@ -11,12 +11,10 @@ public class FeedbackImageModel {
 
     }
 
-    public FeedbackImageModel(List<String> asList, String subject, String html) {
-        this.attachments = asList;
+    public FeedbackImageModel( String subject, String html) {
         this.subject = subject;
         this.html = html;
     }
-
 
     public String getSubject() {
         return subject;
@@ -26,7 +24,4 @@ public class FeedbackImageModel {
         return html;
     }
 
-    public List<String> getAttachments() {
-        return attachments;
-    }
 }
