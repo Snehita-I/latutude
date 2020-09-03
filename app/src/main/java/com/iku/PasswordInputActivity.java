@@ -111,7 +111,7 @@ public class PasswordInputActivity extends AppCompatActivity {
             }
         });
 
-        binding.forgotPasswordTextView.setOnClickListener(view -> firebaseAuth.sendPasswordResetEmail(enteredEmail).addOnSuccessListener(aVoid -> Toast.makeText(PasswordInputActivity.this, "Verification Email Sent", Toast.LENGTH_LONG).show()).addOnFailureListener(e -> Toast.makeText(PasswordInputActivity.this, "Email Not Sent" + e.getMessage(), Toast.LENGTH_LONG).show()));
+        binding.forgotPasswordTextView.setOnClickListener(view -> firebaseAuth.sendPasswordResetEmail(enteredEmail).addOnSuccessListener(aVoid -> Toast.makeText(PasswordInputActivity.this, "Password reset instructions sent via email", Toast.LENGTH_LONG).show()).addOnFailureListener(e -> Toast.makeText(PasswordInputActivity.this, "Email Not Sent" + e.getMessage(), Toast.LENGTH_LONG).show()));
 
     }
 

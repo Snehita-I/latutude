@@ -28,46 +28,70 @@
     <ImageView
         android:id="@+id/chosenImage"
         android:layout_width="match_parent"
-        android:layout_height="450dp"
+        android:layout_height="match_parent"
+        android:layout_marginTop="150dp"
         android:layout_centerInParent="true"
         android:adjustViewBounds="true"
         android:scaleType="fitCenter"
         android:transitionName="openStoreImageActivity" />
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/messageArea"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:orientation="horizontal">
+        android:padding="6dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0">
 
-
-        <EditText
-            android:id="@+id/messageTextField"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/chatbox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:hint="Enter message"
-            android:textColorHint="@android:color/darker_gray"
-            android:inputType="textCapSentences"
-            android:maxLines="6"
-            android:textColor="@color/white" />
-
-
-        <ImageView
-            android:id="@+id/sendMessageButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_margin="6dp"
-            android:background="@drawable/bg_send"
-            android:padding="12dp"
+            android:layout_marginEnd="6dp"
+            android:background="@drawable/ic_chatbox"
+            android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/sendMessageButton"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <EditText
+                android:id="@+id/messageTextField"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:padding="4dp"
+                android:layout_marginTop="1dp"
+                android:layout_marginBottom="1dp"
+                android:layout_weight="1"
+                android:background="@color/fui_transparent"
+                android:hint="Add a caption"
+                android:inputType="textCapSentences|textMultiLine"
+                android:maxLines="3"
+                android:minHeight="45dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ImageButton
+            android:id="@+id/sendMessageButton"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:background="@drawable/bg_send"
+            app:layout_constraintBottom_toBottomOf="@+id/chatbox"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/chatbox"
             app:srcCompat="@drawable/ic_send" />
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 </RelativeLayout>
