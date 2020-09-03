@@ -174,33 +174,40 @@ public class ChatFragment extends Fragment {
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
-                                        db.collection("users").document(chatadapter.getItem(position).getUID())
-                                                .get()
-                                                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                                    @Override
-                                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                                        final LeaderboardModel usersData = documentSnapshot.toObject(LeaderboardModel.class);
-                                                        db.collection("users").document(chatadapter.getItem(position).getUID())
-                                                                .update("points", usersData.getPoints() + 1)
-                                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                    @Override
-                                                                    public void onSuccess(Void aVoid) {
-                                                                        Log.i(TAG, "INCREMENTED USER POINT " + usersData.getPoints() + 1);
+                                        if (chatadapter.getItem(position).getUID().equals(user.getUid())) {
+                                            //Log event
+                                            Bundle params = new Bundle();
+                                            params.putString("heart_count", "own message heart up");
+                                            mFirebaseAnalytics.logEvent("heart_up", params);
+                                        } else {
+                                            db.collection("users").document(chatadapter.getItem(position).getUID())
+                                                    .get()
+                                                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                                        @Override
+                                                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                                            final LeaderboardModel usersData = documentSnapshot.toObject(LeaderboardModel.class);
+                                                            db.collection("users").document(chatadapter.getItem(position).getUID())
+                                                                    .update("points", usersData.getPoints() + 1)
+                                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                        @Override
+                                                                        public void onSuccess(Void aVoid) {
+                                                                            Log.i(TAG, "INCREMENTED USER POINT " + usersData.getPoints() + 1);
 
-                                                                        //Log event
-                                                                        Bundle params = new Bundle();
-                                                                        params.putString("heart_count", "heart up");
-                                                                        mFirebaseAnalytics.logEvent("heart_up", params);
-                                                                    }
-                                                                })
-                                                                .addOnFailureListener(new OnFailureListener() {
-                                                                    @Override
-                                                                    public void onFailure(@NonNull Exception e) {
+                                                                            //Log event
+                                                                            Bundle params = new Bundle();
+                                                                            params.putString("heart_count", "heart up");
+                                                                            mFirebaseAnalytics.logEvent("heart_up", params);
+                                                                        }
+                                                                    })
+                                                                    .addOnFailureListener(new OnFailureListener() {
+                                                                        @Override
+                                                                        public void onFailure(@NonNull Exception e) {
 
-                                                                    }
-                                                                });
-                                                    }
-                                                });
+                                                                        }
+                                                                    });
+                                                        }
+                                                    });
+                                        }
                                     }
                                 })
                                 .addOnFailureListener(new OnFailureListener() {
