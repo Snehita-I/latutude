@@ -41,12 +41,13 @@
 
             <ImageView
                 android:id="@+id/settingsButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="16dp"
-                android:src="@drawable/ic_settings_24"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="6dp"
+                android:layout_marginBottom="5dp"
+                android:padding="6dp"
+                android:src="@drawable/ic_baseline_settings_24"
                 app:layout_constraintBottom_toBottomOf="@+id/topAppBar"
                 app:layout_constraintEnd_toEndOf="@+id/topAppBar"
                 app:layout_constraintTop_toTopOf="@+id/topAppBar" />
@@ -70,7 +71,8 @@
         android:layout_below="@id/profileImage"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:textSize="18sp" />
+        android:textSize="24sp"
+        android:textStyle="bold" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/userHearts"
