@@ -295,8 +295,10 @@ public class ChatFragment extends Fragment {
                             Intent userProfileIntent = new Intent(ChatFragment.this.getContext(), UserProfileActivity.class);
 
                             String name = chatModel.getUserName();
+                            String userUID = chatModel.getUID();
                             if (name != null) {
                                 userProfileIntent.putExtra("EXTRA_PERSON_NAME", name);
+                                userProfileIntent.putExtra("EXTRA_PERSON_UID", userUID);
                                 ChatFragment.this.startActivity(userProfileIntent);
                             } else
                                 return;
