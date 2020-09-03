@@ -1,296 +1,302 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".SettingsActivity">
+    android:layout_height="match_parent">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBar"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="match_parent"
+        tools:context=".SettingsActivity">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/topAppBar"
-                android:layout_width="0dp"
-                android:layout_height="56dp"
-                android:background="@color/white"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-            <LinearLayout
-                android:id="@+id/linearLayout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintBottom_toBottomOf="@+id/topAppBar"
-                app:layout_constraintEnd_toEndOf="@+id/topAppBar"
-                app:layout_constraintStart_toStartOf="@+id/topAppBar"
-                app:layout_constraintTop_toTopOf="@+id/topAppBar">
+                <com.google.android.material.appbar.MaterialToolbar
+                    android:id="@+id/topAppBar"
+                    android:layout_width="0dp"
+                    android:layout_height="56dp"
+                    android:background="@color/white"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.0" />
 
-                <ImageView
-                    android:id="@+id/settings_icon"
-                    android:layout_width="45dp"
-                    android:layout_height="45dp"
-                    android:padding="6dp"
-                    android:src="@drawable/ic_baseline_settings_24"
-                    tools:layout_editor_absoluteX="114dp"
-                    tools:layout_editor_absoluteY="13dp" />
-
-                <com.google.android.material.textview.MaterialTextView
+                <LinearLayout
+                    android:id="@+id/linearLayout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="Settings"
-                    android:textSize="18sp"
-                    tools:layout_editor_absoluteX="152dp"
-                    tools:layout_editor_absoluteY="16dp" />
-            </LinearLayout>
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toBottomOf="@+id/topAppBar"
+                    app:layout_constraintEnd_toEndOf="@+id/topAppBar"
+                    app:layout_constraintStart_toStartOf="@+id/topAppBar"
+                    app:layout_constraintTop_toTopOf="@+id/topAppBar">
 
-            <ImageView
-                android:id="@+id/back_button"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:layout_marginStart="16dp"
-                android:padding="6dp"
-                android:src="@drawable/ic_arrow_back_36"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                    <ImageView
+                        android:id="@+id/settings_icon"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:padding="6dp"
+                        android:src="@drawable/ic_baseline_settings_24"
+                        tools:layout_editor_absoluteX="114dp"
+                        tools:layout_editor_absoluteY="13dp" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="Settings"
+                        android:textSize="18sp"
+                        tools:layout_editor_absoluteX="152dp"
+                        tools:layout_editor_absoluteY="16dp" />
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/back_button"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_marginStart="16dp"
+                    android:padding="6dp"
+                    android:src="@drawable/ic_arrow_back_36"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <LinearLayout
-        android:id="@+id/starlayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="20dp"
-        android:background="@drawable/feedback_star_border"
-        android:orientation="vertical"
-        android:padding="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textView2">
-
-        <TextView
-            android:id="@+id/startext"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="How to rate your overall experience?"
-            android:textAlignment="center"
-            android:textColor="@android:color/black"
-            android:textSize="16sp" />
+        </com.google.android.material.appbar.AppBarLayout>
 
         <LinearLayout
-            android:layout_width="300dp"
-            android:layout_height="40dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="10dp"
-            android:orientation="horizontal"
-            android:weightSum="5">
+            android:id="@+id/starlayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/feedback_star_border"
+            android:orientation="vertical"
+            android:padding="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textView2">
 
-            <ImageView
-                android:id="@+id/star1"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_weight="1"
-                android:onClick="starfn"
-                android:src="@drawable/ic_unfilled_star" />
+            <TextView
+                android:id="@+id/startext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="How to rate your overall experience?"
+                android:textAlignment="center"
+                android:textColor="@android:color/black"
+                android:textSize="16sp" />
 
-            <ImageView
-                android:id="@+id/star2"
-                android:layout_width="40dp"
+            <LinearLayout
+                android:layout_width="300dp"
                 android:layout_height="40dp"
-                android:layout_weight="1"
-                android:onClick="starfn"
-                android:src="@drawable/ic_unfilled_star" />
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
+                android:weightSum="5">
 
-            <ImageView
-                android:id="@+id/star3"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_weight="1"
-                android:onClick="starfn"
-                android:src="@drawable/ic_unfilled_star" />
+                <ImageView
+                    android:id="@+id/star1"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:onClick="starfn"
+                    android:src="@drawable/ic_unfilled_star" />
 
-            <ImageView
-                android:id="@+id/star4"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_weight="1"
-                android:onClick="starfn"
-                android:src="@drawable/ic_unfilled_star" />
+                <ImageView
+                    android:id="@+id/star2"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:onClick="starfn"
+                    android:src="@drawable/ic_unfilled_star" />
 
-            <ImageView
-                android:id="@+id/star5"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_weight="1"
-                android:onClick="starfn"
-                android:src="@drawable/ic_unfilled_star" />
+                <ImageView
+                    android:id="@+id/star3"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:onClick="starfn"
+                    android:src="@drawable/ic_unfilled_star" />
+
+                <ImageView
+                    android:id="@+id/star4"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:onClick="starfn"
+                    android:src="@drawable/ic_unfilled_star" />
+
+                <ImageView
+                    android:id="@+id/star5"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:onClick="starfn"
+                    android:src="@drawable/ic_unfilled_star" />
+            </LinearLayout>
+
         </LinearLayout>
 
-    </LinearLayout>
-
-    <EditText
-        android:id="@+id/feedbackText"
-        android:layout_width="0dp"
-        android:layout_height="160dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="20dp"
-        android:background="@drawable/feedback_edittext_border"
-        android:ems="10"
-        android:gravity="start|top"
-        android:hint="Your message (1000 characters)"
-        android:inputType="textMultiLine"
-        android:paddingLeft="10dp"
-        android:paddingTop="10dp"
-        android:paddingRight="10dp"
-        android:paddingBottom="10dp"
-        android:textSize="12sp"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/starlayout" />
-
-    <RelativeLayout
-        android:id="@+id/imagesLayout"
-        android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:orientation="horizontal"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/feedbackText">
-
-        <ImageView
-            android:id="@+id/firstImage"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="20dp"
-            android:background="@drawable/feedback_image_rounded_border" />
-
-        <ImageView
-            android:id="@+id/secondImage"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_centerInParent="true"
-            android:layout_toRightOf="@+id/firstImage"
-            android:background="@drawable/feedback_image_rounded_border" />
-
-        <ImageView
-            android:id="@+id/thirdImage"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="20dp"
-            android:layout_toRightOf="@+id/secondImage"
-            android:background="@drawable/feedback_image_rounded_border" />
-
-        <ImageView
-            android:id="@+id/hiddenImageView"
+        <EditText
+            android:id="@+id/feedbackText"
             android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:visibility="invisible" />
+            android:layout_height="160dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/feedback_edittext_border"
+            android:ems="10"
+            android:gravity="start|top"
+            android:hint="Your optional message (1000 characters)"
+            android:inputType="textMultiLine"
+            android:paddingLeft="10dp"
+            android:paddingTop="10dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="10dp"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/starlayout" />
 
-        <ImageView
-            android:id="@+id/delete1"
+        <RelativeLayout
+            android:id="@+id/imagesLayout"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/feedbackText">
+
+            <ImageView
+                android:id="@+id/firstImage"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/feedback_image_rounded_border" />
+
+            <ImageView
+                android:id="@+id/secondImage"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_centerInParent="true"
+                android:layout_toRightOf="@+id/firstImage"
+                android:background="@drawable/feedback_image_rounded_border" />
+
+            <ImageView
+                android:id="@+id/thirdImage"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:layout_toRightOf="@+id/secondImage"
+                android:background="@drawable/feedback_image_rounded_border" />
+
+            <ImageView
+                android:id="@+id/hiddenImageView"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:visibility="invisible" />
+
+            <ImageView
+                android:id="@+id/delete1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@id/firstImage"
+                android:layout_alignTop="@id/firstImage"
+                android:layout_marginStart="64dp"
+                android:layout_marginTop="-8dp"
+                android:src="@drawable/ic_baseline_cancel_24" />
+
+            <ImageView
+                android:id="@+id/delete2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@id/secondImage"
+                android:layout_alignTop="@id/secondImage"
+                android:layout_marginStart="64dp"
+                android:layout_marginTop="-8dp"
+                android:src="@drawable/ic_baseline_cancel_24" />
+
+            <ImageView
+                android:id="@+id/delete3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@id/thirdImage"
+                android:layout_alignTop="@id/thirdImage"
+                android:layout_marginStart="64dp"
+                android:layout_marginTop="-8dp"
+                android:src="@drawable/ic_baseline_cancel_24" />
+        </RelativeLayout>
+
+
+        <Button
+            android:id="@+id/submitButton"
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="30dp"
+            android:background="@drawable/feed_back_button_border"
+            android:backgroundTint="@android:color/white"
+            android:text="Submit"
+            android:textAllCaps="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imagesLayout" />
+
+        <TextView
+            android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignStart="@id/firstImage"
-            android:layout_alignTop="@id/firstImage"
-            android:layout_marginStart="64dp"
-            android:layout_marginTop="-8dp"
-            android:src="@drawable/ic_baseline_cancel_24" />
+            android:layout_marginTop="15dp"
+            android:text="Feedback:"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/report_a_bug_button" />
 
-        <ImageView
-            android:id="@+id/delete2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignStart="@id/secondImage"
-            android:layout_alignTop="@id/secondImage"
-            android:layout_marginStart="64dp"
-            android:layout_marginTop="-8dp"
-            android:src="@drawable/ic_baseline_cancel_24" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/report_a_bug_button"
+            style="@style/FirebaseUI.Text"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="16dp"
+            android:background="@null"
+            android:backgroundTint="@android:color/white"
+            android:gravity="center|left"
+            android:text="Report a bug"
+            android:textAllCaps="false"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            app:icon="@drawable/ic_bug_report_24"
+            app:iconTint="@color/colorTextPrimary"
+            app:iconTintMode="src_atop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/appBar" />
 
-        <ImageView
-            android:id="@+id/delete3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignStart="@id/thirdImage"
-            android:layout_alignTop="@id/thirdImage"
-            android:layout_marginStart="64dp"
-            android:layout_marginTop="-8dp"
-            android:src="@drawable/ic_baseline_cancel_24" />
-    </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-    <Button
-        android:id="@+id/submitButton"
-        android:layout_width="150dp"
-        android:layout_height="40dp"
-        android:background="@drawable/feed_back_button_border"
-        android:backgroundTint="@android:color/white"
-        android:text="Submit"
-        android:visibility="gone"
-        android:textAllCaps="false"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imagesLayout" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:text="Feedback:"
-        android:textColor="@android:color/black"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/report_a_bug_button" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/report_a_bug_button"
-        style="@style/FirebaseUI.Text"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_marginTop="16dp"
-        android:background="@null"
-        android:backgroundTint="@android:color/white"
-        android:gravity="center|left"
-        android:text="Report a bug"
-        android:textAllCaps="false"
-        android:textColor="@android:color/black"
-        android:textSize="18sp"
-        app:icon="@drawable/ic_bug_report_24"
-        app:iconTint="@color/colorTextPrimary"
-        app:iconTintMode="src_atop"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appBar" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
