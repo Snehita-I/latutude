@@ -1,8 +1,10 @@
 package com.iku;
 
+import android.Manifest;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -20,6 +22,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -60,6 +64,8 @@ public class ChatImageActivity extends AppCompatActivity {
 
     private FirebaseFirestore db;
 
+    private int STORAGE_PERMISSION_CODE=10;
+
     private String TAG = ChatImageActivity.class.getSimpleName();
 
     private FirebaseAnalytics mFirebaseAnalytics;
@@ -82,7 +88,12 @@ public class ChatImageActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
 
-        openFileChooser();
+        if (ContextCompat.checkSelfPermission(ChatImageActivity.this,
+                Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestStoragePermission();
+        } else {
+            openFileChooser();
+        }
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -180,7 +191,6 @@ public class ChatImageActivity extends AppCompatActivity {
                                         messageEntered.setText("");
                                         Toast.makeText(ChatImageActivity.this, "Image info uploaded", Toast.LENGTH_LONG).show();
                                         messageEntered.requestFocus();
-                                        SaveImage(imageSelected);
                                         ChatImageActivity.super.onBackPressed();
 
                                         //log event
@@ -209,31 +219,6 @@ public class ChatImageActivity extends AppCompatActivity {
         startActivityForResult(i, PICK_IMAGE);
     }
 
-    private void SaveImage(Bitmap finalBitmap) {
-
-        String root = Environment.getExternalStorageDirectory().toString();
-        File myDir = new File(root + "/iku/images/sent_images");
-        if (!myDir.exists()) {
-            myDir.mkdirs();
-        }
-        Random generator = new Random();
-        int n = 10000;
-        n = generator.nextInt(n);
-        String fname = "Image-"+ n +".jpg";
-        File file = new File (myDir, fname);
-        if (file.exists ())
-            file.delete ();
-        try {
-            FileOutputStream out = new FileOutputStream(file);
-            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
-            out.flush();
-            out.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -252,5 +237,23 @@ public class ChatImageActivity extends AppCompatActivity {
 
         } else
             onBackPressed();
+    }
+
+    private void requestStoragePermission() {
+
+        ActivityCompat.requestPermissions(this,
+                new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == STORAGE_PERMISSION_CODE)  {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Permission GRANTED", Toast.LENGTH_SHORT).show();
+                openFileChooser();
+            } else {
+                Toast.makeText(this, "Permission DENIED", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }
