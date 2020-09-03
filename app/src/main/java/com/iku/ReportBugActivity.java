@@ -57,7 +57,6 @@ public class ReportBugActivity extends AppCompatActivity {
     private String feedbackText_val;
     private String type;
     private String to;
-    private Button button;
     private String TAG;
     private String subject;
     private FirebaseUser user;
@@ -105,6 +104,13 @@ public class ReportBugActivity extends AppCompatActivity {
         d1 = (ImageView) findViewById(R.id.delete1);
         d2 = (ImageView) findViewById(R.id.delete2);
         d3 = (ImageView) findViewById(R.id.delete3);
+
+        reportBugBinding.backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
 
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
@@ -173,7 +179,10 @@ public class ReportBugActivity extends AppCompatActivity {
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                uploadToStorage();
+                if (messageEntered.getText().toString().isEmpty()) {
+                    Toast.makeText(ReportBugActivity.this, "Enter a message!", Toast.LENGTH_SHORT).show();
+                } else
+                    uploadToStorage();
             }
         });
 
@@ -433,12 +442,13 @@ public class ReportBugActivity extends AppCompatActivity {
     private void requestStoragePermission(int code) {
 
         ActivityCompat.requestPermissions(this,
-                new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, code);
+                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, code);
 
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == 0)  {
+        if (requestCode == 0) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this, "Permission GRANTED", Toast.LENGTH_SHORT).show();
                 Intent i = new Intent();
@@ -448,8 +458,7 @@ public class ReportBugActivity extends AppCompatActivity {
             } else {
                 Toast.makeText(this, "Permission DENIED", Toast.LENGTH_SHORT).show();
             }
-        }
-        else if (requestCode == 1)  {
+        } else if (requestCode == 1) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this, "Permission GRANTED", Toast.LENGTH_SHORT).show();
                 Intent i = new Intent();
@@ -459,8 +468,7 @@ public class ReportBugActivity extends AppCompatActivity {
             } else {
                 Toast.makeText(this, "Permission DENIED", Toast.LENGTH_SHORT).show();
             }
-        }
-        else if (requestCode == 2)  {
+        } else if (requestCode == 2) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this, "Permission GRANTED", Toast.LENGTH_SHORT).show();
                 Intent i = new Intent();

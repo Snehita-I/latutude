@@ -163,6 +163,7 @@
             android:layout_marginEnd="20dp"
             android:background="@drawable/feedback_edittext_border"
             android:ems="10"
+            android:visibility="gone"
             android:gravity="start|top"
             android:hint="Your optional message (1000 characters)"
             android:inputType="textMultiLine"
@@ -176,6 +177,7 @@
             app:layout_constraintTop_toBottomOf="@+id/starlayout" />
 
         <RelativeLayout
+            android:visibility="gone"
             android:id="@+id/imagesLayout"
             android:layout_width="match_parent"
             android:layout_height="120dp"
@@ -255,6 +257,7 @@
             android:backgroundTint="@android:color/white"
             android:text="Submit"
             android:textAllCaps="false"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
