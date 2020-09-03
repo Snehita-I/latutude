@@ -113,7 +113,7 @@ public class ChatImageActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 } else
-                    Log.i(TAG, "No message! ");
+                    Toast.makeText(ChatImageActivity.this, "Please add caption", Toast.LENGTH_SHORT).show();
             }
         });
     }
