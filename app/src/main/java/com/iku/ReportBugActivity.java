@@ -1,8 +1,10 @@
 package com.iku;
 
+import android.Manifest;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -19,6 +21,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -90,64 +94,7 @@ public class ReportBugActivity extends AppCompatActivity {
         TAG = "ReportBug";
         firebaseFirestore = FirebaseFirestore.getInstance();
         fAuth = FirebaseAuth.getInstance();
-        feedbackText = findViewById(R.id.feedbackText);
         user = fAuth.getCurrentUser();
-        button = findViewById(R.id.submitButton);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                long timestamp = d.getTime();
-
-                feedbackText_val = feedbackText.getText().toString().trim();
-
-                to = "tech@printola.in";
-                subject = "bug reported by " + user.getDisplayName();
-                html = "<h3>Bug details</h3>" +
-                        "<table> " +
-                        "<tr><th>Name</th> <th>" + user.getDisplayName() + "</th> </tr>" +
-                        "<tr> <th>Version</th> " + "<th>" + BuildConfig.VERSION_CODE + "</th> </tr> " +
-                        "<tr> <th>Message</th> <th>" + feedbackText_val + "</th> </tr> " +
-                        "<tr> <th>UID</th> <th>" + user.getUid() + "</th> </tr> " +
-                        "<tr> <th>Email ID</th> <th>" + user.getEmail() + "</th> </tr> " +
-                        "<tr> <th>Time</th> <th>" + formatter.format(timestamp) + "</th> </tr>" +
-                        " </table>";
-
-                type = "bug";
-                Map<String, Object> docData = new HashMap<>();
-                docData.put("to: ", to);
-                Map<String, Object> nestedData = new HashMap<>();
-                nestedData.put("attachments", Arrays.asList(1, 2, 3));
-                nestedData.put("html", html);
-                nestedData.put("subject", subject);
-                docData.put("message", nestedData);
-                docData.put("type", "bug");
-                docData.put("uid", user.getUid());
-                docData.put("timeStamp", new Timestamp(new Date()));
-
-                firebaseFirestore.collection("mail").document()
-                        .set(docData)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Log.d(TAG, "DocumentSnapshot successfully written!");
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.w(TAG, "Error writing document", e);
-                            }
-                        });
-            }
-        });
-
-        reportBugBinding.backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
 
         messageEntered = (EditText) findViewById(R.id.feedbackText);
         upload = (Button) findViewById(R.id.submitButton);
@@ -178,33 +125,48 @@ public class ReportBugActivity extends AppCompatActivity {
         img1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent();
-                i.setType("image/*");
-                i.setAction(Intent.ACTION_GET_CONTENT);
+                if (ContextCompat.checkSelfPermission(ReportBugActivity.this,
+                        Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    requestStoragePermission(0);
+                } else {
+                    Intent i = new Intent();
+                    i.setType("image/*");
+                    i.setAction(Intent.ACTION_GET_CONTENT);
 
-                startActivityForResult(i, 0);
+                    startActivityForResult(i, 0);
+                }
             }
         });
 
         img2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent();
-                i.setType("image/*");
-                i.setAction(Intent.ACTION_GET_CONTENT);
+                if (ContextCompat.checkSelfPermission(ReportBugActivity.this,
+                        Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    requestStoragePermission(1);
+                } else {
+                    Intent i = new Intent();
+                    i.setType("image/*");
+                    i.setAction(Intent.ACTION_GET_CONTENT);
 
-                startActivityForResult(i, 1);
+                    startActivityForResult(i, 1);
+                }
             }
         });
 
         img3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent();
-                i.setType("image/*");
-                i.setAction(Intent.ACTION_GET_CONTENT);
+                if (ContextCompat.checkSelfPermission(ReportBugActivity.this,
+                        Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    requestStoragePermission(2);
+                } else {
+                    Intent i = new Intent();
+                    i.setType("image/*");
+                    i.setAction(Intent.ACTION_GET_CONTENT);
 
-                startActivityForResult(i, 2);
+                    startActivityForResult(i, 2);
+                }
             }
         });
 
@@ -467,4 +429,49 @@ public class ReportBugActivity extends AppCompatActivity {
                 });
 
     }
+
+    private void requestStoragePermission(int code) {
+
+        ActivityCompat.requestPermissions(this,
+                new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, code);
+
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == 0)  {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Permission GRANTED", Toast.LENGTH_SHORT).show();
+                Intent i = new Intent();
+                i.setType("image/*");
+                i.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(i, 0);
+            } else {
+                Toast.makeText(this, "Permission DENIED", Toast.LENGTH_SHORT).show();
+            }
+        }
+        else if (requestCode == 1)  {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Permission GRANTED", Toast.LENGTH_SHORT).show();
+                Intent i = new Intent();
+                i.setType("image/*");
+                i.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(i, 1);
+            } else {
+                Toast.makeText(this, "Permission DENIED", Toast.LENGTH_SHORT).show();
+            }
+        }
+        else if (requestCode == 2)  {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Permission GRANTED", Toast.LENGTH_SHORT).show();
+                Intent i = new Intent();
+                i.setType("image/*");
+                i.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(i, 2);
+            } else {
+                Toast.makeText(this, "Permission DENIED", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+
 }
