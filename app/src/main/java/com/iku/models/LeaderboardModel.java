@@ -2,17 +2,21 @@ package com.iku.models;
 
 public class LeaderboardModel {
 
-    private String firstName, lastName;
+    private String firstName;
+    private String lastName;
+
+    private String uid;
 
     private int points;
 
     private LeaderboardModel() {
     }
 
-    public LeaderboardModel(String firstName, String lastName,  int points) {
+    public LeaderboardModel(String firstName, String lastName, int points, String uid) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.points = points;
+        this.uid = uid;
     }
 
     public String getFirstName() {
@@ -37,6 +41,14 @@ public class LeaderboardModel {
 
     public void setPoints(int points) {
         this.points = points;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
 }

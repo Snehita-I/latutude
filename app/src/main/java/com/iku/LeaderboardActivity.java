@@ -18,6 +18,8 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textview.MaterialTextView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -32,6 +34,9 @@ public class LeaderboardActivity extends AppCompatActivity {
 
     private FirebaseFirestore firebaseFirestore;
 
+    private FirebaseUser user;
+
+    private FirebaseAuth mAuth;
 
     private TextView heartscount;
     private TextView playerscount;
@@ -46,6 +51,8 @@ public class LeaderboardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_leaderboard);
 
         firebaseFirestore = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
 
         backButton = findViewById(R.id.back_button);
         heartscount = findViewById(R.id.heartscount);
@@ -92,6 +99,10 @@ public class LeaderboardActivity extends AppCompatActivity {
             @Override
             protected void onBindViewHolder(@NonNull LeaderboardActivity.LeaderboardViewHolder leaderboardViewHolder, int i, @NonNull LeaderboardModel leaderboardModel) {
 
+                if (leaderboardModel.getUid().equals(user.getUid())) {
+                    leaderboardViewHolder.firstNameTextView.setTextColor(getResources().getColor(R.color.colorPrimary));
+                    leaderboardViewHolder.pointsTextView.setTextColor(getResources().getColor(R.color.colorPrimary));
+                }
                 leaderboardViewHolder.firstNameTextView.setText(leaderboardModel.getFirstName() + " " + leaderboardModel.getLastName());
                 leaderboardViewHolder.pointsTextView.setText(String.valueOf(leaderboardModel.getPoints()));
             }
