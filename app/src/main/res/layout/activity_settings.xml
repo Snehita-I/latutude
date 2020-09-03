@@ -250,8 +250,8 @@
         android:background="@drawable/feed_back_button_border"
         android:backgroundTint="@android:color/white"
         android:text="Submit"
-        android:visibility="gone"
         android:textAllCaps="false"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
@@ -269,25 +269,49 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/report_a_bug_button" />
 
-    <com.google.android.material.button.MaterialButton
+    <androidx.cardview.widget.CardView
         android:id="@+id/report_a_bug_button"
-        style="@style/FirebaseUI.Text"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:layout_marginTop="16dp"
-        android:background="@null"
-        android:backgroundTint="@android:color/white"
-        android:gravity="center|left"
-        android:text="Report a bug"
-        android:textAllCaps="false"
-        android:textColor="@android:color/black"
-        android:textSize="18sp"
-        app:icon="@drawable/ic_bug_report_24"
-        app:iconTint="@color/colorTextPrimary"
-        app:iconTintMode="src_atop"
+        app:cardElevation="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appBar" />
+        app:layout_constraintTop_toBottomOf="@+id/appBar">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/bug_icon"
+                android:layout_marginStart="24dp"
+                android:layout_width="24dp"
+                android:layout_centerVertical="true"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_bug_report_24" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                style="@style/FirebaseUI.Text"
+                android:layout_marginLeft="12dp"
+                android:layout_toRightOf="@id/bug_icon"
+                android:text="Report a bug" />
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="24dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:background="@android:color/white"
+                android:src="@drawable/ic_next_12" />
+
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

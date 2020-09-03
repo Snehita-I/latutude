@@ -20,6 +20,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -55,7 +56,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private SimpleDateFormat formatter;
 
-    private MaterialButton goToReportABugActivity;
+    private CardView goToReportABugActivity;
 
     ImageView d1, d2, d3;
     EditText messageEntered;
