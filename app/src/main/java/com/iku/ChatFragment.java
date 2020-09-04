@@ -15,7 +15,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -108,7 +107,6 @@ public class ChatFragment extends Fragment {
         watchTextBox();
         getGroupMemberCount();
 
-
         Query query = db.collection("iku_earth_messages").orderBy("timestamp", Query.Direction.DESCENDING);
 
         FirestoreRecyclerOptions<ChatModel> options = new FirestoreRecyclerOptions.Builder<ChatModel>()
@@ -126,7 +124,6 @@ public class ChatFragment extends Fragment {
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 int firstVisiblePosition = linearLayoutManager.findLastVisibleItemPosition();
-                Log.i(TAG, "onScrolled: " + firstVisiblePosition);
                 if (dy < 0) {
                     binding.chatDate.setVisibility(View.VISIBLE);
                     binding.chatDate.setText(sfdMainDate.format(new Date(chatadapter.getItem(firstVisiblePosition).getTimestamp())));
@@ -144,7 +141,9 @@ public class ChatFragment extends Fragment {
                 mChatRecyclerview.smoothScrollToPosition(0);
             }
         });
+
         mChatRecyclerview.setAdapter(chatadapter);
+
         ItemClickSupport.addTo(mChatRecyclerview).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
             @Override
             public void onItemClicked(RecyclerView recyclerView, int position, View v) {
@@ -156,7 +155,6 @@ public class ChatFragment extends Fragment {
                 int upvotesCount = chatadapter.getItem(position).getUpvoteCount();
                 ArrayList<String> upvotersList = chatadapter.getItem(position).getupvoters();
                 String myUID = user.getUid();
-                Log.i(TAG, "onItemDoubleClicked: UPVOTECOUNT" + upvotesCount + "\nMY UID: " + myUID + "\nALL UPVOTERS: " + upvotersList);
                 if (upvotesCount >= 0) {
                     for (String element : upvotersList) {
                         if (element.contains(myUID)) {
@@ -167,7 +165,6 @@ public class ChatFragment extends Fragment {
                     if (!isLiked) {
                         DocumentSnapshot snapshot = chatadapter.getSnapshots().getSnapshot(position);
                         String documentID = snapshot.getId();
-                        Log.i(TAG, "Document ID" + documentID);
                         db.collection("iku_earth_messages").document(documentID)
                                 .update("upvoteCount", chatadapter.getItem(position).getUpvoteCount() + 1,
                                         "upvoters", FieldValue.arrayUnion(user.getUid()))
@@ -191,7 +188,6 @@ public class ChatFragment extends Fragment {
                                                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                                         @Override
                                                                         public void onSuccess(Void aVoid) {
-                                                                            Log.i(TAG, "INCREMENTED USER POINT " + usersData.getPoints() + 1);
 
                                                                             //Log event
                                                                             Bundle params = new Bundle();
@@ -219,7 +215,6 @@ public class ChatFragment extends Fragment {
                     } else {
                         DocumentSnapshot snapshot = chatadapter.getSnapshots().getSnapshot(position);
                         String documentID = snapshot.getId();
-                        Log.i(TAG, "Document ID" + documentID);
                         db.collection("iku_earth_messages").document(documentID)
                                 .update("upvoteCount", chatadapter.getItem(position).getUpvoteCount() - 1,
                                         "upvoters", FieldValue.arrayRemove(user.getUid()))
@@ -244,7 +239,6 @@ public class ChatFragment extends Fragment {
                                                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                                         @Override
                                                                         public void onSuccess(Void aVoid) {
-                                                                            Log.i(TAG, "DECREMENTED USER POINT BY 1");
 
                                                                             //Log event
                                                                             Bundle params = new Bundle();
@@ -279,14 +273,12 @@ public class ChatFragment extends Fragment {
         chatadapter.setOnItemLongClickListener(new ChatAdapter.onItemLongClickListener() {
             @Override
             public void onItemLongClick(DocumentSnapshot documentSnapshot, int position) {
-                Log.i(TAG, "Long Click");
                 BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext());
                 View parentView = getLayoutInflater().inflate(R.layout.user_bottom_sheet, null);
                 ChatModel chatModel = documentSnapshot.toObject(ChatModel.class);
                 LinearLayout profileView = parentView.findViewById(R.id.profile_layout);
                 LinearLayout deleteMessageView = parentView.findViewById(R.id.delete_layout);
                 String UID = chatModel.getUID();
-                Log.i(TAG, "MESSAGE UID=" + UID + "\nMINE=" + user.getUid());
                 if (UID.equals(user.getUid())) {
                     profileView.setVisibility(View.GONE);
                     deleteMessageView.setVisibility(View.VISIBLE);
@@ -341,7 +333,6 @@ public class ChatFragment extends Fragment {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error deleting document", e);
                     }
                 });
     }
@@ -374,8 +365,6 @@ public class ChatFragment extends Fragment {
                 sendTheMessage(message);
                 binding.messageTextField.setText("");
                 binding.messageTextField.requestFocus();
-            } else {
-                Log.i(TAG, "No message entered!");
             }
         });
 
@@ -418,7 +407,6 @@ public class ChatFragment extends Fragment {
     private void sendTheMessage(String message) {
         Date d = new Date();
         long timestamp = d.getTime();
-        Log.i(TAG, "onClick: " + message + "\n TIME:" + timestamp);
         if (user != null) {
             Map<String, Object> docData = new HashMap<>();
             docData.put("message", message.trim());
@@ -435,7 +423,6 @@ public class ChatFragment extends Fragment {
                     .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                         @Override
                         public void onSuccess(DocumentReference documentReference) {
-                            Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
 
                             //Log event
                             Bundle params = new Bundle();
@@ -446,7 +433,7 @@ public class ChatFragment extends Fragment {
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Log.w(TAG, "Error adding document", e);
+
                         }
                     });
         } else {
@@ -474,7 +461,6 @@ public class ChatFragment extends Fragment {
                     public void onEvent(@Nullable QuerySnapshot querySnapshot,
                                         @Nullable FirebaseFirestoreException e) {
                         if (e != null) {
-                            Log.w(TAG, "Listen error", e);
                             return;
                         }
 
