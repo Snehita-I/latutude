@@ -21,6 +21,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textview.MaterialTextView;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -39,13 +40,10 @@ import nl.dionsegijn.konfetti.models.Size;
 public class LeaderboardActivity extends AppCompatActivity {
 
     private FirestoreRecyclerAdapter adapter;
-
     private RecyclerView mLeaderboardList;
-
     private FirebaseFirestore firebaseFirestore;
-
+    private FirebaseAnalytics mFirebaseAnalytics;
     private FirebaseUser user;
-
     private FirebaseAuth mAuth;
 
     private TextView heartscount;
@@ -60,6 +58,7 @@ public class LeaderboardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_leaderboard);
 
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         firebaseFirestore = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
@@ -116,6 +115,13 @@ public class LeaderboardActivity extends AppCompatActivity {
                     leaderboardViewHolder.firstNameTextView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(final View view) {
+                            //Log event
+                            Bundle easter_bundle = new Bundle();
+                            easter_bundle.putString("easter_egg", "Leaderboard");
+                            easter_bundle.putString("UID", leaderboardModel.getUid());
+                            easter_bundle.putString("Name",leaderboardModel.getFirstName() + " " + leaderboardModel.getLastName());
+                            mFirebaseAnalytics.logEvent("easter_egg_found", easter_bundle);
+
                             Toast.makeText(LeaderboardActivity.this, "-drum roll-", Toast.LENGTH_SHORT).show();
                             konfettiView.build()
                                     .addColors(Color.BLUE, Color.LTGRAY, getResources().getColor(R.color.colorPrimary), getResources().getColor(R.color.colorAccent))

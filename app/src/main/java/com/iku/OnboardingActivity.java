@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.iku.adapter.OnboardingAdapter;
 import com.iku.models.OnboardingScreenModel;
 
@@ -28,11 +29,15 @@ public class OnboardingActivity extends AppCompatActivity {
     private LinearLayout layoutOnboardingIndicators;
     private MaterialButton buttonOnboardingAction;
     private ImageButton dismissOnboardingAction;
-
+    private FirebaseAnalytics mFirebaseAnalytics;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_onboarding);
+
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        //Log event
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.TUTORIAL_BEGIN, null);
 
         //dismiss button skips onboarding screens
         dismissOnboardingAction = findViewById(R.id.dismissOnboardingAction);
@@ -61,6 +66,8 @@ public class OnboardingActivity extends AppCompatActivity {
                 if (onboardingViewPager.getCurrentItem() + 1 < onboardingAdapter.getItemCount()) {
                     onboardingViewPager.setCurrentItem(onboardingViewPager.getCurrentItem() + 1);
                 } else {
+                    //Log event
+                    mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.TUTORIAL_COMPLETE, null);
                     startActivity(new Intent(OnboardingActivity.this, WelcomeActivity.class));
                     finish();
                 }
@@ -70,6 +77,8 @@ public class OnboardingActivity extends AppCompatActivity {
         dismissOnboardingAction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                /*Log event*/
+                mFirebaseAnalytics.logEvent("TUTORIAL_SKIPPED", null);
                 startActivity(new Intent(OnboardingActivity.this,WelcomeActivity.class));
                 finish();
             }

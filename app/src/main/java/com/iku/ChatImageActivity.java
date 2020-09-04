@@ -192,10 +192,11 @@ public class ChatImageActivity extends AppCompatActivity {
                                         messageEntered.requestFocus();
                                         ChatImageActivity.super.onBackPressed();
 
-                                        //log event
+                                        //Log event
                                         Bundle params = new Bundle();
-                                        params.putString("messaging", "image message");
-                                        mFirebaseAnalytics.logEvent("image_sent", params);
+                                        params.putString("type", "image");
+                                        params.putString("uid",user.getUid());
+                                        mFirebaseAnalytics.logEvent("messaging", params);
                                     }
                                 })
                                 .addOnFailureListener(e -> {

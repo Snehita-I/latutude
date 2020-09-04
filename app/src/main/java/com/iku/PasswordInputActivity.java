@@ -3,6 +3,7 @@ package com.iku;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -23,6 +24,9 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.iku.databinding.ActivityPasswordInputBinding;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class PasswordInputActivity extends AppCompatActivity {
 
@@ -84,7 +88,6 @@ public class PasswordInputActivity extends AppCompatActivity {
                                                 goToHomeActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                                 startActivity(goToHomeActivity);
 
-
                                                 //log event
                                                 Bundle password_bundle = new Bundle();
                                                 password_bundle.putString(FirebaseAnalytics.Param.METHOD, "Email");
@@ -106,13 +109,48 @@ public class PasswordInputActivity extends AppCompatActivity {
 
                             } else {
                                 mProgress.dismiss();
+
+                                //log event
+                                Bundle fail_bundle = new Bundle();
+                                fail_bundle.putString(FirebaseAnalytics.Param.METHOD, "Email");
+                                fail_bundle.putString("failure_reason", "incorrect password");
+                                mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.LOGIN, fail_bundle);
                                 Toast.makeText(PasswordInputActivity.this, "Incorrect password", Toast.LENGTH_LONG).show();
                             }
                         });
             }
         });
 
-        binding.forgotPasswordTextView.setOnClickListener(view -> firebaseAuth.sendPasswordResetEmail(enteredEmail).addOnSuccessListener(aVoid -> Toast.makeText(PasswordInputActivity.this, "Password reset instructions sent via email", Toast.LENGTH_LONG).show()).addOnFailureListener(e -> Toast.makeText(PasswordInputActivity.this, "Email Not Sent" + e.getMessage(), Toast.LENGTH_LONG).show()));
+        binding.forgotPasswordTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                firebaseAuth.sendPasswordResetEmail(enteredEmail)
+                        .addOnSuccessListener(aVoid ->
+                                Toast.makeText(PasswordInputActivity.this, "Password reset instructions sent via email", Toast.LENGTH_LONG).show())
+                        .addOnFailureListener(e ->
+                                Toast.makeText(PasswordInputActivity.this, "Email Not Sent" + e.getMessage(), Toast.LENGTH_LONG).show());
+                new CountDownTimer(1*60000, 1000) {
+
+                    public void onTick(long millisUntilFinished) {
+                        binding.forgotPasswordTextView.setEnabled(false);
+                        binding.forgotPasswordTextView.setText("Resend in " +new SimpleDateFormat("ss").format(new Date( millisUntilFinished)) + "s");
+                    }
+
+                    public void onFinish() {
+                        binding.forgotPasswordTextView.setText("Forgot Password?");
+                        binding.forgotPasswordTextView.setEnabled(true);
+
+                    }
+                }.start();
+                }
+
+            });
+
+//        binding.forgotPasswordTextView.setOnClickListener(view ->
+//                firebaseAuth.sendPasswordResetEmail(enteredEmail).addOnSuccessListener(
+//                        aVoid ->
+//                Toast.makeText(PasswordInputActivity.this, "Password reset instructions sent via email", Toast.LENGTH_LONG).show()).addOnFailureListener(e ->
+//                Toast.makeText(PasswordInputActivity.this, "Email Not Sent" + e.getMessage(), Toast.LENGTH_LONG).show()));
 
     }
 

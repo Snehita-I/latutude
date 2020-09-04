@@ -174,8 +174,8 @@ public class ChatFragment extends Fragment {
                                         if (chatadapter.getItem(position).getUID().equals(user.getUid())) {
                                             //Log event
                                             Bundle params = new Bundle();
-                                            params.putString("heart_count", "own message heart up");
-                                            mFirebaseAnalytics.logEvent("heart_up", params);
+                                            params.putString("heart_up", user.getUid());
+                                            mFirebaseAnalytics.logEvent("hearts", params);
                                         } else {
                                             db.collection("users").document(chatadapter.getItem(position).getUID())
                                                     .get()
@@ -190,9 +190,9 @@ public class ChatFragment extends Fragment {
                                                                         public void onSuccess(Void aVoid) {
 
                                                                             //Log event
-                                                                            Bundle params = new Bundle();
-                                                                            params.putString("heart_count", "heart up");
-                                                                            mFirebaseAnalytics.logEvent("heart_up", params);
+                                                                            Bundle down_params = new Bundle();
+                                                                            down_params.putString("heart_down", user.getUid());
+                                                                            mFirebaseAnalytics.logEvent("hearts", down_params);
                                                                         }
                                                                     })
                                                                     .addOnFailureListener(new OnFailureListener() {
@@ -327,6 +327,12 @@ public class ChatFragment extends Fragment {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
+                        //Log event
+                        Bundle delete_bundle = new Bundle();
+                        delete_bundle.putString("UID", user.getUid());
+                        delete_bundle.putString("Name", user.getDisplayName());
+                        mFirebaseAnalytics.logEvent("deleted_message", delete_bundle);
+
                         Toast.makeText(getActivity(), "Message deleted!", Toast.LENGTH_SHORT).show();
                     }
                 })
@@ -426,7 +432,8 @@ public class ChatFragment extends Fragment {
 
                             //Log event
                             Bundle params = new Bundle();
-                            params.putString("messaging", "message sent");
+                            params.putString("type", "text");
+                            params.putString("uid",user.getUid());
                             mFirebaseAnalytics.logEvent("messaging", params);
                         }
                     })

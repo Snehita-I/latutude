@@ -62,15 +62,16 @@ public class EmailInputActivity extends AppCompatActivity {
                         new OnCompleteListener<SignInMethodQueryResult>() {
                             @Override
                             public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
+
+
                                 Log.d(TAG, "" + task.getResult().getSignInMethods().size());
                                 if (task.getResult().getSignInMethods().size() == 0) {
-
 
                                     //log event
                                     Bundle signup_bundle = new Bundle();
                                     signup_bundle.putString(FirebaseAnalytics.Param.METHOD, "Email");
-                                    signup_bundle.putString("user_type", "new user");
-                                    mFirebaseAnalytics.logEvent("email_signup", signup_bundle);
+                                    signup_bundle.putString("state", "new user");
+                                    mFirebaseAnalytics.logEvent("email_entered", signup_bundle);
 
                                     // email not existed
                                     //Go to Signup page
@@ -79,12 +80,11 @@ public class EmailInputActivity extends AppCompatActivity {
                                     startActivity(goToNewPasswordActivity);
 
                                 } else {
-
                                     //log event
                                     Bundle signin_bundle = new Bundle();
                                     signin_bundle.putString(FirebaseAnalytics.Param.METHOD, "Email");
-                                    signin_bundle.putString("user_type", "existing user");
-                                    mFirebaseAnalytics.logEvent("email_signin", signin_bundle);
+                                    signin_bundle.putString("state", "existing user");
+                                    mFirebaseAnalytics.logEvent("email_entered", signin_bundle);
 
                                     // email existed
                                     // Go to Login page
@@ -97,6 +97,11 @@ public class EmailInputActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         e.printStackTrace();
+                        Bundle signin_bundle = new Bundle();
+                        signin_bundle.putString(FirebaseAnalytics.Param.METHOD, "Email");
+                        signin_bundle.putString("state", "failed to fetch method");
+                        mFirebaseAnalytics.logEvent("email_entered", signin_bundle);
+
                     }
                 });
             }

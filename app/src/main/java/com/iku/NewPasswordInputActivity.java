@@ -94,7 +94,7 @@ public class NewPasswordInputActivity extends AppCompatActivity {
                                                 Bundle password_bundle = new Bundle();
                                                 password_bundle.putString(FirebaseAnalytics.Param.METHOD, "Email");
                                                 password_bundle.putString("verification_email_status", "sent");
-                                                mFirebaseAnalytics.logEvent("email_verified", password_bundle);
+                                                mFirebaseAnalytics.logEvent("user_verified", password_bundle);
 
 
                                             }
@@ -106,7 +106,7 @@ public class NewPasswordInputActivity extends AppCompatActivity {
                                                 Bundle password_bundle = new Bundle();
                                                 password_bundle.putString(FirebaseAnalytics.Param.METHOD, "Email");
                                                 password_bundle.putString("verification_email_status", "failed");
-                                                mFirebaseAnalytics.logEvent("verification_email_failed", password_bundle);
+                                                mFirebaseAnalytics.logEvent("user_verified", password_bundle);
                                             }
                                         });
 
