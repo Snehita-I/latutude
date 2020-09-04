@@ -80,6 +80,11 @@ public class NameInputActivity extends AppCompatActivity {
                     binding.enterFirstName.setVisibility(View.VISIBLE);
                     binding.enterLastName.setVisibility(View.VISIBLE);
                     binding.namesNextButton.setVisibility(View.VISIBLE);
+                    //log event
+                    Bundle verify_bundle = new Bundle();
+                    verify_bundle.putString(FirebaseAnalytics.Param.METHOD, "Email");
+                    verify_bundle.putString("verification_email_status", "verified");
+                    mFirebaseAnalytics.logEvent("user_verified", verify_bundle);
                     Toast.makeText(NameInputActivity.this, "Email verification successful!", Toast.LENGTH_SHORT).show();
 
                 }
@@ -97,7 +102,7 @@ public class NameInputActivity extends AppCompatActivity {
                         Bundle password_bundle = new Bundle();
                         password_bundle.putString(FirebaseAnalytics.Param.METHOD, "Email");
                         password_bundle.putString("verification_email_status", "sent");
-                        mFirebaseAnalytics.logEvent("email_verified", password_bundle);
+                        mFirebaseAnalytics.logEvent("resend_verification_email", password_bundle);
 
 
                     }
@@ -108,7 +113,7 @@ public class NameInputActivity extends AppCompatActivity {
                         Bundle password_bundle = new Bundle();
                         password_bundle.putString(FirebaseAnalytics.Param.METHOD, "Email");
                         password_bundle.putString("verification_email_status", "failed");
-                        mFirebaseAnalytics.logEvent("verification_email_failed", password_bundle);
+                        mFirebaseAnalytics.logEvent("resend_verification_email", password_bundle);
                     }
                 });
                 new CountDownTimer(1*60000, 1000) {
@@ -134,7 +139,7 @@ public class NameInputActivity extends AppCompatActivity {
             if (binding.enterFirstName.getText().toString().length() > 0 &&
                     binding.enterLastName.getText().toString().length() > 0) {
                 if (!user.isEmailVerified()) {
-                    Toast.makeText(NameInputActivity.this, "Verify your email via the email sent to you before proceeding.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(NameInputActivity.this, "Verify your email before proceeding.", Toast.LENGTH_SHORT).show();
                 } else {
                     String firstName = binding.enterFirstName.getText().toString().trim();
                     firstName = firstName.substring(0, 1).toUpperCase() + firstName.substring(1).toLowerCase();
@@ -207,7 +212,15 @@ public class NameInputActivity extends AppCompatActivity {
                                         mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SIGN_UP, signup_bundle);
                                     }
                                 })
-                                .addOnFailureListener(e -> Log.w(TAG, "Error writing document", e));
+                                .addOnFailureListener(e -> {
+                                    Log.w(TAG, "Error writing document", e);
+                                    /*Log event*/
+                                    Bundle failed_bundle = new Bundle();
+                                    failed_bundle.putString(FirebaseAnalytics.Param.METHOD, "Email");
+                                    failed_bundle.putString("failure_reason", "DB write failed");
+                                    mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SIGN_UP, failed_bundle);
+
+                                });
 
                         db.collection("registrationTokens").document(fAuth.getUid())
                                 .set(userRegistrationTokenInfo)

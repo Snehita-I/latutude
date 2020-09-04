@@ -28,6 +28,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -62,6 +63,8 @@ public class ReportBugActivity extends AppCompatActivity {
     private String subject;
     private FirebaseUser user;
     private StorageReference mStorageRef;
+    private FirebaseAnalytics mFirebaseAnalytics;
+
 
     private ProgressDialog mProgress;
 
@@ -91,6 +94,7 @@ public class ReportBugActivity extends AppCompatActivity {
         reportBugBinding = ActivityReportBugBinding.inflate(getLayoutInflater());
         setContentView(reportBugBinding.getRoot());
 
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         d = new Date();
 
         TAG = "ReportBug";
@@ -448,6 +452,12 @@ public class ReportBugActivity extends AppCompatActivity {
                     public void onSuccess(Void aVoid) {
                         mProgress.dismiss();
                         messageEntered.setText("");
+                        //Log event
+                        Bundle bug_bundle = new Bundle();
+                        bug_bundle.putString("status", "submitted");
+                        bug_bundle.putString("UID", user.getUid());
+                        mFirebaseAnalytics.logEvent("bug", bug_bundle);
+
                         Toast.makeText(ReportBugActivity.this, "Ugh.. those pesky bugs!", Toast.LENGTH_LONG).show();
                         onBackPressed();
                     }
@@ -456,6 +466,11 @@ public class ReportBugActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         mProgress.dismiss();
+                        //Log event
+                        Bundle failed_bundle = new Bundle();
+                        failed_bundle.putString("status", "failed");
+                        failed_bundle.putString("UID", user.getUid());
+                        mFirebaseAnalytics.logEvent("bug", failed_bundle);
                         Toast.makeText(ReportBugActivity.this, "err.. can you try that again?", Toast.LENGTH_LONG).show();
                     }
                 });

@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.google.android.material.textview.MaterialTextView;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentChange;
@@ -40,6 +41,8 @@ public class ProfileFragment extends Fragment {
 
     private FirebaseUser user;
 
+    private FirebaseAnalytics mFirebaseAnalytics;
+
     private String photoUrl;
 
     private MaterialTextView userHeartsTextView;
@@ -60,6 +63,7 @@ public class ProfileFragment extends Fragment {
         profileBinding = FragmentProfileBinding.inflate(inflater, container, false);
         View view = profileBinding.getRoot();
 
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         user = mAuth.getCurrentUser();
@@ -75,6 +79,11 @@ public class ProfileFragment extends Fragment {
 
     private void initButtons() {
         profileBinding.logoutButton.setOnClickListener(view -> {
+            //log event
+            //Remove UID if this event is erroring out in Analytics
+            Bundle logout_bundle = new Bundle();
+            logout_bundle.putString("uid",user.getUid());
+            mFirebaseAnalytics.logEvent("logout", logout_bundle);
             mAuth.signOut();
             Intent intent = new Intent(getActivity(), SplashActivity.class);
             startActivity(intent);

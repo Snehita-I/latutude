@@ -29,6 +29,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -65,10 +66,10 @@ public class SettingsActivity extends AppCompatActivity {
     int PICK_IMAGE = 1;
     int stars = 0;
     private FirebaseAuth mAuth;
-
     private FirebaseUser user;
-
     private FirebaseFirestore db;
+    private FirebaseAnalytics mFirebaseAnalytics;
+
     private int STORAGE_PERMISSION_CODE = 10;
     private ImageView img1, img2, img3, img4;
     String myArray[] = new String[3];
@@ -91,6 +92,8 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         settingsBinding = ActivitySettingsBinding.inflate(getLayoutInflater());
         setContentView(settingsBinding.getRoot());
+
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         for (int i = 0; i < 5; i++) {
             switch (i) {
@@ -337,6 +340,13 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     public void starfnutil(int stars) {
+        //Log event
+        Bundle star_bundle = new Bundle();
+        star_bundle.putString("status", "attempted");
+        star_bundle.putInt("rating", stars);
+        star_bundle.putString("UID", user.getUid());
+        mFirebaseAnalytics.logEvent("feedback", star_bundle);
+
         for (int i = 0; i <= stars; i++) {
             s[i].setImageResource(R.drawable.ic_filled_star);
         }
@@ -501,6 +511,13 @@ public class SettingsActivity extends AppCompatActivity {
                     public void onSuccess(DocumentReference documentReference) {
                         mProgress.dismiss();
                         messageEntered.setText("");
+                        //Log event
+                        Bundle feedback_bundle = new Bundle();
+                        feedback_bundle.putString("status", "submitted");
+                        feedback_bundle.putInt("rating", stars);
+                        feedback_bundle.putString("UID", user.getUid());
+                        mFirebaseAnalytics.logEvent("feedback", feedback_bundle);
+
                         Toast.makeText(SettingsActivity.this, "Thank you for that!", Toast.LENGTH_LONG).show();
                         //SaveImage(imageSelected);
                         stars = 0;
@@ -513,6 +530,13 @@ public class SettingsActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         mProgress.dismiss();
+                        //Log event
+                        Bundle failed_bundle = new Bundle();
+                        failed_bundle.putString("status", "failed");
+                        failed_bundle.putInt("rating", stars);
+                        failed_bundle.putString("UID", user.getUid());
+                        mFirebaseAnalytics.logEvent("feedback", failed_bundle);
+
                         Toast.makeText(SettingsActivity.this, "err.. can you try that again?", Toast.LENGTH_LONG).show();
                         //Toast.makeText(SettingsActivity.this, e.toString(), Toast.LENGTH_LONG).show();
                     }
