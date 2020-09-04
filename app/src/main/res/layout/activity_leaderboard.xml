@@ -11,7 +11,8 @@
     <nl.dionsegijn.konfetti.KonfettiView
         android:id="@+id/viewConfetti"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:translationZ="1dp"/>
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBar"
@@ -55,7 +56,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginLeft="5dp"
-                    android:text="Iku Experiment"
+                    android:text="Leaderboard"
                     android:textSize="18sp"
                     tools:layout_editor_absoluteX="152dp"
                     tools:layout_editor_absoluteY="16dp" />

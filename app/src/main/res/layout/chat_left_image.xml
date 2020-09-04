@@ -66,7 +66,7 @@
             android:paddingStart="5dp"
             android:paddingEnd="5dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="#040404"
+            android:textColor="#4A4A4A"
             app:layout_constraintBottom_toBottomOf="@id/constraintLayout"
             app:layout_constraintEnd_toEndOf="@id/constraintLayout"
             app:layout_constraintHorizontal_bias="0.0"

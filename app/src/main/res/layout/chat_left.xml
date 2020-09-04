@@ -44,7 +44,7 @@
             android:layout_height="wrap_content"
             android:autoLink="web"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="#040404"
+            android:textColor="#4A4A4A"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"

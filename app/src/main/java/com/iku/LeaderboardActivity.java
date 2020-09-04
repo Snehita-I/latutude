@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +28,9 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.iku.models.LeaderboardModel;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import nl.dionsegijn.konfetti.KonfettiView;
 import nl.dionsegijn.konfetti.models.Shape;
@@ -112,17 +116,31 @@ public class LeaderboardActivity extends AppCompatActivity {
                     leaderboardViewHolder.firstNameTextView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(final View view) {
-                            Toast.makeText(LeaderboardActivity.this, "confetti", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LeaderboardActivity.this, "-drum roll-", Toast.LENGTH_SHORT).show();
                             konfettiView.build()
-                                    .addColors(Color.YELLOW, Color.GREEN, Color.MAGENTA)
+                                    .addColors(Color.BLUE, Color.LTGRAY, getResources().getColor(R.color.colorPrimary), getResources().getColor(R.color.colorAccent))
                                     .setDirection(0.0, 359.0)
-                                    .setSpeed(1f, 5f)
+                                    .setSpeed(1f, 10f)
                                     .setFadeOutEnabled(true)
                                     .setTimeToLive(2000L)
                                     .addShapes(Shape.Square.INSTANCE, Shape.Circle.INSTANCE)
-                                    .addSizes(new Size(12, 5f))
+                                    .addSizes(new Size(8, 10f))
                                     .setPosition(-50f, konfettiView.getWidth() + 50f, -50f, -50f)
                                     .streamFor(300, 5000L);
+
+                            new CountDownTimer(1*10000, 1000) {
+
+                                public void onTick(long millisUntilFinished) {
+                                    leaderboardViewHolder.firstNameTextView.setEnabled(false);
+                                }
+
+                                public void onFinish() {
+                                    leaderboardViewHolder.firstNameTextView.setEnabled(true);
+
+                                }
+                            }.start();
+
+
                         }
                     });
                 }
