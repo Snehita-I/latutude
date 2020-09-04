@@ -76,6 +76,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-perf:19.0.8'
     //ViewPager2
     implementation "androidx.viewpager2:viewpager2:1.0.0"
+    //Confetti-feature
+    implementation 'nl.dionsegijn:konfetti:1.2.2'
 }
 repositories {
     mavenCentral()

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -25,6 +27,10 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.iku.models.LeaderboardModel;
+
+import nl.dionsegijn.konfetti.KonfettiView;
+import nl.dionsegijn.konfetti.models.Shape;
+import nl.dionsegijn.konfetti.models.Size;
 
 public class LeaderboardActivity extends AppCompatActivity {
 
@@ -102,10 +108,28 @@ public class LeaderboardActivity extends AppCompatActivity {
                 if (leaderboardModel.getUid().equals(user.getUid())) {
                     leaderboardViewHolder.firstNameTextView.setTextColor(getResources().getColor(R.color.colorPrimary));
                     leaderboardViewHolder.pointsTextView.setTextColor(getResources().getColor(R.color.colorPrimary));
+                    final KonfettiView konfettiView = findViewById(R.id.viewConfetti);
+                    leaderboardViewHolder.firstNameTextView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(final View view) {
+                            Toast.makeText(LeaderboardActivity.this, "confetti", Toast.LENGTH_SHORT).show();
+                            konfettiView.build()
+                                    .addColors(Color.YELLOW, Color.GREEN, Color.MAGENTA)
+                                    .setDirection(0.0, 359.0)
+                                    .setSpeed(1f, 5f)
+                                    .setFadeOutEnabled(true)
+                                    .setTimeToLive(2000L)
+                                    .addShapes(Shape.Square.INSTANCE, Shape.Circle.INSTANCE)
+                                    .addSizes(new Size(12, 5f))
+                                    .setPosition(-50f, konfettiView.getWidth() + 50f, -50f, -50f)
+                                    .streamFor(300, 5000L);
+                        }
+                    });
                 }
                 leaderboardViewHolder.firstNameTextView.setText(leaderboardModel.getFirstName() + " " + leaderboardModel.getLastName());
                 leaderboardViewHolder.pointsTextView.setText(String.valueOf(leaderboardModel.getPoints()));
             }
+
         };
 
         backButton.setOnClickListener(new View.OnClickListener() {

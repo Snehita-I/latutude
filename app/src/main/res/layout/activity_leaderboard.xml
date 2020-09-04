@@ -7,6 +7,12 @@
     android:background="@android:color/white"
     tools:context=".LeaderboardActivity">
 
+    <!--Confetti-->
+    <nl.dionsegijn.konfetti.KonfettiView
+        android:id="@+id/viewConfetti"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBar"
         android:layout_width="match_parent"
