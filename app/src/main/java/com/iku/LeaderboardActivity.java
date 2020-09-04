@@ -116,7 +116,7 @@ public class LeaderboardActivity extends AppCompatActivity {
                     leaderboardViewHolder.firstNameTextView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(final View view) {
-                            Toast.makeText(LeaderboardActivity.this, "-drum roll-", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LeaderboardActivity.this, "- drum roll -", Toast.LENGTH_SHORT).show();
                             konfettiView.build()
                                     .addColors(Color.BLUE, Color.LTGRAY, getResources().getColor(R.color.colorPrimary), getResources().getColor(R.color.colorAccent))
                                     .setDirection(0.0, 359.0)
@@ -128,7 +128,7 @@ public class LeaderboardActivity extends AppCompatActivity {
                                     .setPosition(-50f, konfettiView.getWidth() + 50f, -50f, -50f)
                                     .streamFor(300, 5000L);
 
-                            new CountDownTimer(1 * 10000, 1000) {
+                            new CountDownTimer(1*10000, 1000) {
 
                                 public void onTick(long millisUntilFinished) {
                                     leaderboardViewHolder.firstNameTextView.setEnabled(false);
@@ -174,5 +174,17 @@ public class LeaderboardActivity extends AppCompatActivity {
             firstNameTextView = itemView.findViewById(R.id.firstname);
             pointsTextView = itemView.findViewById(R.id.pointsText);
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        adapter.startListening();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        adapter.startListening();
     }
 }
