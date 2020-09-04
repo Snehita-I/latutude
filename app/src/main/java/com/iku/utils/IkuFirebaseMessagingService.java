@@ -46,7 +46,6 @@ public class IkuFirebaseMessagingService extends FirebaseMessagingService {
 
     @Override
     public void onNewToken(String token) {
-        Log.d(TAG, "Refreshed token: " + token);
 
         // If you want to send messages to this application instance or
         // manage this apps subscriptions on the server side, send the
@@ -67,7 +66,6 @@ public class IkuFirebaseMessagingService extends FirebaseMessagingService {
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            Log.i(TAG, "onSuccess: of Reg tok");
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {

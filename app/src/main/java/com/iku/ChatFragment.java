@@ -437,7 +437,6 @@ public class ChatFragment extends Fragment {
                         }
                     });
         } else {
-            Log.i(TAG, "sendTheMessage: No user login ");
         }
     }
 

@@ -62,7 +62,6 @@ public class EmailInputActivity extends AppCompatActivity {
                                 Log.d(TAG, "" + task.getResult().getSignInMethods().size());
                                 if (task.getResult().getSignInMethods().size() == 0) {
 
-                                    Log.i(TAG, "Email not exists");
 
                                     //log event
                                     Bundle signup_bundle = new Bundle();
@@ -77,8 +76,6 @@ public class EmailInputActivity extends AppCompatActivity {
                                     startActivity(goToNewPasswordActivity);
 
                                 } else {
-
-                                    Log.i(TAG, "Email exists");
 
                                     //log event
                                     Bundle signin_bundle = new Bundle();

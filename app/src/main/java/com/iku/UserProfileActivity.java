@@ -46,11 +46,9 @@ public class UserProfileActivity extends AppCompatActivity {
 
         if (userName!=null) {
             nameTextView.setText(userName);
-            Log.i(TAG, "Set Username: " + userName);
 
             firstLetter = String.valueOf(userName.charAt(0));
             secondLetter = userName.substring(userName.indexOf(' ') + 1, userName.indexOf(' ') + 2).trim();
-            Log.i(TAG, "No picture:" + firstLetter + " " + secondLetter);
 
             TextDrawable drawable = TextDrawable.builder()
                     .beginConfig()
@@ -85,7 +83,6 @@ public class UserProfileActivity extends AppCompatActivity {
 
                                 String source = querySnapshot.getMetadata().isFromCache() ?
                                         "local cache" : "server";
-                                Log.i(TAG, "Cache Hearts Won: " + source);
                             }
 
                         }

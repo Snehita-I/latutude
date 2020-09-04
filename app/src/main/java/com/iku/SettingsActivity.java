@@ -339,7 +339,6 @@ public class SettingsActivity extends AppCompatActivity {
     public void starfnutil(int stars) {
         for (int i = 0; i <= stars; i++) {
             s[i].setImageResource(R.drawable.ic_filled_star);
-            Log.i("zero", Integer.toString(i) + "clicked");
         }
         for (int i = stars + 1; i < 5; i++) {
             s[i].setImageResource(R.drawable.ic_unfilled_star);

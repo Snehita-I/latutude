@@ -93,7 +93,6 @@ public class ProfileFragment extends Fragment {
 
             String personName = user.getDisplayName();
             profileBinding.userName.setText(personName);
-            Log.i(TAG, "Person Name: " + personName + "\n");
 
             Uri photoUri = user.getPhotoUrl();
             if (photoUri != null) {
@@ -104,8 +103,6 @@ public class ProfileFragment extends Fragment {
 
                 photoUrl = photoUrl + "?height=500";
 
-                Log.e(TAG, "\nUser: " + user + "\nPhoto: " + photoUrl + "\nGiveName: " + "\nName: " + personName);
-
                 Picasso.get()
                         .load(photoUrl)
                         .noFade()
@@ -114,12 +111,10 @@ public class ProfileFragment extends Fragment {
 
                             @Override
                             public void onSuccess() {
-                                Log.i(TAG, "PICASSO Success ");
                             }
 
                             @Override
                             public void onError(Exception e) {
-                                Log.i(TAG, "PICASSO Error ");
                                 Picasso.get()
                                         .load(photoUrl)
                                         .noFade()
@@ -132,7 +127,6 @@ public class ProfileFragment extends Fragment {
                 if (displayName != null) {
                     firstLetter = String.valueOf(displayName.charAt(0));
                     secondLetter = displayName.substring(displayName.indexOf(' ') + 1, displayName.indexOf(' ') + 2).trim();
-                    Log.i(TAG, "No picture:" + firstLetter + " " + secondLetter);
                     TextDrawable drawable = TextDrawable.builder()
                             .beginConfig()
                             .width(200)
@@ -165,7 +159,6 @@ public class ProfileFragment extends Fragment {
 
                                 String source = querySnapshot.getMetadata().isFromCache() ?
                                         "local cache" : "server";
-                                Log.i(TAG, "Cache Hearts Won: " + source);
                             }
 
                         }

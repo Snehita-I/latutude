@@ -20,7 +20,6 @@ public class OnboardingAdapter extends RecyclerView.Adapter<OnboardingAdapter.On
 private List<OnboardingScreenModel> onboardingScreenModels;
 
     public OnboardingAdapter(List<OnboardingScreenModel> onboardingScreenModels) {
-        Log.i("TAG", "OnboardingAdapter: " + onboardingScreenModels);
         this.onboardingScreenModels = onboardingScreenModels;
     }
 

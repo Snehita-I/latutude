@@ -227,7 +227,6 @@ public class ChatImageActivity extends AppCompatActivity {
             try {
                 Bitmap imageSelected = decodeUri(this, mImageUri, 300);
                 Uri tempMainImageUri = getImageUri(this, imageSelected);
-                Log.i("ap", "Setting Image: " + tempMainImageUri);
                 Picasso.get().load(tempMainImageUri).into(image);
                 //image.setImageURI(tempMainImageUri);
             } catch (FileNotFoundException e) {

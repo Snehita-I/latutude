@@ -73,7 +73,6 @@ public class PasswordInputActivity extends AppCompatActivity {
                                         if (task.isSuccessful()) {
                                             DocumentSnapshot document = task.getResult();
                                             if (document.exists()) {
-                                                Log.d(TAG, "Document exists!");
 
                                                 Toast.makeText(PasswordInputActivity.this, "Login successful", Toast.LENGTH_LONG).show();
                                                 //sending to Home Activity
@@ -88,7 +87,6 @@ public class PasswordInputActivity extends AppCompatActivity {
                                                 password_bundle.putString(FirebaseAnalytics.Param.METHOD, "Email");
                                                 mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.LOGIN, password_bundle);
                                             } else {
-                                                Log.d(TAG, "Document does not exist!");
                                                 Toast.makeText(PasswordInputActivity.this, "User profile not filled!", Toast.LENGTH_LONG).show();
                                                 //sending to NameInput Activity
                                                 mProgress.dismiss();

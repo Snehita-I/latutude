@@ -143,7 +143,6 @@ public class WelcomeActivity extends AppCompatActivity {
     }
 
     private void handleFacebookAccessToken(AccessToken token) {
-        Log.d(TAG, "handleFacebookAccessToken:" + token);
 
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         mAuth.signInWithCredential(credential)
@@ -161,7 +160,6 @@ public class WelcomeActivity extends AppCompatActivity {
                                     String lastName = displayName.substring(displayName.indexOf(' ')).trim();
                                     String email = user.getEmail();
                                     newUserSignUp(firstName, lastName, email);
-                                    Log.i(TAG, "ABC: " + displayName + "\n" + firstName + lastName);
 
                                     /*Log event*/
                                     Bundle signup_bundle = new Bundle();
@@ -172,7 +170,6 @@ public class WelcomeActivity extends AppCompatActivity {
                         } else {
 
                             String errorCode = ((FirebaseAuthException) task.getException()).getErrorCode();
-                            Log.e(TAG, "onComplete: " + errorCode);
 
                             switch (errorCode) {
 
@@ -259,10 +256,9 @@ public class WelcomeActivity extends AppCompatActivity {
     private void signInResult(Task<GoogleSignInAccount> signInAccountTask) {
         try {
             GoogleSignInAccount acc = signInAccountTask.getResult(ApiException.class);
-            Log.e(TAG, "signInResult: Signed IN");
             FirebaseGoogleAuth(acc);
         } catch (ApiException e) {
-            Log.e(TAG, "signInResult: Sign In Fail");
+            Log.e(TAG, "signInResult: Sign In Fail" + e);
         }
     }
 
@@ -272,14 +268,12 @@ public class WelcomeActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    Log.e(TAG, "onComplete: Successful");
                     GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(WelcomeActivity.this);
                     String firstName = null, lastName = null, email = null;
                     if (acct != null) {
                         firstName = acct.getGivenName();
                         lastName = acct.getFamilyName();
                         email = acct.getEmail();
-                        Log.i(TAG, "onComplete: " + firstName + lastName);
                         mProgress.show();
                         newUserSignUp(firstName, lastName, email);
 
@@ -289,7 +283,6 @@ public class WelcomeActivity extends AppCompatActivity {
                         mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SIGN_UP, signup_bundle);
                     }
                 } else {
-                    Log.e(TAG, "onComplete: failed");
                 }
             }
         });
@@ -362,7 +355,6 @@ public class WelcomeActivity extends AppCompatActivity {
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
-                                            Log.i(TAG, "onSuccess: of Reg tok");
                                         }
                                     })
                                     .addOnFailureListener(new OnFailureListener() {

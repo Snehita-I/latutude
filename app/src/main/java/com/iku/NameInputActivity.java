@@ -103,7 +103,6 @@ public class NameInputActivity extends AppCompatActivity {
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.i("Register", "email not sent " + e.getMessage());
                         //log event
                         Bundle password_bundle = new Bundle();
                         password_bundle.putString(FirebaseAnalytics.Param.METHOD, "Email");
@@ -136,7 +135,6 @@ public class NameInputActivity extends AppCompatActivity {
                 if (!user.isEmailVerified()) {
                     Toast.makeText(NameInputActivity.this, "Verify your email via the email sent to you before proceeding.", Toast.LENGTH_SHORT).show();
                 } else {
-                    Log.i(TAG, "VERIFIED USER.");
                     String firstName = binding.enterFirstName.getText().toString().trim();
                     firstName = firstName.substring(0, 1).toUpperCase() + firstName.substring(1).toLowerCase();
 
@@ -201,8 +199,6 @@ public class NameInputActivity extends AppCompatActivity {
                                                 .setDisplayName(firstName + " " + lastName).build();
 
                                         user.updateProfile(profileUpdates).addOnCompleteListener(task1 -> updateUI(user));
-
-                                        Log.d(TAG, "DocumentSnapshot successfully written!" + user.getDisplayName());
 
                                         /*Log event*/
                                         Bundle signup_bundle = new Bundle();

@@ -50,7 +50,6 @@ public class NewPasswordInputActivity extends AppCompatActivity {
 
         Intent myIntent = getIntent();
         email = myIntent.getStringExtra("email");
-        Log.i(TAG, "email: " + email);
 
         binding.newPasswordNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,7 +72,6 @@ public class NewPasswordInputActivity extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
-                                    Log.i("Register", "User registered ");
 
                                     //log event
                                     Bundle bundle = new Bundle();
@@ -84,7 +82,6 @@ public class NewPasswordInputActivity extends AppCompatActivity {
                                     FirebaseUser user = fAuth.getCurrentUser();
 
                                     if (user != null) {
-                                        Log.i(TAG, String.valueOf(user));
                                         user.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void aVoid) {
@@ -101,7 +98,6 @@ public class NewPasswordInputActivity extends AppCompatActivity {
                                         }).addOnFailureListener(new OnFailureListener() {
                                             @Override
                                             public void onFailure(@NonNull Exception e) {
-                                                Log.i("Register", "email not sent " + e.getMessage());
 
                                                 //log event
                                                 Bundle password_bundle = new Bundle();

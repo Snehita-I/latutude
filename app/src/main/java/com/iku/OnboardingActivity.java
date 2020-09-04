@@ -70,7 +70,6 @@ public class OnboardingActivity extends AppCompatActivity {
         dismissOnboardingAction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.i(TAG, "onClick: ");
                 startActivity(new Intent(OnboardingActivity.this,WelcomeActivity.class));
                 finish();
             }

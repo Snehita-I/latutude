@@ -443,7 +443,6 @@ public class ReportBugActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(Void aVoid) {
                         messageEntered.setText("");
-                        Log.d(TAG, "DocumentSnapshot successfully written!");
                         Toast.makeText(ReportBugActivity.this, "Ugh.. those pesky bugs!", Toast.LENGTH_LONG).show();
                         startActivity(new Intent(ReportBugActivity.this, HomeActivity.class));
                         finish();
@@ -452,7 +451,6 @@ public class ReportBugActivity extends AppCompatActivity {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error writing document", e);
                         Toast.makeText(ReportBugActivity.this, "err.. can you try that again?", Toast.LENGTH_LONG).show();
                     }
                 });
