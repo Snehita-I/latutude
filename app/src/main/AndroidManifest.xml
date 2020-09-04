@@ -105,7 +105,7 @@
             tools:replace="android:value" />
 
         <service
-            android:name=".IkuFirebaseMessagingService"
+            android:name=".utils.IkuFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

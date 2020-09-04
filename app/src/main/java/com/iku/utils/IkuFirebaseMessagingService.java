@@ -1,4 +1,4 @@
-package com.iku;
+package com.iku.utils;
 
 
 import android.util.Log;
@@ -14,6 +14,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.iku.R;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,7 +35,7 @@ public class IkuFirebaseMessagingService extends FirebaseMessagingService {
 
     public void showNotification(String title, String message) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "MyNotifications")
-                .setContentTitle("title")
+                .setContentTitle(title)
                 .setSmallIcon(R.drawable.ic_iku)
                 .setAutoCancel(true)
                 .setContentText(message);
