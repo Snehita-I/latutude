@@ -449,8 +449,7 @@ public class ReportBugActivity extends AppCompatActivity {
                         mProgress.dismiss();
                         messageEntered.setText("");
                         Toast.makeText(ReportBugActivity.this, "Ugh.. those pesky bugs!", Toast.LENGTH_LONG).show();
-                        startActivity(new Intent(ReportBugActivity.this, HomeActivity.class));
-                        finish();
+                        onBackPressed();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

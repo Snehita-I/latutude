@@ -507,8 +507,6 @@ public class SettingsActivity extends AppCompatActivity {
                         for (int i = 0; i < 5; i++) {
                             s[i].setImageResource(R.drawable.ic_unfilled_star);
                         }
-                        startActivity(new Intent(SettingsActivity.this, HomeActivity.class));
-                        finish();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
