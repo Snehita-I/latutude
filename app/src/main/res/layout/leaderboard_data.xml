@@ -23,7 +23,6 @@
             android:layout_marginStart="8dp"
             android:layout_marginEnd="0dp"
             android:layout_toStartOf="@+id/pointsText"
-            android:text="TextView"
             android:textColor="@android:color/black"
             android:textSize="18dp" />
 
@@ -34,7 +33,6 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="8dp"
-            android:text="0"
             android:textAlignment="textEnd"
             android:textColor="@android:color/black"
             android:textSize="18dp" />
