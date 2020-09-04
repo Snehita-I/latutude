@@ -1,6 +1,8 @@
 package com.iku.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -152,6 +154,9 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
             senderName = itemView.findViewById(R.id.sender_name);
             upvoteCount = itemView.findViewById(R.id.upvoteCount);
 
+            messageText.setLinkTextColor(Color.parseColor("#0000EE"));
+            Linkify.addLinks(messageText, Linkify.WEB_URLS);
+
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
@@ -181,6 +186,9 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
             receiverImage = itemView.findViewById(R.id.receivedImage);
             upvoteCount = itemView.findViewById(R.id.upvoteCount);
 
+            messageText.setLinkTextColor(Color.parseColor("#0000EE"));
+            Linkify.addLinks(messageText, Linkify.WEB_URLS);
+
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
@@ -209,6 +217,9 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
             sentImage = itemView.findViewById(R.id.sentImage);
             upvoteCount = itemView.findViewById(R.id.upvoteCount);
 
+            messageText.setLinkTextColor(Color.parseColor("#0000EE"));
+            Linkify.addLinks(messageText, Linkify.WEB_URLS);
+
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
@@ -233,6 +244,9 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
             messageText = itemView.findViewById(R.id.message);
             messageTime = itemView.findViewById(R.id.message_time);
             upvoteCount = itemView.findViewById(R.id.upvoteCount);
+
+            messageText.setLinkTextColor(Color.parseColor("#0000EE"));
+            Linkify.addLinks(messageText, Linkify.WEB_URLS);
 
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
