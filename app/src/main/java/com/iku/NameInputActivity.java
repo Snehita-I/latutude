@@ -6,6 +6,7 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -61,9 +62,9 @@ public class NameInputActivity extends AppCompatActivity {
 
         email = user.getEmail();
 
-
         db = FirebaseFirestore.getInstance();
 
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
