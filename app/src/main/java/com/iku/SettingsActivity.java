@@ -425,7 +425,7 @@ public class SettingsActivity extends AppCompatActivity {
                 final Bitmap imageSelected = decodeUri(this, uri, 1080);
                 mainUri = getImageUri(SettingsActivity.this, imageSelected);
 
-                final StorageReference imageRef = mStorageRef.child(System.currentTimeMillis() + "." + getFileExtension(mainUri));
+                final StorageReference imageRef = mStorageRef.child(user.getUid()+"/" + System.currentTimeMillis() + "." + getFileExtension(mainUri));
                 UploadTask uploadTask = imageRef.putFile(uri);
 
                 uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {

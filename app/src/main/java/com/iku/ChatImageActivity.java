@@ -75,18 +75,17 @@ public class ChatImageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_image);
 
+        mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         messageEntered = findViewById(R.id.messageTextField);
-        mStorageRef = FirebaseStorage.getInstance().getReference("images");
+        mStorageRef = FirebaseStorage.getInstance().getReference(user.getUid());
 
         backButton = findViewById(R.id.backbutton);
         sendImageChatbtn = findViewById(R.id.sendMessageButton);
         image = findViewById(R.id.chosenImage);
         db = FirebaseFirestore.getInstance();
-
-        mAuth = FirebaseAuth.getInstance();
-        user = mAuth.getCurrentUser();
 
         if (ContextCompat.checkSelfPermission(ChatImageActivity.this,
                 Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -113,7 +112,7 @@ public class ChatImageActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 } else
-                    Toast.makeText(ChatImageActivity.this, "Please add caption", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ChatImageActivity.this, "Caption such empty..much wow!", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -189,7 +188,7 @@ public class ChatImageActivity extends AppCompatActivity {
                                     @Override
                                     public void onSuccess(DocumentReference documentReference) {
                                         messageEntered.setText("");
-                                        Toast.makeText(ChatImageActivity.this, "Image info uploaded", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(ChatImageActivity.this, "Aren't you the best", Toast.LENGTH_LONG).show();
                                         messageEntered.requestFocus();
                                         ChatImageActivity.super.onBackPressed();
 

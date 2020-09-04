@@ -118,7 +118,7 @@ public class ReportBugActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
 
-        mStorageRef = FirebaseStorage.getInstance().getReference("feedback");
+        mStorageRef = FirebaseStorage.getInstance().getReference("bugs");
 
         img1.setImageResource(R.drawable.addimages);
         img2.setEnabled(false);
@@ -365,7 +365,7 @@ public class ReportBugActivity extends AppCompatActivity {
                 final Bitmap imageSelected = decodeUri(this, uri, 1080);
                 mainUri = getImageUri(ReportBugActivity.this, imageSelected);
 
-                final StorageReference imageRef = mStorageRef.child(System.currentTimeMillis() + "." + getFileExtension(mainUri));
+                final StorageReference imageRef = mStorageRef.child( user.getUid()+"/" + System.currentTimeMillis() + "." + getFileExtension(mainUri));
                 UploadTask uploadTask = imageRef.putFile(uri);
 
                 uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
