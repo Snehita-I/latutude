@@ -381,8 +381,10 @@ public class ChatFragment extends Fragment {
 
         binding.choose.setOnClickListener(view -> {
             if (ContextCompat.checkSelfPermission(getActivity(),
-                    Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                requestStoragePermission();
+                    Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                    && ContextCompat.checkSelfPermission(getActivity(),
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                requestPermission();
             } else {
                 Intent goToImageSend = new Intent(getActivity(), ChatImageActivity.class);
                 startActivity(goToImageSend);
@@ -419,7 +421,7 @@ public class ChatFragment extends Fragment {
         Log.i(TAG, "onClick: " + message + "\n TIME:" + timestamp);
         if (user != null) {
             Map<String, Object> docData = new HashMap<>();
-            docData.put("message", message);
+            docData.put("message", message.trim());
             docData.put("timestamp", timestamp);
             docData.put("uid", user.getUid());
             docData.put("type", "text");
@@ -452,6 +454,19 @@ public class ChatFragment extends Fragment {
         }
     }
 
+    private void requestPermission() {
+        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == STORAGE_PERMISSION_CODE && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(getActivity(), "Permission Granted!", Toast.LENGTH_SHORT).show();
+            Intent i = new Intent(getActivity(), ChatImageActivity.class);
+            startActivity(i);
+        }
+    }
+
     private void getGroupMemberCount() {
         db.collection("groups").whereEqualTo("name", "iku Experiment")
                 .addSnapshotListener(MetadataChanges.INCLUDE, new EventListener<QuerySnapshot>() {
@@ -471,22 +486,6 @@ public class ChatFragment extends Fragment {
                         }
                     }
                 });
-    }
-
-    private void requestStoragePermission() {
-
-        ActivityCompat.requestPermissions(getActivity(),
-                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == STORAGE_PERMISSION_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Intent goToImageSend = new Intent(getActivity(), ChatImageActivity.class);
-                startActivity(goToImageSend);
-            }
-        }
     }
 
     @Override

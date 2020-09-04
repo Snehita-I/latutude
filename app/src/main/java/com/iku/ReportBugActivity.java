@@ -357,7 +357,7 @@ public class ReportBugActivity extends AppCompatActivity {
 
 
     private void uploadToStorage() {
-        if (myList.size()==0 && finalUrl.size()==0){
+        if (myList.size() == 0 && finalUrl.size() == 0) {
             uploadToDB();
         }
         for (Uri uri : myList) {
@@ -402,14 +402,14 @@ public class ReportBugActivity extends AppCompatActivity {
         long timestamp = d.getTime();
         formatter = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss z");
 
-        int finalUrl_size= finalUrl.size();
+        int finalUrl_size = finalUrl.size();
         int num;
-        if(finalUrl_size > 0) {
+        if (finalUrl_size > 0) {
             imageSrc = "";
             for (int i = 0; i < finalUrl_size; i++) {
-                num = i+1;
-                images +=  "<tr> <th style=\"text-align:left;\">Image " + num +"</th> <th style=\"text-align:left;\">"+  finalUrl.get(i) + "</th> </tr> ";
-                imageSrc += "<h3>Image "+ num +"</h3>" + "<img src=\"" + finalUrl.get(i) + "\" style=\"max-height:512px;\"> ";
+                num = i + 1;
+                images += "<tr> <th style=\"text-align:left;\">Image " + num + "</th> <th style=\"text-align:left;\">" + finalUrl.get(i) + "</th> </tr> ";
+                imageSrc += "<h3>Image " + num + "</h3>" + "<img src=\"" + finalUrl.get(i) + "\" style=\"max-height:512px;\"> ";
             }
         }
 
@@ -424,8 +424,8 @@ public class ReportBugActivity extends AppCompatActivity {
                 "<tr> <th style=\"text-align:left;\">UID:</th> <th style=\"text-align:left;\">" + user.getUid() + "</th> </tr> " +
                 "<tr> <th style=\"text-align:left;\">Email ID:</th> <th style=\"text-align:left;\">" + user.getEmail() + "</th> </tr> " +
                 "<tr> <th style=\"text-align:left;\">Time:</th> <th style=\"text-align:left;\">" + d.getTime() + "</th> </tr>"
-                +images+
-                " </table>"+imageSrc;
+                + images +
+                " </table>" + imageSrc;
         type = "bug";
 
         docData.put("to", to);
@@ -462,7 +462,7 @@ public class ReportBugActivity extends AppCompatActivity {
     private void requestStoragePermission(int code) {
 
         ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, code);
+                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, code);
 
     }
 

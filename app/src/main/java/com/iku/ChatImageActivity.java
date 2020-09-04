@@ -64,7 +64,7 @@ public class ChatImageActivity extends AppCompatActivity {
 
     private FirebaseFirestore db;
 
-    private int STORAGE_PERMISSION_CODE=10;
+    private int STORAGE_PERMISSION_CODE = 10;
 
     private String TAG = ChatImageActivity.class.getSimpleName();
 
@@ -159,7 +159,7 @@ public class ChatImageActivity extends AppCompatActivity {
     }
 
 
-    private void uploadFile(final String message) throws FileNotFoundException {
+    private void uploadFile(String message) throws FileNotFoundException {
         if (mImageUri != null) {
             Bitmap imageSelected = decodeUri(this, mImageUri, 300);
             if (imageSelected != null)
@@ -173,7 +173,7 @@ public class ChatImageActivity extends AppCompatActivity {
                         Date d = new Date();
                         long timestamp = d.getTime();
                         Map<String, Object> docData = new HashMap<>();
-                        docData.put("message", message);
+                        docData.put("message", message.trim());
                         docData.put("timestamp", timestamp);
                         docData.put("uid", user.getUid());
                         docData.put("type", "image");
@@ -242,12 +242,12 @@ public class ChatImageActivity extends AppCompatActivity {
     private void requestStoragePermission() {
 
         ActivityCompat.requestPermissions(this,
-                new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
+                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == STORAGE_PERMISSION_CODE)  {
+        if (requestCode == STORAGE_PERMISSION_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this, "Permission GRANTED", Toast.LENGTH_SHORT).show();
                 openFileChooser();

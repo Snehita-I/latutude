@@ -524,7 +524,7 @@ public class SettingsActivity extends AppCompatActivity {
     private void requestStoragePermission(int code) {
 
         ActivityCompat.requestPermissions(this,
-                new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, code);
+                new String[] {Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE}, code);
 
     }
 

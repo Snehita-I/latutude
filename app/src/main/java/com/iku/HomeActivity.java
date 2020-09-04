@@ -4,7 +4,10 @@ import android.app.Activity;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyCharacterMap;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 
@@ -26,6 +29,8 @@ public class HomeActivity extends AppCompatActivity {
 
     private FragmentManager fragmentManager;
 
+    private ChatFragment chatFragment;
+
     private static final String TAG = HomeActivity.class.getSimpleName();
 
     private FirebaseAnalytics mFirebaseAnalytics;
@@ -38,6 +43,8 @@ public class HomeActivity extends AppCompatActivity {
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
+        boolean hasMenuKey = ViewConfiguration.get(getApplicationContext()).hasPermanentMenuKey();
+        boolean hasBackKey = KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_BACK);
 
         findViewById(android.R.id.content).getRootView().getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -46,24 +53,34 @@ public class HomeActivity extends AppCompatActivity {
                 findViewById(android.R.id.content).getRootView().getWindowVisibleDisplayFrame(r);
                 int heightDiff = findViewById(android.R.id.content).getRootView().getRootView().getHeight() - (r.bottom - r.top);
 
-                if (heightDiff > 100) { // if more than 100 pixels, its probably a keyboard...
-                    //ok now we know the keyboard is up...
-                    homeBinding.animatedBottomBar.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            //ok now we know the keyboard is down...
-                            homeBinding.animatedBottomBar.setVisibility(View.GONE);
-                        }
-                    });
+                boolean hasBackKey = KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_BACK);
+                boolean hasHomeKey = KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_HOME);
 
+                if (hasBackKey && hasHomeKey) {
+                    if (heightDiff > 100) { // if more than 100 pixels, its probably a keyboard...
+                        //ok now we know the keyboard is up...
+                        homeBinding.animatedBottomBar.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                //ok now we know the keyboard is down...
+                                homeBinding.animatedBottomBar.setVisibility(View.GONE);
+                            }
+                        });
+
+                    } else {
+                        homeBinding.animatedBottomBar.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                //ok now we know the keyboard is down...
+                                homeBinding.animatedBottomBar.setVisibility(View.VISIBLE);
+                            }
+                        });
+                    }
                 } else {
-                    homeBinding.animatedBottomBar.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            //ok now we know the keyboard is down...
-                            homeBinding.animatedBottomBar.setVisibility(View.VISIBLE);
-                        }
-                    });
+                    if (findViewById(R.id.messageTextField) != null) {
+                        if (findViewById(R.id.messageTextField).hasFocus())
+                            homeBinding.animatedBottomBar.setVisibility(View.GONE);
+                    }
                 }
             }
         });
@@ -130,4 +147,9 @@ public class HomeActivity extends AppCompatActivity {
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
+    @Override
+    public void onBackPressed() {
+        findViewById(R.id.messageTextField).clearFocus();
+        homeBinding.animatedBottomBar.setVisibility(View.VISIBLE);
+    }
 }
