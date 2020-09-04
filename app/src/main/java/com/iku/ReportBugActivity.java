@@ -1,6 +1,7 @@
 package com.iku;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -10,7 +11,6 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
@@ -40,7 +40,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -63,6 +62,8 @@ public class ReportBugActivity extends AppCompatActivity {
     private String subject;
     private FirebaseUser user;
     private StorageReference mStorageRef;
+
+    private ProgressDialog mProgress;
 
     ImageView d1, d2, d3;
     EditText messageEntered;
@@ -127,6 +128,8 @@ public class ReportBugActivity extends AppCompatActivity {
         d2.setVisibility(View.INVISIBLE);
         d3.setVisibility(View.INVISIBLE);
 
+        initProgressDialog();
+
         final ImageView[] imageBoxes = {img1, img2, img3, img4};
         final ImageView[] deleteButtons = {d1, d2, d3};
 
@@ -183,8 +186,10 @@ public class ReportBugActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (messageEntered.getText().toString().isEmpty()) {
                     Toast.makeText(ReportBugActivity.this, "Enter a message!", Toast.LENGTH_SHORT).show();
-                } else
+                } else {
+                    mProgress.show();
                     uploadToStorage();
+                }
             }
         });
 
@@ -365,7 +370,7 @@ public class ReportBugActivity extends AppCompatActivity {
                 final Bitmap imageSelected = decodeUri(this, uri, 1080);
                 mainUri = getImageUri(ReportBugActivity.this, imageSelected);
 
-                final StorageReference imageRef = mStorageRef.child( user.getUid()+"/" + System.currentTimeMillis() + "." + getFileExtension(mainUri));
+                final StorageReference imageRef = mStorageRef.child(user.getUid() + "/" + System.currentTimeMillis() + "." + getFileExtension(mainUri));
                 UploadTask uploadTask = imageRef.putFile(uri);
 
                 uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -399,7 +404,6 @@ public class ReportBugActivity extends AppCompatActivity {
 
         Map<String, Object> docData = new HashMap<>();
 
-        long timestamp = d.getTime();
         formatter = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss z");
 
         int finalUrl_size = finalUrl.size();
@@ -442,6 +446,7 @@ public class ReportBugActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
+                        mProgress.dismiss();
                         messageEntered.setText("");
                         Toast.makeText(ReportBugActivity.this, "Ugh.. those pesky bugs!", Toast.LENGTH_LONG).show();
                         startActivity(new Intent(ReportBugActivity.this, HomeActivity.class));
@@ -451,6 +456,7 @@ public class ReportBugActivity extends AppCompatActivity {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+                        mProgress.dismiss();
                         Toast.makeText(ReportBugActivity.this, "err.. can you try that again?", Toast.LENGTH_LONG).show();
                     }
                 });
@@ -499,5 +505,12 @@ public class ReportBugActivity extends AppCompatActivity {
         }
     }
 
+    private void initProgressDialog() {
+        mProgress = new ProgressDialog(this);
+        mProgress.setTitle("Uploading bug report");
+        mProgress.setMessage("We will fix this ASAP!");
+        mProgress.setCancelable(false);
+        mProgress.setIndeterminate(true);
+    }
 
 }

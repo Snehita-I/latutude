@@ -1,6 +1,7 @@
 package com.iku;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -9,9 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
@@ -29,7 +28,6 @@ import androidx.core.content.ContextCompat;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.button.MaterialButton;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -42,16 +40,13 @@ import com.iku.databinding.ActivitySettingsBinding;
 import com.iku.models.FeedbackImageModel;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -61,6 +56,8 @@ public class SettingsActivity extends AppCompatActivity {
     private SimpleDateFormat formatter;
 
     private CardView goToReportABugActivity;
+
+    private ProgressDialog mProgress;
 
     ImageView d1, d2, d3;
     EditText messageEntered;
@@ -72,7 +69,7 @@ public class SettingsActivity extends AppCompatActivity {
     private FirebaseUser user;
 
     private FirebaseFirestore db;
-    private int STORAGE_PERMISSION_CODE=10;
+    private int STORAGE_PERMISSION_CODE = 10;
     private ImageView img1, img2, img3, img4;
     String myArray[] = new String[3];
     Uri UriArray[] = new Uri[3];
@@ -116,6 +113,8 @@ public class SettingsActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
+
+        initProgressDialog();
 
         messageEntered = (EditText) findViewById(R.id.feedbackText);
         upload = (Button) findViewById(R.id.submitButton);
@@ -204,6 +203,7 @@ public class SettingsActivity extends AppCompatActivity {
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mProgress.show();
                 uploadToStorage();
             }
         });
@@ -416,7 +416,7 @@ public class SettingsActivity extends AppCompatActivity {
 
 
     private void uploadToStorage() {
-        if (myList.size()==0 && finalUrl.size()==0){
+        if (myList.size() == 0 && finalUrl.size() == 0) {
             uploadToDB();
         }
         for (Uri uri : myList) {
@@ -424,7 +424,7 @@ public class SettingsActivity extends AppCompatActivity {
                 final Bitmap imageSelected = decodeUri(this, uri, 1080);
                 mainUri = getImageUri(SettingsActivity.this, imageSelected);
 
-                final StorageReference imageRef = mStorageRef.child(user.getUid()+"/" + System.currentTimeMillis() + "." + getFileExtension(mainUri));
+                final StorageReference imageRef = mStorageRef.child(user.getUid() + "/" + System.currentTimeMillis() + "." + getFileExtension(mainUri));
                 UploadTask uploadTask = imageRef.putFile(uri);
 
                 uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -463,14 +463,14 @@ public class SettingsActivity extends AppCompatActivity {
         long timestamp = d.getTime();
         formatter = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss z");
 
-        int finalUrl_size= finalUrl.size();
+        int finalUrl_size = finalUrl.size();
         int num;
-        if(finalUrl_size > 0) {
+        if (finalUrl_size > 0) {
             imageSrc = "";
             for (int i = 0; i < finalUrl_size; i++) {
-                num = i+1;
-                images +=  "<tr> <th style=\"text-align:left;\" >Image " + num +"</th> <th style=\"text-align:left;\">"+  finalUrl.get(i) + "</th> </tr> ";
-                imageSrc += "<h3>Image "+ num +"</h3>" + "<img src=\"" + finalUrl.get(i) + "\" style=\"max-height:512px;\"> ";
+                num = i + 1;
+                images += "<tr> <th style=\"text-align:left;\" >Image " + num + "</th> <th style=\"text-align:left;\">" + finalUrl.get(i) + "</th> </tr> ";
+                imageSrc += "<h3>Image " + num + "</h3>" + "<img src=\"" + finalUrl.get(i) + "\" style=\"max-height:512px;\"> ";
             }
         }
 
@@ -485,7 +485,7 @@ public class SettingsActivity extends AppCompatActivity {
                 "<tr> <th style=\"text-align:left;\">UID: </th> <th style=\"text-align:left;\">" + user.getUid() + "</th> </tr> " +
                 "<tr> <th style=\"text-align:left;\">Email ID: </th> <th style=\"text-align:left;\">" + user.getEmail() + "</th> </tr> " +
                 "<tr> <th style=\"text-align:left;\">Time: </th> <th style=\"text-align:left;\">" + formatter.format(timestamp) + "</th> </tr>" + images +
-                " </table>"+ imageSrc;
+                " </table>" + imageSrc;
         FeedbackImageModel feedbackImageModel = new FeedbackImageModel(subject, html);
         docData.put("message", feedbackImageModel);
         docData.put("rating", stars);
@@ -499,6 +499,7 @@ public class SettingsActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
+                        mProgress.dismiss();
                         messageEntered.setText("");
                         Toast.makeText(SettingsActivity.this, "Thank you for that!", Toast.LENGTH_LONG).show();
                         //SaveImage(imageSelected);
@@ -513,6 +514,7 @@ public class SettingsActivity extends AppCompatActivity {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+                        mProgress.dismiss();
                         Toast.makeText(SettingsActivity.this, "err.. can you try that again?", Toast.LENGTH_LONG).show();
                         //Toast.makeText(SettingsActivity.this, e.toString(), Toast.LENGTH_LONG).show();
                     }
@@ -523,13 +525,13 @@ public class SettingsActivity extends AppCompatActivity {
     private void requestStoragePermission(int code) {
 
         ActivityCompat.requestPermissions(this,
-                new String[] {Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE}, code);
+                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, code);
 
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == 0)  {
+        if (requestCode == 0) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this, "Permission GRANTED", Toast.LENGTH_SHORT).show();
                 Intent i = new Intent();
@@ -539,8 +541,7 @@ public class SettingsActivity extends AppCompatActivity {
             } else {
                 Toast.makeText(this, "Permission DENIED", Toast.LENGTH_SHORT).show();
             }
-        }
-        else if (requestCode == 1)  {
+        } else if (requestCode == 1) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this, "Permission GRANTED", Toast.LENGTH_SHORT).show();
                 Intent i = new Intent();
@@ -550,8 +551,7 @@ public class SettingsActivity extends AppCompatActivity {
             } else {
                 Toast.makeText(this, "Permission DENIED", Toast.LENGTH_SHORT).show();
             }
-        }
-        else if (requestCode == 2)  {
+        } else if (requestCode == 2) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this, "Permission GRANTED", Toast.LENGTH_SHORT).show();
                 Intent i = new Intent();
@@ -563,4 +563,13 @@ public class SettingsActivity extends AppCompatActivity {
             }
         }
     }
+
+    private void initProgressDialog() {
+        mProgress = new ProgressDialog(this);
+        mProgress.setTitle("Submitting Feedback");
+        mProgress.setMessage("Your feedback is valuable :)");
+        mProgress.setCancelable(false);
+        mProgress.setIndeterminate(true);
+    }
+
 }
