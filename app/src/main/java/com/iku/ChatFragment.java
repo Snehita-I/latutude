@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -126,7 +127,12 @@ public class ChatFragment extends Fragment {
                 int firstVisiblePosition = linearLayoutManager.findLastVisibleItemPosition();
                 if (dy < 0) {
                     binding.chatDate.setVisibility(View.VISIBLE);
-                    binding.chatDate.setText(sfdMainDate.format(new Date(chatadapter.getItem(firstVisiblePosition).getTimestamp())));
+                    if (sfdMainDate.format(new Date(chatadapter.getItem(firstVisiblePosition).getTimestamp())).equals(sfdMainDate.format(new Date().getTime())))
+                        binding.chatDate.setText("Today");
+                    else if (DateUtils.isToday(chatadapter.getItem(firstVisiblePosition).getTimestamp() + DateUtils.DAY_IN_MILLIS)) {
+                        binding.chatDate.setText("Yesterday");
+                    } else
+                        binding.chatDate.setText(sfdMainDate.format(chatadapter.getItem(firstVisiblePosition).getTimestamp()));
                 } else if (dy > 0) {
                     binding.chatDate.setVisibility(View.GONE);
                 }
