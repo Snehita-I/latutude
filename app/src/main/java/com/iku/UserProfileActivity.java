@@ -68,7 +68,7 @@ public class UserProfileActivity extends AppCompatActivity {
                                 String firstLetter, secondLetter;
                                 String url = (String) document.get("imageURL");
                                 Log.d(TAG, "DocumentSnapshot data: " + document.getData() + document.get("imageURL"));
-                                if (url.isEmpty()) {
+                                if (url==null) {
                                     if (userName != null) {
                                         nameTextView.setText(userName);
 
