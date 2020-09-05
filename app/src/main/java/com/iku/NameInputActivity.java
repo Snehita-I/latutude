@@ -132,21 +132,26 @@ public class NameInputActivity extends AppCompatActivity {
 
         binding.namesNextButton.setOnClickListener(view -> {
             user.reload();
-            if (binding.enterFirstName.getText().toString().length() > 0 &&
-                    binding.enterLastName.getText().toString().length() > 0) {
-                if (!user.isEmailVerified()) {
-                    Toast.makeText(NameInputActivity.this, "Verify your email before proceeding.", Toast.LENGTH_SHORT).show();
-                } else {
-                    String firstName = binding.enterFirstName.getText().toString().trim();
-                    firstName = firstName.substring(0, 1).toUpperCase() + firstName.substring(1).toLowerCase();
+            if (binding.enterFirstName.getText().toString().trim().isEmpty() || binding.enterLastName.getText().toString().trim().isEmpty())
+                Toast.makeText(this, "Please fill your name.", Toast.LENGTH_SHORT).show();
+            else {
+                if (binding.enterFirstName.getText().toString().length() > 0 &&
+                        binding.enterLastName.getText().toString().length() > 0) {
+                    if (!user.isEmailVerified()) {
+                        Toast.makeText(NameInputActivity.this, "Verify your email before proceeding.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        String firstName = binding.enterFirstName.getText().toString().trim();
+                        firstName = firstName.substring(0, 1).toUpperCase() + firstName.substring(1).toLowerCase();
 
-                    String lastName = binding.enterLastName.getText().toString().trim();
-                    lastName = lastName.substring(0, 1).toUpperCase() + lastName.substring(1).toLowerCase();
+                        String lastName = binding.enterLastName.getText().toString().trim();
+                        lastName = lastName.substring(0, 1).toUpperCase() + lastName.substring(1).toLowerCase();
 
-                    if (!firstName.isEmpty() && !lastName.isEmpty())
-                        newUserSignUp(firstName, lastName, email);
-                }
-            }
+                        if (firstName.isEmpty() && lastName.isEmpty())
+                            Toast.makeText(this, "Please fill your name.", Toast.LENGTH_SHORT).show();
+                        else
+                            newUserSignUp(firstName, lastName, email);
+                    }
+                }}
         });
     }
 
