@@ -3,6 +3,7 @@ package com.iku;
 import android.app.Activity;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,6 +32,8 @@ public class HomeActivity extends AppCompatActivity {
     private FragmentManager fragmentManager;
 
     private ChatFragment chatFragment;
+
+    boolean doubleBackToExitPressedOnce = false;
 
     private static final String TAG = HomeActivity.class.getSimpleName();
 
@@ -149,7 +153,29 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        findViewById(R.id.messageTextField).clearFocus();
-        homeBinding.animatedBottomBar.setVisibility(View.VISIBLE);
+
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+            return;
+        } else {
+            if (findViewById(R.id.messageTextField) != null) {
+                findViewById(R.id.messageTextField).clearFocus();
+                homeBinding.animatedBottomBar.setVisibility(View.VISIBLE);
+            }
+        }
+
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).
+
+                show();
+
+        new Handler()
+                .postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        doubleBackToExitPressedOnce = false;
+                    }
+                }, 2000);
+
     }
 }
