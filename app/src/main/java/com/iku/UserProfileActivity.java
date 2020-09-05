@@ -5,24 +5,36 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.amulyakhare.textdrawable.TextDrawable;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.MetadataChanges;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
+import com.squareup.picasso.Picasso;
 
 public class UserProfileActivity extends AppCompatActivity {
 
 
     private ImageView profilePicture;
-    private MaterialTextView nameTextView,userHeartsTextView;
+    private MaterialTextView nameTextView, userHeartsTextView;
     private FirebaseFirestore db;
+
+    private String userName;
+
+    private String userUID;
+
     private String TAG = UserProfileActivity.class.getSimpleName();
 
     @Override
@@ -30,42 +42,81 @@ public class UserProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_pofile);
 
-        String firstLetter, secondLetter;
-
         db = FirebaseFirestore.getInstance();
 
         Bundle extras = this.getIntent().getExtras();
-        String userName = extras.getString("EXTRA_PERSON_NAME");
-        String userUID = extras.getString("EXTRA_PERSON_UID");
+        userName = extras.getString("EXTRA_PERSON_NAME");
+        userUID = extras.getString("EXTRA_PERSON_UID");
 
         getUserHearts(userUID);
+        getPicture(userUID);
 
         nameTextView = findViewById(R.id.userName);
         profilePicture = findViewById(R.id.profileImage);
         userHeartsTextView = findViewById(R.id.userHearts);
 
-        if (userName!=null) {
-            nameTextView.setText(userName);
-
-            firstLetter = String.valueOf(userName.charAt(0));
-            secondLetter = userName.substring(userName.indexOf(' ') + 1, userName.indexOf(' ') + 2).trim();
-
-            TextDrawable drawable = TextDrawable.builder()
-                    .beginConfig()
-                    .width(200)
-                    .height(200)
-                    .endConfig()
-                    .buildRect(firstLetter + secondLetter, Color.DKGRAY);
-
-            profilePicture.setImageDrawable(drawable);
-        }
-        else {
-            nameTextView.setText("An ikulogist!");
-            profilePicture.setImageResource(R.drawable.ic_circle_account);
-        }
     }
 
-    private void getUserHearts(String uid) { {
+    private void getPicture(String uid) {
+        db.collection("users").document(uid).get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                String firstLetter, secondLetter;
+                                String url = (String) document.get("imageURL");
+                                Log.d(TAG, "DocumentSnapshot data: " + document.getData() + document.get("imageURL"));
+                                if (url.isEmpty()) {
+                                    if (userName != null) {
+                                        nameTextView.setText(userName);
+
+                                        firstLetter = String.valueOf(userName.charAt(0));
+                                        secondLetter = userName.substring(userName.indexOf(' ') + 1, userName.indexOf(' ') + 2).trim();
+
+                                        TextDrawable drawable = TextDrawable.builder()
+                                                .beginConfig()
+                                                .width(200)
+                                                .height(200)
+                                                .endConfig()
+                                                .buildRect(firstLetter + secondLetter, Color.DKGRAY);
+
+                                        profilePicture.setImageDrawable(drawable);
+                                    } else {
+                                        Picasso.get()
+                                                .load(url)
+                                                .noFade()
+                                                .networkPolicy(NetworkPolicy.OFFLINE)
+                                                .into(profilePicture, new Callback() {
+
+                                                    @Override
+                                                    public void onSuccess() {
+                                                    }
+
+                                                    @Override
+                                                    public void onError(Exception e) {
+                                                        Picasso.get()
+                                                                .load(url)
+                                                                .noFade()
+                                                                .into(profilePicture);
+                                                    }
+                                                });
+                                    }
+                                }
+
+                            } else {
+                                Log.d(TAG, "No such document");
+                            }
+                        } else {
+                            Log.d(TAG, "get failed with ", task.getException());
+                        }
+                    }
+                });
+    }
+
+    private void getUserHearts(String uid) {
+        {
             db.collection("users").whereEqualTo("uid", uid)
                     .addSnapshotListener(MetadataChanges.INCLUDE, new EventListener<QuerySnapshot>() {
                         @Override

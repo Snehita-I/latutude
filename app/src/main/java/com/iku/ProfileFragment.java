@@ -9,10 +9,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.amulyakhare.textdrawable.TextDrawable;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,6 +32,9 @@ import com.iku.databinding.FragmentProfileBinding;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -82,7 +88,7 @@ public class ProfileFragment extends Fragment {
             //log event
             //Remove UID if this event is erroring out in Analytics
             Bundle logout_bundle = new Bundle();
-            logout_bundle.putString("uid",user.getUid());
+            logout_bundle.putString("uid", user.getUid());
             mFirebaseAnalytics.logEvent("logout", logout_bundle);
             mAuth.signOut();
             Intent intent = new Intent(getActivity(), SplashActivity.class);
@@ -95,7 +101,7 @@ public class ProfileFragment extends Fragment {
         });
     }
 
-    private void getProfileDetails(){
+    private void getProfileDetails() {
         if (user != null) {
             String originalPieceOfUrl = "s96-c";
             String newPieceOfUrlToAdd = "s800-c";
@@ -111,6 +117,8 @@ public class ProfileFragment extends Fragment {
                 photoUrl = photoUrl.replace(originalPieceOfUrl, newPieceOfUrlToAdd);
 
                 photoUrl = photoUrl + "?height=500";
+
+                storePictureToDB(photoUrl);
 
                 Picasso.get()
                         .load(photoUrl)
@@ -146,6 +154,34 @@ public class ProfileFragment extends Fragment {
                     profileBinding.profileImage.setImageDrawable(drawable);
                 }
             }
+        }
+    }
+
+    private void storePictureToDB(String photoUrl) {
+        if (user != null) {
+
+            Map<String, Object> docData = new HashMap<>();
+            docData.put("iamgeUrl", photoUrl);
+
+            db.collection("users").document(user.getUid())
+                    .update(docData)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+
+                            Log.i(TAG, "onSuccess: ");
+                            //Log event
+                            Bundle down_params = new Bundle();
+                            down_params.putString("received_picture", "User has google or FB picture");
+                            mFirebaseAnalytics.logEvent("profile_picture", down_params);
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+
+                        }
+                    });
         }
     }
 
