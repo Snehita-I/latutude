@@ -179,6 +179,7 @@ public class NameInputActivity extends AppCompatActivity {
                     userInfo.put("email", email);
                     userInfo.put("uid", fAuth.getUid());
                     userInfo.put("points", 0);
+                    userInfo.put("firstMessage", false);
 
                     Map<String, Object> userRegistrationTokenInfo = new HashMap<>();
                     userRegistrationTokenInfo.put("registrationToken", token);

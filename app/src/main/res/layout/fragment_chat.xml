@@ -7,6 +7,14 @@
     android:animateLayoutChanges="true"
     android:background="#DEDEDE">
 
+    <!--Confetti-->
+    <nl.dionsegijn.konfetti.KonfettiView
+        android:id="@+id/viewConfetti"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:translationZ="13dp"/>
+
+
     <HorizontalScrollView
         android:id="@+id/categories"
         android:layout_width="wrap_content"

@@ -3,10 +3,12 @@ package com.iku;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,9 +23,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 
+import com.amulyakhare.textdrawable.TextDrawable;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.textview.MaterialTextView;
@@ -45,12 +50,19 @@ import com.iku.databinding.FragmentChatBinding;
 import com.iku.models.ChatModel;
 import com.iku.models.LeaderboardModel;
 import com.iku.utils.ItemClickSupport;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
+import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import nl.dionsegijn.konfetti.KonfettiView;
+import nl.dionsegijn.konfetti.models.Shape;
+import nl.dionsegijn.konfetti.models.Size;
 
 
 /**
@@ -440,17 +452,66 @@ public class ChatFragment extends Fragment {
             ArrayList<Object> upvotersArray = new ArrayList<>();
             docData.put("upvoters", upvotersArray);
 
+            Map<String, Object> normalMessage = new HashMap<>();
+            normalMessage.put("firstMessage", true);
+
             db.collection("iku_earth_messages")
                     .add(docData)
                     .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                         @Override
                         public void onSuccess(DocumentReference documentReference) {
+                            db.collection("users").document(user.getUid()).get()
+                                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                DocumentSnapshot document = task.getResult();
+                                                if (document.exists()) {
+                                                    Boolean isFirstMessage = (Boolean) document.get("firstMessage");
+                                                    Log.d(TAG, "DocumentSnapshot data: " + document.getData() + document.get("firstMessage"));
+                                                    if (!isFirstMessage) {
+                                                        db.collection("users").document(user.getUid())
+                                                                .update(normalMessage)
+                                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                    @Override
+                                                                    public void onSuccess(Void aVoid) {
 
-                            //Log event
-                            Bundle params = new Bundle();
-                            params.putString("type", "text");
-                            params.putString("uid", user.getUid());
-                            mFirebaseAnalytics.logEvent("messaging", params);
+                                                                        binding.viewConfetti.build()
+                                                                                .addColors(Color.BLUE, Color.LTGRAY, getResources().getColor(R.color.colorPrimary), getResources().getColor(R.color.colorAccent))
+                                                                                .setDirection(0.0, 359.0)
+                                                                                .setSpeed(1f, 10f)
+                                                                                .setFadeOutEnabled(true)
+                                                                                .setTimeToLive(2000L)
+                                                                                .addShapes(Shape.Square.INSTANCE, Shape.Circle.INSTANCE)
+                                                                                .addSizes(new Size(8, 10f))
+                                                                                .setPosition(-50f, binding.viewConfetti.getWidth() + 50f, -50f, -50f)
+                                                                                .streamFor(300, 5000L);
+
+                                                                        //Log event
+                                                                        Bundle params = new Bundle();
+                                                                        params.putString("type", "text");
+                                                                        params.putString("uid", user.getUid());
+                                                                        mFirebaseAnalytics.logEvent("first_message", params);
+
+                                                                    }
+                                                                })
+                                                                .addOnFailureListener(new OnFailureListener() {
+                                                                    @Override
+                                                                    public void onFailure(@NonNull Exception e) {
+
+                                                                    }
+                                                                });
+
+                                                    }
+                                                } else {
+                                                    Log.d(TAG, "No such document");
+                                                }
+                                            } else {
+                                                Log.d(TAG, "get failed with ", task.getException());
+                                            }
+                                        }
+                                    });
+
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {

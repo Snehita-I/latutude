@@ -320,6 +320,7 @@ public class WelcomeActivity extends AppCompatActivity {
                         userInfo.put("email", email);
                         userInfo.put("uid", mAuth.getUid());
                         userInfo.put("points", 0);
+                        userInfo.put("firstMessage", false);
 
                         Map<String, Object> userRegistrationTokenInfo = new HashMap<>();
                         userRegistrationTokenInfo.put("registrationToken", token);
