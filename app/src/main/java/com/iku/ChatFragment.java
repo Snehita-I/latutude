@@ -493,6 +493,8 @@ public class ChatFragment extends Fragment {
                                                                         params.putString("uid", user.getUid());
                                                                         mFirebaseAnalytics.logEvent("first_message", params);
 
+                                                                        Toast.makeText(getActivity(), "Welcome to the community", Toast.LENGTH_SHORT).show();
+
                                                                     }
                                                                 })
                                                                 .addOnFailureListener(new OnFailureListener() {

@@ -78,7 +78,7 @@ public class OnboardingActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 /*Log event*/
-                mFirebaseAnalytics.logEvent("TUTORIAL_SKIPPED", null);
+                mFirebaseAnalytics.logEvent("tutorial_skipped", null);
                 startActivity(new Intent(OnboardingActivity.this, WelcomeActivity.class));
                 finish();
             }

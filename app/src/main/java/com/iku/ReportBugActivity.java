@@ -456,7 +456,7 @@ public class ReportBugActivity extends AppCompatActivity {
                         Bundle bug_bundle = new Bundle();
                         bug_bundle.putString("status", "submitted");
                         bug_bundle.putString("UID", user.getUid());
-                        mFirebaseAnalytics.logEvent("bug", bug_bundle);
+                        mFirebaseAnalytics.logEvent("bug_report", bug_bundle);
 
                         Toast.makeText(ReportBugActivity.this, "Ugh.. those pesky bugs!", Toast.LENGTH_LONG).show();
                         onBackPressed();

@@ -180,6 +180,7 @@ public class NameInputActivity extends AppCompatActivity {
                     userInfo.put("uid", fAuth.getUid());
                     userInfo.put("points", 0);
                     userInfo.put("firstMessage", false);
+                    userInfo.put("firstImage", false);
 
                     Map<String, Object> userRegistrationTokenInfo = new HashMap<>();
                     userRegistrationTokenInfo.put("registrationToken", token);
