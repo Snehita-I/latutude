@@ -1,10 +1,5 @@
 package com.iku;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -15,6 +10,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -29,9 +29,6 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.iku.models.LeaderboardModel;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import nl.dionsegijn.konfetti.KonfettiView;
 import nl.dionsegijn.konfetti.models.Shape;
@@ -120,7 +117,7 @@ public class LeaderboardActivity extends AppCompatActivity {
                             Bundle easter_bundle = new Bundle();
                             easter_bundle.putString("easter_egg", "Leaderboard");
                             easter_bundle.putString("UID", leaderboardModel.getUid());
-                            easter_bundle.putString("Name",leaderboardModel.getFirstName() + " " + leaderboardModel.getLastName());
+                            easter_bundle.putString("Name", leaderboardModel.getFirstName() + " " + leaderboardModel.getLastName());
                             mFirebaseAnalytics.logEvent("easter_egg_found", easter_bundle);
 
                             Toast.makeText(LeaderboardActivity.this, "- drum roll -", Toast.LENGTH_SHORT).show();
@@ -135,7 +132,7 @@ public class LeaderboardActivity extends AppCompatActivity {
                                     .setPosition(-50f, konfettiView.getWidth() + 50f, -50f, -50f)
                                     .streamFor(300, 5000L);
 
-                            new CountDownTimer(1*10000, 1000) {
+                            new CountDownTimer(1 * 10000, 1000) {
 
                                 public void onTick(long millisUntilFinished) {
                                     leaderboardViewHolder.firstNameTextView.setEnabled(false);

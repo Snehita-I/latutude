@@ -312,7 +312,6 @@ public class WelcomeActivity extends AppCompatActivity {
                         }
                         // Get new Instance ID token
                         String token = task.getResult().getToken();
-                        Toast.makeText(WelcomeActivity.this, token, Toast.LENGTH_SHORT).show();
 
                         // Create the arguments to the callable function.
                         Map<String, Object> userInfo = new HashMap<>();

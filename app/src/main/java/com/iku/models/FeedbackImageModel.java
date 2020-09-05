@@ -11,7 +11,7 @@ public class FeedbackImageModel {
 
     }
 
-    public FeedbackImageModel( String subject, String html) {
+    public FeedbackImageModel(String subject, String html) {
         this.subject = subject;
         this.html = html;
     }

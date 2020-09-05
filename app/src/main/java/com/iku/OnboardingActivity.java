@@ -1,17 +1,16 @@
 package com.iku;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import androidx.viewpager2.widget.ViewPager2;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -30,6 +29,7 @@ public class OnboardingActivity extends AppCompatActivity {
     private MaterialButton buttonOnboardingAction;
     private ImageButton dismissOnboardingAction;
     private FirebaseAnalytics mFirebaseAnalytics;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,7 +79,7 @@ public class OnboardingActivity extends AppCompatActivity {
             public void onClick(View view) {
                 /*Log event*/
                 mFirebaseAnalytics.logEvent("TUTORIAL_SKIPPED", null);
-                startActivity(new Intent(OnboardingActivity.this,WelcomeActivity.class));
+                startActivity(new Intent(OnboardingActivity.this, WelcomeActivity.class));
                 finish();
             }
         });

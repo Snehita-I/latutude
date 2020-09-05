@@ -175,7 +175,6 @@ public class NameInputActivity extends AppCompatActivity {
 
                     // Get new Instance ID token
                     String token = task.getResult().getToken();
-                    Toast.makeText(NameInputActivity.this, token, Toast.LENGTH_SHORT).show();
                     // Create the arguments to the callable function.
                     Map<String, Object> userInfo = new HashMap<>();
                     userInfo.put("firstName", firstName);

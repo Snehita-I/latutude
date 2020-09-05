@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -439,7 +438,7 @@ public class ChatFragment extends Fragment {
                             //Log event
                             Bundle params = new Bundle();
                             params.putString("type", "text");
-                            params.putString("uid",user.getUid());
+                            params.putString("uid", user.getUid());
                             mFirebaseAnalytics.logEvent("messaging", params);
                         }
                     })

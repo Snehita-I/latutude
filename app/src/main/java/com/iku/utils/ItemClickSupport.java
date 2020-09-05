@@ -76,6 +76,7 @@ public class ItemClickSupport {
 
     public interface OnItemClickListener {
         void onItemClicked(RecyclerView recyclerView, int position, View v);
+
         void onItemDoubleClicked(RecyclerView recyclerView, int position, View v);
     }
 }

@@ -13,11 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -129,11 +126,11 @@ public class PasswordInputActivity extends AppCompatActivity {
                                 Toast.makeText(PasswordInputActivity.this, "Password reset instructions sent via email", Toast.LENGTH_LONG).show())
                         .addOnFailureListener(e ->
                                 Toast.makeText(PasswordInputActivity.this, "Email Not Sent" + e.getMessage(), Toast.LENGTH_LONG).show());
-                new CountDownTimer(1*60000, 1000) {
+                new CountDownTimer(1 * 60000, 1000) {
 
                     public void onTick(long millisUntilFinished) {
                         binding.forgotPasswordTextView.setEnabled(false);
-                        binding.forgotPasswordTextView.setText("Resend in " +new SimpleDateFormat("ss").format(new Date( millisUntilFinished)) + "s");
+                        binding.forgotPasswordTextView.setText("Resend in " + new SimpleDateFormat("ss").format(new Date(millisUntilFinished)) + "s");
                     }
 
                     public void onFinish() {
@@ -142,9 +139,9 @@ public class PasswordInputActivity extends AppCompatActivity {
 
                     }
                 }.start();
-                }
+            }
 
-            });
+        });
 
 //        binding.forgotPasswordTextView.setOnClickListener(view ->
 //                firebaseAuth.sendPasswordResetEmail(enteredEmail).addOnSuccessListener(

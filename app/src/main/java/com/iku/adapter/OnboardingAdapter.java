@@ -1,6 +1,5 @@
 package com.iku.adapter;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,14 +9,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.iku.models.OnboardingScreenModel;
 import com.iku.R;
+import com.iku.models.OnboardingScreenModel;
 
 import java.util.List;
 
-public class OnboardingAdapter extends RecyclerView.Adapter<OnboardingAdapter.OnboardingViewHolder>{
+public class OnboardingAdapter extends RecyclerView.Adapter<OnboardingAdapter.OnboardingViewHolder> {
 
-private List<OnboardingScreenModel> onboardingScreenModels;
+    private List<OnboardingScreenModel> onboardingScreenModels;
 
     public OnboardingAdapter(List<OnboardingScreenModel> onboardingScreenModels) {
         this.onboardingScreenModels = onboardingScreenModels;
@@ -46,7 +45,7 @@ private List<OnboardingScreenModel> onboardingScreenModels;
         return onboardingScreenModels.size();
     }
 
-    class OnboardingViewHolder extends RecyclerView.ViewHolder{
+    class OnboardingViewHolder extends RecyclerView.ViewHolder {
 
         //private TextView textTitle;
         private TextView textDescription;
@@ -59,7 +58,7 @@ private List<OnboardingScreenModel> onboardingScreenModels;
             imageOnboarding = itemView.findViewById(R.id.imageOnboarding);
         }
 
-        void setOnboardingData(OnboardingScreenModel onboardingScreenModel){
+        void setOnboardingData(OnboardingScreenModel onboardingScreenModel) {
             //textTitle.setText(onboardingItem.getTitle());
             textDescription.setText(onboardingScreenModel.getDescription());
             imageOnboarding.setImageResource(onboardingScreenModel.getImage());
