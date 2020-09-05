@@ -178,9 +178,12 @@ public class ChatFragment extends Fragment {
                                     public void onSuccess(Void aVoid) {
                                         if (chatadapter.getItem(position).getUID().equals(user.getUid())) {
                                             //Log event
-                                            Bundle params = new Bundle();
-                                            params.putString("heart_up", user.getUid());
-                                            mFirebaseAnalytics.logEvent("hearts", params);
+                                            Bundle heart_params = new Bundle();
+                                            heart_params.putString("type", "heart_up");
+                                            heart_params.putString("messageID", documentID);
+                                            heart_params.putString("author_UID", chatadapter.getItem(position).getUID());
+                                            heart_params.putString("action_by", user.getUid());
+                                            mFirebaseAnalytics.logEvent("hearts", heart_params);
                                         } else {
                                             db.collection("users").document(chatadapter.getItem(position).getUID())
                                                     .get()
@@ -195,9 +198,12 @@ public class ChatFragment extends Fragment {
                                                                         public void onSuccess(Void aVoid) {
 
                                                                             //Log event
-                                                                            Bundle down_params = new Bundle();
-                                                                            down_params.putString("heart_down", user.getUid());
-                                                                            mFirebaseAnalytics.logEvent("hearts", down_params);
+                                                                            Bundle heart_params = new Bundle();
+                                                                            heart_params.putString("type", "heart_up");
+                                                                            heart_params.putString("messageID", documentID);
+                                                                            heart_params.putString("author_UID", chatadapter.getItem(position).getUID());
+                                                                            heart_params.putString("action_by", user.getUid());
+                                                                            mFirebaseAnalytics.logEvent("hearts", heart_params);
                                                                         }
                                                                     })
                                                                     .addOnFailureListener(new OnFailureListener() {
@@ -228,10 +234,12 @@ public class ChatFragment extends Fragment {
                                     public void onSuccess(Void aVoid) {
                                         if (chatadapter.getItem(position).getUID().equals(user.getUid())) {
                                             //Log event
-                                            //Log event
                                             Bundle params = new Bundle();
-                                            params.putString("heart_count", "heart down");
-                                            mFirebaseAnalytics.logEvent("heart_down", params);
+                                            params.putString("type", "heart_down");
+                                            params.putString("messageID", documentID);
+                                            params.putString("author_UID", chatadapter.getItem(position).getUID());
+                                            params.putString("action_by", user.getUid());
+                                            mFirebaseAnalytics.logEvent("hearts", params);
                                         } else {
                                             db.collection("users").document(chatadapter.getItem(position).getUID())
                                                     .get()
@@ -246,9 +254,12 @@ public class ChatFragment extends Fragment {
                                                                         public void onSuccess(Void aVoid) {
 
                                                                             //Log event
-                                                                            Bundle params = new Bundle();
-                                                                            params.putString("heart_count", "heart down");
-                                                                            mFirebaseAnalytics.logEvent("heart_down", params);
+                                                                            Bundle heart_params = new Bundle();
+                                                                            heart_params.putString("type", "heart_down");
+                                                                            heart_params.putString("messageID", documentID);
+                                                                            heart_params.putString("author_UID", chatadapter.getItem(position).getUID());
+                                                                            heart_params.putString("action_by", user.getUid());
+                                                                            mFirebaseAnalytics.logEvent("hearts", heart_params);
                                                                         }
                                                                     })
                                                                     .addOnFailureListener(new OnFailureListener() {

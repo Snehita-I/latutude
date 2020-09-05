@@ -299,8 +299,8 @@
 
                     <ImageView
                         android:id="@+id/bug_icon"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
                         android:layout_centerVertical="true"
                         android:layout_marginStart="24dp"
                         android:src="@drawable/ic_bug_report_24" />

@@ -154,7 +154,7 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
             senderName = itemView.findViewById(R.id.sender_name);
             upvoteCount = itemView.findViewById(R.id.upvoteCount);
 
-            messageText.setLinkTextColor(Color.parseColor("#0000EE"));
+            messageText.setLinkTextColor(Color.parseColor("#1111b7"));
             Linkify.addLinks(messageText, Linkify.WEB_URLS);
 
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
@@ -186,7 +186,7 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
             receiverImage = itemView.findViewById(R.id.receivedImage);
             upvoteCount = itemView.findViewById(R.id.upvoteCount);
 
-            messageText.setLinkTextColor(Color.parseColor("#0000EE"));
+            messageText.setLinkTextColor(Color.parseColor("#1111b7"));
             Linkify.addLinks(messageText, Linkify.WEB_URLS);
 
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
@@ -217,7 +217,7 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
             sentImage = itemView.findViewById(R.id.sentImage);
             upvoteCount = itemView.findViewById(R.id.upvoteCount);
 
-            messageText.setLinkTextColor(Color.parseColor("#0000EE"));
+            messageText.setLinkTextColor(Color.parseColor("#1111b7"));
             Linkify.addLinks(messageText, Linkify.WEB_URLS);
 
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
@@ -245,7 +245,7 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
             messageTime = itemView.findViewById(R.id.message_time);
             upvoteCount = itemView.findViewById(R.id.upvoteCount);
 
-            messageText.setLinkTextColor(Color.parseColor("#0000EE"));
+            messageText.setLinkTextColor(Color.parseColor("#1111b7"));
             Linkify.addLinks(messageText, Linkify.WEB_URLS);
 
             itemView.setOnLongClickListener(new View.OnLongClickListener() {

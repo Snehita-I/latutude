@@ -12,12 +12,11 @@
         android:id="@+id/viewConfetti"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:translationZ="1dp"/>
+        android:translationZ="13dp"/>
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBar"
         android:layout_width="match_parent"
-        app:elevation="0dp"
         android:layout_height="wrap_content">
 
         <androidx.constraintlayout.widget.ConstraintLayout

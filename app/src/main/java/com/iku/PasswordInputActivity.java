@@ -122,11 +122,23 @@ public class PasswordInputActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 firebaseAuth.sendPasswordResetEmail(enteredEmail)
-                        .addOnSuccessListener(aVoid ->
-                                Toast.makeText(PasswordInputActivity.this, "Password reset instructions sent via email", Toast.LENGTH_LONG).show())
-                        .addOnFailureListener(e ->
-                                Toast.makeText(PasswordInputActivity.this, "Email Not Sent" + e.getMessage(), Toast.LENGTH_LONG).show());
-                new CountDownTimer(1 * 60000, 1000) {
+
+                        .addOnSuccessListener(aVoid -> {
+                            Toast.makeText(PasswordInputActivity.this, "Password reset instructions sent via email", Toast.LENGTH_LONG).show();
+                            //log event
+                            Bundle passwordReset_bundle = new Bundle();
+                            passwordReset_bundle.putString("state", "sent");
+                            mFirebaseAnalytics.logEvent("password_reset_email", passwordReset_bundle);
+                        })
+                        .addOnFailureListener(e -> {
+                            Toast.makeText(PasswordInputActivity.this, "Email Not Sent" + e.getMessage(), Toast.LENGTH_LONG).show();
+                            //log event
+                            Bundle failed_bundle = new Bundle();
+                            failed_bundle.putString("state", "failed");
+                            mFirebaseAnalytics.logEvent("password_reset_email", failed_bundle);
+
+                        });
+                new CountDownTimer(60000, 1000) {
 
                     public void onTick(long millisUntilFinished) {
                         binding.forgotPasswordTextView.setEnabled(false);

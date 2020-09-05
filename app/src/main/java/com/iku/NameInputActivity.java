@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -29,8 +28,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class NameInputActivity extends AppCompatActivity {
 
@@ -68,7 +65,7 @@ public class NameInputActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if(!user.isEmailVerified()) {
+                if (!user.isEmailVerified()) {
                     handler.postDelayed(this, 1000);
                     user.reload();
                 } else {
@@ -83,7 +80,7 @@ public class NameInputActivity extends AppCompatActivity {
                     Bundle verify_bundle = new Bundle();
                     verify_bundle.putString(FirebaseAnalytics.Param.METHOD, "Email");
                     verify_bundle.putString("verification_email_status", "verified");
-                    mFirebaseAnalytics.logEvent("user_verified", verify_bundle);
+                    mFirebaseAnalytics.logEvent("user_verification", verify_bundle);
                     Toast.makeText(NameInputActivity.this, "Email verification successful!", Toast.LENGTH_SHORT).show();
 
                 }
@@ -115,11 +112,11 @@ public class NameInputActivity extends AppCompatActivity {
                         mFirebaseAnalytics.logEvent("resend_verification_email", password_bundle);
                     }
                 });
-                new CountDownTimer(1*60000, 1000) {
+                new CountDownTimer(1 * 60000, 1000) {
 
                     public void onTick(long millisUntilFinished) {
                         binding.resendEmailButton.setEnabled(false);
-                        binding.resendEmailButton.setText("Resend in " +new SimpleDateFormat("ss").format(new Date( millisUntilFinished)) + "s");
+                        binding.resendEmailButton.setText("Resend in " + new SimpleDateFormat("ss").format(new Date(millisUntilFinished)) + "s");
                         binding.resendEmailButton.setTextColor(getResources().getColor(R.color.colorTextSecondary));
                     }
 
