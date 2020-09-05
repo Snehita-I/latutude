@@ -201,7 +201,6 @@ public class ChatImageActivity extends AppCompatActivity {
                                                             DocumentSnapshot document = task.getResult();
                                                             if (document.exists()) {
                                                                 Boolean isFirstImage = (Boolean) document.get("firstImage");
-                                                                Log.d(TAG, "DocumentSnapshot data: " + document.getData() + document.get("firstImage"));
                                                                 if (!isFirstImage) {
                                                                     db.collection("users").document(user.getUid())
                                                                             .update(normalMessage)

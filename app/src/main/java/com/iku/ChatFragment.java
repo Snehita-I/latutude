@@ -468,7 +468,6 @@ public class ChatFragment extends Fragment {
                                                 DocumentSnapshot document = task.getResult();
                                                 if (document.exists()) {
                                                     Boolean isFirstMessage = (Boolean) document.get("firstMessage");
-                                                    Log.d(TAG, "DocumentSnapshot data: " + document.getData() + document.get("firstMessage"));
                                                     if (!isFirstMessage) {
                                                         db.collection("users").document(user.getUid())
                                                                 .update(normalMessage)
