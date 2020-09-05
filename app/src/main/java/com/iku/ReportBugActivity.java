@@ -406,74 +406,81 @@ public class ReportBugActivity extends AppCompatActivity {
 
     private void uploadToDB() {
 
-        Map<String, Object> docData = new HashMap<>();
+        if (messageEntered.getText().toString().trim().isEmpty()){
+            Toast.makeText(this, "Err add some details!", Toast.LENGTH_SHORT).show();
+            mProgress.dismiss();
+        } else {
 
-        formatter = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss z");
+            Map<String, Object> docData = new HashMap<>();
 
-        int finalUrl_size = finalUrl.size();
-        int num;
-        if (finalUrl_size > 0) {
-            imageSrc = "";
-            for (int i = 0; i < finalUrl_size; i++) {
-                num = i + 1;
-                images += "<tr> <th style=\"text-align:left;\">Image " + num + "</th> <th style=\"text-align:left;\">" + finalUrl.get(i) + "</th> </tr> ";
-                imageSrc += "<h3>Image " + num + "</h3>" + "<img src=\"" + finalUrl.get(i) + "\" style=\"max-height:512px;\"> ";
+            formatter = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss z");
+
+            int finalUrl_size = finalUrl.size();
+            int num;
+            if (finalUrl_size > 0) {
+                imageSrc = "";
+                for (int i = 0; i < finalUrl_size; i++) {
+                    num = i + 1;
+                    images += "<tr> <th style=\"text-align:left;\">Image " + num + "</th> <th style=\"text-align:left;\">" + finalUrl.get(i) + "</th> </tr> ";
+                    imageSrc += "<h3>Image " + num + "</h3>" + "<img src=\"" + finalUrl.get(i) + "\" style=\"max-height:512px;\"> ";
+                }
             }
+
+            feedbackText_val = messageEntered.getText().toString().trim();
+            to = "tech@iku.earth";
+            subject = "Bug reported by " + user.getDisplayName();
+            html = "<style> th { text-align:left; } </style><h3>Bug details</h3>" +
+                    "<table> " +
+                    "<tr> <th style=\"text-align:left;\">Name:</th> <th style=\"text-align:left;\">" + user.getDisplayName() + "</th> </tr>" +
+                    "<tr> <th style=\"text-align:left;\">Version:</th> " + "<th style=\"text-align:left;\">" + BuildConfig.VERSION_CODE + "</th> </tr> " +
+                    "<tr> <th style=\"text-align:left;\">Message:</th> <th style=\"text-align:left;\"> <b>" + feedbackText_val + "</b></th> </tr> " +
+                    "<tr> <th style=\"text-align:left;\">UID:</th> <th style=\"text-align:left;\">" + user.getUid() + "</th> </tr> " +
+                    "<tr> <th style=\"text-align:left;\">Email ID:</th> <th style=\"text-align:left;\">" + user.getEmail() + "</th> </tr> " +
+                    "<tr> <th style=\"text-align:left;\">Time:</th> <th style=\"text-align:left;\">" + d.getTime() + "</th> </tr>"
+                    + images +
+                    " </table>" + imageSrc;
+            type = "bug";
+
+            docData.put("to", to);
+            Map<String, Object> nestedData = new HashMap<>();
+            nestedData.put("html", html);
+            nestedData.put("subject", subject);
+            docData.put("message", nestedData);
+            docData.put("type", "bug");
+            docData.put("uid", user.getUid());
+            docData.put("timeStamp", new Timestamp(new Date()));
+
+            db.collection("mail").document()
+                    .set(docData)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            mProgress.dismiss();
+                            messageEntered.setText("");
+                            //Log event
+                            Bundle bug_bundle = new Bundle();
+                            bug_bundle.putString("status", "submitted");
+                            bug_bundle.putString("UID", user.getUid());
+                            mFirebaseAnalytics.logEvent("bug_report", bug_bundle);
+
+                            Toast.makeText(ReportBugActivity.this, "Ugh.. those pesky bugs!", Toast.LENGTH_LONG).show();
+                            onBackPressed();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            mProgress.dismiss();
+                            //Log event
+                            Bundle failed_bundle = new Bundle();
+                            failed_bundle.putString("status", "failed");
+                            failed_bundle.putString("UID", user.getUid());
+                            mFirebaseAnalytics.logEvent("bug", failed_bundle);
+                            Toast.makeText(ReportBugActivity.this, "err.. can you try that again?", Toast.LENGTH_LONG).show();
+                        }
+                    });
+
         }
-
-        feedbackText_val = messageEntered.getText().toString();
-        to = "tech@iku.earth";
-        subject = "Bug reported by " + user.getDisplayName();
-        html = "<style> th { text-align:left; } </style><h3>Bug details</h3>" +
-                "<table> " +
-                "<tr> <th style=\"text-align:left;\">Name:</th> <th style=\"text-align:left;\">" + user.getDisplayName() + "</th> </tr>" +
-                "<tr> <th style=\"text-align:left;\">Version:</th> " + "<th style=\"text-align:left;\">" + BuildConfig.VERSION_CODE + "</th> </tr> " +
-                "<tr> <th style=\"text-align:left;\">Message:</th> <th style=\"text-align:left;\"> <b>" + feedbackText_val + "</b></th> </tr> " +
-                "<tr> <th style=\"text-align:left;\">UID:</th> <th style=\"text-align:left;\">" + user.getUid() + "</th> </tr> " +
-                "<tr> <th style=\"text-align:left;\">Email ID:</th> <th style=\"text-align:left;\">" + user.getEmail() + "</th> </tr> " +
-                "<tr> <th style=\"text-align:left;\">Time:</th> <th style=\"text-align:left;\">" + d.getTime() + "</th> </tr>"
-                + images +
-                " </table>" + imageSrc;
-        type = "bug";
-
-        docData.put("to", to);
-        Map<String, Object> nestedData = new HashMap<>();
-        nestedData.put("html", html);
-        nestedData.put("subject", subject);
-        docData.put("message", nestedData);
-        docData.put("type", "bug");
-        docData.put("uid", user.getUid());
-        docData.put("timeStamp", new Timestamp(new Date()));
-
-        db.collection("mail").document()
-                .set(docData)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        mProgress.dismiss();
-                        messageEntered.setText("");
-                        //Log event
-                        Bundle bug_bundle = new Bundle();
-                        bug_bundle.putString("status", "submitted");
-                        bug_bundle.putString("UID", user.getUid());
-                        mFirebaseAnalytics.logEvent("bug_report", bug_bundle);
-
-                        Toast.makeText(ReportBugActivity.this, "Ugh.. those pesky bugs!", Toast.LENGTH_LONG).show();
-                        onBackPressed();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        mProgress.dismiss();
-                        //Log event
-                        Bundle failed_bundle = new Bundle();
-                        failed_bundle.putString("status", "failed");
-                        failed_bundle.putString("UID", user.getUid());
-                        mFirebaseAnalytics.logEvent("bug", failed_bundle);
-                        Toast.makeText(ReportBugActivity.this, "err.. can you try that again?", Toast.LENGTH_LONG).show();
-                    }
-                });
 
     }
 
