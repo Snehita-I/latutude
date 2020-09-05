@@ -64,8 +64,6 @@ public class NameInputActivity extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
 
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -80,6 +78,7 @@ public class NameInputActivity extends AppCompatActivity {
                     binding.enterFirstName.setVisibility(View.VISIBLE);
                     binding.enterLastName.setVisibility(View.VISIBLE);
                     binding.namesNextButton.setVisibility(View.VISIBLE);
+                    getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
                     //log event
                     Bundle verify_bundle = new Bundle();
                     verify_bundle.putString(FirebaseAnalytics.Param.METHOD, "Email");

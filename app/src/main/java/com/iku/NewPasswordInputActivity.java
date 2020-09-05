@@ -113,6 +113,7 @@ public class NewPasswordInputActivity extends AppCompatActivity {
                                         Toast.makeText(NewPasswordInputActivity.this, "User Registered", Toast.LENGTH_SHORT).show();
                                         //sending to Profile Activity
                                         Intent goToNameActivity = new Intent(NewPasswordInputActivity.this, NameInputActivity.class);
+                                        goToNameActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                         startActivity(goToNameActivity);
 
                                     }
