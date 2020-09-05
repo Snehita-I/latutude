@@ -60,7 +60,10 @@ public class PasswordInputActivity extends AppCompatActivity {
 
         binding.signinButton.setOnClickListener(view -> {
 
+            binding.signinButton.setEnabled(false);
+
             if (binding.enterPassword.getText().toString().isEmpty()) {
+                binding.signinButton.setEnabled(true);
                 Toast.makeText(PasswordInputActivity.this, "Please enter your password", Toast.LENGTH_SHORT).show();
                 return;
             } else {
@@ -98,6 +101,7 @@ public class PasswordInputActivity extends AppCompatActivity {
                                                 startActivity(goToNameInputActivity);
                                             }
                                         } else {
+                                            binding.signinButton.setEnabled(true);
                                             Log.d(TAG, "Failed with: ", task.getException());
                                         }
                                     }
@@ -106,6 +110,7 @@ public class PasswordInputActivity extends AppCompatActivity {
 
                             } else {
                                 mProgress.dismiss();
+                                binding.signinButton.setEnabled(true);
 
                                 //log event
                                 Bundle fail_bundle = new Bundle();
@@ -155,17 +160,17 @@ public class PasswordInputActivity extends AppCompatActivity {
 
         });
 
-//        binding.forgotPasswordTextView.setOnClickListener(view ->
-//                firebaseAuth.sendPasswordResetEmail(enteredEmail).addOnSuccessListener(
-//                        aVoid ->
-//                Toast.makeText(PasswordInputActivity.this, "Password reset instructions sent via email", Toast.LENGTH_LONG).show()).addOnFailureListener(e ->
-//                Toast.makeText(PasswordInputActivity.this, "Email Not Sent" + e.getMessage(), Toast.LENGTH_LONG).show()));
-
     }
 
     private void initProgressDialog() {
         mProgress = new ProgressDialog(this);
         mProgress.setCancelable(false);
         mProgress.setIndeterminate(true);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        binding.signinButton.setEnabled(true);
     }
 }

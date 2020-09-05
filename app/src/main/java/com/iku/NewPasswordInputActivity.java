@@ -57,13 +57,16 @@ public class NewPasswordInputActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 password = binding.enterNewPassword.getText().toString().trim();
+                binding.enterNewPassword.setEnabled(false);
 
                 //validations
                 if (password.isEmpty()) {
+                    binding.enterNewPassword.setEnabled(true);
                     binding.enterNewPassword.setError("password cannot be empty");
                     return;
                 }
                 if (password.length() < 8) {
+                    binding.enterNewPassword.setEnabled(true);
                     binding.enterNewPassword.setError("password must be at least 8 characters");
                     return;
                 }
@@ -100,6 +103,7 @@ public class NewPasswordInputActivity extends AppCompatActivity {
                                         }).addOnFailureListener(new OnFailureListener() {
                                             @Override
                                             public void onFailure(@NonNull Exception e) {
+                                                binding.enterNewPassword.setEnabled(true);
 
                                                 //log event
                                                 Bundle password_bundle = new Bundle();
@@ -125,5 +129,11 @@ public class NewPasswordInputActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        binding.enterNewPassword.setEnabled(true);
     }
 }

@@ -50,11 +50,14 @@ public class EmailInputActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+                binding.emailNextButton.setEnabled(false);
+
                 email = binding.enterEmail.getText().toString().trim();
 
                 //validations
                 if (email.isEmpty()) {
                     binding.enterEmail.setError("Email cannot be empty");
+                    binding.emailNextButton.setEnabled(true);
                     return;
                 }
 
@@ -96,6 +99,7 @@ public class EmailInputActivity extends AppCompatActivity {
                         }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+                        binding.emailNextButton.setEnabled(false);
                         e.printStackTrace();
                         Bundle signin_bundle = new Bundle();
                         signin_bundle.putString(FirebaseAnalytics.Param.METHOD, "Email");
@@ -107,5 +111,11 @@ public class EmailInputActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        binding.emailNextButton.setEnabled(true);
     }
 }
