@@ -164,6 +164,8 @@ public class PasswordInputActivity extends AppCompatActivity {
 
     private void initProgressDialog() {
         mProgress = new ProgressDialog(this);
+        mProgress.setTitle("Logging in..");
+        mProgress.setMessage("");
         mProgress.setCancelable(false);
         mProgress.setIndeterminate(true);
     }

@@ -1,12 +1,16 @@
 package com.iku.models;
 
+import com.google.firebase.firestore.PropertyName;
+
 public class LeaderboardModel {
 
+    @PropertyName("firstName")
     private String firstName;
+    @PropertyName("lastName")
     private String lastName;
-
+    @PropertyName("uid")
     private String uid;
-
+    @PropertyName("points")
     private int points;
 
     private LeaderboardModel() {

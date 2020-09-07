@@ -1,18 +1,28 @@
 package com.iku.models;
 
+import com.google.firebase.firestore.PropertyName;
+
 import java.util.ArrayList;
 
 public class ChatModel {
 
+    @PropertyName("message")
     private String message;
+
+    @PropertyName("uid")
     private String UID;
 
-    private String userName, type, imageUrl;
-
+    @PropertyName("userName")
+    private String userName;
+    @PropertyName("type")
+    private String type;
+    @PropertyName("imageUrl")
+    private String imageUrl;
+    @PropertyName("upvoteCount")
     private int upvoteCount;
-
+    @PropertyName("timestamp")
     private long timestamp;
-
+    @PropertyName("upvoters")
     private ArrayList<String> upvoters;
 
     private ChatModel() {

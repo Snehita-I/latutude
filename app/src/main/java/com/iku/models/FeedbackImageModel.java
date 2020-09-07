@@ -1,14 +1,15 @@
 package com.iku.models;
 
-import java.util.List;
+import com.google.firebase.firestore.PropertyName;
 
 public class FeedbackImageModel {
 
-    List<String> attachments;
-    String subject, html;
+    @PropertyName("subject")
+    private String subject;
+    @PropertyName("html")
+    private String html;
 
     public FeedbackImageModel() {
-
     }
 
     public FeedbackImageModel(String subject, String html) {
@@ -22,6 +23,14 @@ public class FeedbackImageModel {
 
     public String getHtml() {
         return html;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+    public void setHtml(String html) {
+        this.html = html;
     }
 
 }
