@@ -1,34 +1,71 @@
 {
   "project_info": {
-    "project_number": "853736010850",
-    "firebase_url": "https://iku-2020.firebaseio.com",
-    "project_id": "iku-2020",
-    "storage_bucket": "iku-2020.appspot.com"
+    "project_number": "808011540532",
+    "firebase_url": "https://test-iku-earth.firebaseio.com",
+    "project_id": "test-iku-earth",
+    "storage_bucket": "test-iku-earth.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:853736010850:android:d71b7c49052383ce154d3b",
+        "mobilesdk_app_id": "1:808011540532:android:c5cbffa33237e26d8e0261",
         "android_client_info": {
           "package_name": "com.iku"
         }
       },
       "oauth_client": [
         {
-          "client_id": "853736010850-qi4esbq02pnece4h4ckt36nsd495om7l.apps.googleusercontent.com",
+          "client_id": "808011540532-ah3claj0brjapvue1e4gcnrn1r4t2d3u.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDMXK4AazqMBBHOkje2y8tgLawCnmkFB1c"
+          "current_key": "AIzaSyBsPX5l9rjBFurHziGTiVtkGMjfCApKSTk"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "853736010850-qi4esbq02pnece4h4ckt36nsd495om7l.apps.googleusercontent.com",
+              "client_id": "808011540532-ah3claj0brjapvue1e4gcnrn1r4t2d3u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:808011540532:android:caaba975fd7529448e0261",
+        "android_client_info": {
+          "package_name": "com.iku.test"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "808011540532-92m964jufjk88g1pm6uufi7q1r6mve7l.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.iku.test",
+            "certificate_hash": "5b8318f583d73068ee9be94511a4be89698c3990"
+          }
+        },
+        {
+          "client_id": "808011540532-ah3claj0brjapvue1e4gcnrn1r4t2d3u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBsPX5l9rjBFurHziGTiVtkGMjfCApKSTk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "808011540532-ah3claj0brjapvue1e4gcnrn1r4t2d3u.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
