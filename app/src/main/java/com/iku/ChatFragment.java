@@ -23,7 +23,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 
-import com.amulyakhare.textdrawable.TextDrawable;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -50,9 +49,6 @@ import com.iku.databinding.FragmentChatBinding;
 import com.iku.models.ChatModel;
 import com.iku.models.LeaderboardModel;
 import com.iku.utils.ItemClickSupport;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.NetworkPolicy;
-import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -60,7 +56,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import nl.dionsegijn.konfetti.KonfettiView;
 import nl.dionsegijn.konfetti.models.Shape;
 import nl.dionsegijn.konfetti.models.Size;
 
@@ -297,6 +292,18 @@ public class ChatFragment extends Fragment {
             }
         });
 
+        chatadapter.setOnItemClickListener((documentSnapshot, position) -> {
+            Intent viewChatImageIntent = new Intent(getContext(), ViewPostActivity.class);
+
+            ChatModel chatModel = documentSnapshot.toObject(ChatModel.class);
+            String name = chatModel.getUserName();
+            String url = chatModel.getimageUrl();
+            if (name != null && url != null) {
+                viewChatImageIntent.putExtra("EXTRA_PERSON_NAME", name);
+                viewChatImageIntent.putExtra("EXTRA_IMAGE_URL", url);
+                startActivity(viewChatImageIntent);
+            }
+        });
 
         chatadapter.setOnItemLongClickListener(new ChatAdapter.onItemLongClickListener() {
             @Override
