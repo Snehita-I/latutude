@@ -20,6 +20,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.MetadataChanges;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.iku.databinding.ActivityUserPofileBinding;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
@@ -35,12 +36,15 @@ public class UserProfileActivity extends AppCompatActivity {
 
     private String userUID;
 
+    private ActivityUserPofileBinding userPofileBinding;
+
     private String TAG = UserProfileActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_pofile);
+        userPofileBinding = ActivityUserPofileBinding.inflate(getLayoutInflater());
+        setContentView(userPofileBinding.getRoot());
 
         db = FirebaseFirestore.getInstance();
 
@@ -48,13 +52,21 @@ public class UserProfileActivity extends AppCompatActivity {
         userName = extras.getString("EXTRA_PERSON_NAME");
         userUID = extras.getString("EXTRA_PERSON_UID");
 
+        initButtons();
         getUserHearts(userUID);
         getPicture(userUID);
 
         nameTextView = findViewById(R.id.userName);
+        nameTextView.setText(userName);
         profilePicture = findViewById(R.id.profileImage);
         userHeartsTextView = findViewById(R.id.userHearts);
 
+    }
+
+    private void initButtons() {
+        userPofileBinding.backButton.setOnClickListener(view -> {
+            onBackPressed();
+        });
     }
 
     private void getPicture(String uid) {
@@ -66,44 +78,41 @@ public class UserProfileActivity extends AppCompatActivity {
                             DocumentSnapshot document = task.getResult();
                             if (document.exists()) {
                                 String firstLetter, secondLetter;
-                                String url = (String) document.get("imageURL");
-                                if (url == null) {
-                                    if (userName != null) {
-                                        nameTextView.setText(userName);
+                                String url = (String) document.get("iamgeUrl");
+                                Log.i(TAG, "onComplete: " + url);
+                                if (url != null) {
+                                    Picasso.get()
+                                            .load(url)
+                                            .noFade()
+                                            .networkPolicy(NetworkPolicy.OFFLINE)
+                                            .into(profilePicture, new Callback() {
 
-                                        firstLetter = String.valueOf(userName.charAt(0));
-                                        secondLetter = userName.substring(userName.indexOf(' ') + 1, userName.indexOf(' ') + 2).trim();
+                                                @Override
+                                                public void onSuccess() {
+                                                }
 
-                                        TextDrawable drawable = TextDrawable.builder()
-                                                .beginConfig()
-                                                .width(200)
-                                                .height(200)
-                                                .endConfig()
-                                                .buildRect(firstLetter + secondLetter, Color.DKGRAY);
+                                                @Override
+                                                public void onError(Exception e) {
+                                                    Picasso.get()
+                                                            .load(url)
+                                                            .noFade()
+                                                            .into(profilePicture);
+                                                }
+                                            });
+                                } else {
 
-                                        profilePicture.setImageDrawable(drawable);
-                                    } else {
-                                        Picasso.get()
-                                                .load(url)
-                                                .noFade()
-                                                .networkPolicy(NetworkPolicy.OFFLINE)
-                                                .into(profilePicture, new Callback() {
+                                    firstLetter = String.valueOf(userName.charAt(0));
+                                    secondLetter = userName.substring(userName.indexOf(' ') + 1, userName.indexOf(' ') + 2).trim();
 
-                                                    @Override
-                                                    public void onSuccess() {
-                                                    }
+                                    TextDrawable drawable = TextDrawable.builder()
+                                            .beginConfig()
+                                            .width(200)
+                                            .height(200)
+                                            .endConfig()
+                                            .buildRect(firstLetter + secondLetter, Color.DKGRAY);
 
-                                                    @Override
-                                                    public void onError(Exception e) {
-                                                        Picasso.get()
-                                                                .load(url)
-                                                                .noFade()
-                                                                .into(profilePicture);
-                                                    }
-                                                });
-                                    }
+                                    profilePicture.setImageDrawable(drawable);
                                 }
-
                             } else {
                                 Log.d(TAG, "No such document");
                             }

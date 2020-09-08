@@ -159,7 +159,7 @@ public class ProfileFragment extends Fragment {
         if (user != null) {
 
             Map<String, Object> docData = new HashMap<>();
-            docData.put("iamgeUrl", photoUrl);
+            docData.put("imageUrl", photoUrl);
 
             db.collection("users").document(user.getUid())
                     .update(docData)
