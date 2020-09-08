@@ -212,6 +212,8 @@ public class NameInputActivity extends AppCompatActivity {
                                         Bundle signup_bundle = new Bundle();
                                         signup_bundle.putString(FirebaseAnalytics.Param.METHOD, "Email");
                                         mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SIGN_UP, signup_bundle);
+                                        Toast.makeText(NameInputActivity.this, "Welcome to the community", Toast.LENGTH_LONG).show();
+
                                     }
                                 })
                                 .addOnFailureListener(e -> {

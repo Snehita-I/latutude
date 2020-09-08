@@ -357,6 +357,8 @@ public class WelcomeActivity extends AppCompatActivity {
                                                             groupRef.update("members", FieldValue.arrayUnion(userID));
                                                             updateUI(user);
                                                             Log.d(TAG, "DocumentSnapshot successfully written!");
+                                                            Toast.makeText(WelcomeActivity.this, "Welcome to the community", Toast.LENGTH_LONG).show();
+
                                                         }
                                                     })
                                                     .addOnFailureListener(new OnFailureListener() {
