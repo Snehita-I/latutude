@@ -11,6 +11,7 @@
         android:id="@+id/constraintLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:minWidth="160dp"
         android:background="@drawable/chat_receiver_bubble"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -131,38 +132,96 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/heartscount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        app:layout_constraintStart_toStartOf="@id/constraintLayout"
+        app:layout_constraintEnd_toEndOf="@+id/constraintLayout"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
 
         <LinearLayout
             android:id="@+id/upvotesLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
             android:background="@drawable/chat_receive_heart_bubble"
             android:gravity="center_vertical"
             android:paddingStart="8dp"
             android:paddingTop="1dp"
             android:paddingEnd="8dp"
             android:paddingBottom="2dp"
+            android:translationZ="-1dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
                 android:id="@+id/heartImage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:layout_gravity="center_vertical"
-                android:src="@drawable/ic_heart" />
+                android:padding="3dp"
+                android:src="@drawable/ic_heart"
+                android:translationZ="5dp" />
+
+            <TextView
+                android:id="@+id/emoji1"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:gravity="center"
+                android:padding="0dp"
+                android:text="👍"
+                android:textColor="@android:color/black"
+                android:textSize="14sp"
+                android:translationX="-2dp"
+                android:translationZ="4dp"
+                android:visibility="visible" />
+
+            <TextView
+                android:id="@+id/emoji2"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:gravity="center"
+                android:text="👏"
+                android:textColor="@android:color/black"
+                android:textSize="14sp"
+                android:translationX="-5dp"
+                android:translationZ="3dp"
+                android:visibility="visible" />
+
+            <TextView
+                android:id="@+id/emoji3"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:gravity="center"
+                android:text="🤔"
+                android:textColor="@android:color/black"
+                android:textSize="14sp"
+                android:translationX="-7dp"
+                android:translationZ="2dp"
+                android:visibility="visible" />
+
+            <TextView
+                android:id="@+id/emoji4"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:gravity="center"
+                android:text="💡"
+                android:textColor="@android:color/black"
+                android:textSize="14sp"
+                android:translationX="-9dp"
+                android:translationZ="1dp"
+                android:visibility="visible" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/upvoteCount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="4dp" />
+                android:layout_marginLeft="3dp"
+                android:text="5" />
 
         </LinearLayout>
 
