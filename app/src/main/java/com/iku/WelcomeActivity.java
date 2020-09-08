@@ -34,6 +34,7 @@ import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.functions.FirebaseFunctions;
@@ -333,24 +334,43 @@ public class WelcomeActivity extends AppCompatActivity {
 
                         if (userID != null) {
 
-                            db.collection("users").document(mAuth.getUid())
-                                    .set(userInfo)
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            FirebaseUser user = mAuth.getCurrentUser();
-                                            DocumentReference groupRef = db.collection("groups").document("iku_earth");
-                                            groupRef.update("members", FieldValue.arrayUnion(userID));
-                                            updateUI(user);
-                                            Log.d(TAG, "DocumentSnapshot successfully written!");
+                            DocumentReference docRef = db.collection("users").document(mAuth.getUid());
+                            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        DocumentSnapshot document = task.getResult();
+                                        if (document.exists()) {
+                                            //log event
+                                            Bundle user_bundle = new Bundle();
+                                            user_bundle.putString(FirebaseAnalytics.Param.METHOD, "Google/FB Sign In");
+                                            user_bundle.putString("user_status", "Previous user authenticated via social media");
+                                            mFirebaseAnalytics.logEvent("who_is_this_user", user_bundle);
+                                        } else {
+                                            db.collection("users").document(mAuth.getUid())
+                                                    .set(userInfo)
+                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void aVoid) {
+                                                            FirebaseUser user = mAuth.getCurrentUser();
+                                                            DocumentReference groupRef = db.collection("groups").document("iku_earth");
+                                                            groupRef.update("members", FieldValue.arrayUnion(userID));
+                                                            updateUI(user);
+                                                            Log.d(TAG, "DocumentSnapshot successfully written!");
+                                                        }
+                                                    })
+                                                    .addOnFailureListener(new OnFailureListener() {
+                                                        @Override
+                                                        public void onFailure(@NonNull Exception e) {
+                                                            Log.w(TAG, e);
+                                                        }
+                                                    });
                                         }
-                                    })
-                                    .addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            Log.w(TAG, "Error writing document", e);
-                                        }
-                                    });
+                                    } else {
+                                        Log.d(TAG, "get failed with ", task.getException());
+                                    }
+                                }
+                            });
 
                             db.collection("registrationTokens").document(mAuth.getUid())
                                     .set(userRegistrationTokenInfo)
@@ -369,7 +389,6 @@ public class WelcomeActivity extends AppCompatActivity {
                         }
                     }
                 });
-
     }
 
     private void initProgressDialog() {

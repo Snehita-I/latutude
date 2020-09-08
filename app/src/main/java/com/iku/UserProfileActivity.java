@@ -78,7 +78,7 @@ public class UserProfileActivity extends AppCompatActivity {
                             DocumentSnapshot document = task.getResult();
                             if (document.exists()) {
                                 String firstLetter, secondLetter;
-                                String url = (String) document.get("iamgeUrl");
+                                String url = (String) document.get("imageUrl");
                                 Log.i(TAG, "onComplete: " + url);
                                 if (url != null) {
                                     Picasso.get()
