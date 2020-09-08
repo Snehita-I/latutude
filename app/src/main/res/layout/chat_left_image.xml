@@ -118,7 +118,7 @@
             android:autoLink="web"
             android:paddingStart="5dp"
             android:paddingEnd="5dp"
-            android:text="aaaaa"
+            android:textSize="14sp"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#4A4A4A"
             app:layout_constraintBottom_toBottomOf="@id/constraintLayout"

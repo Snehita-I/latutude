@@ -96,6 +96,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
             android:autoLink="web"
+            android:textSize="14sp"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#4A4A4A"
             app:layout_constraintBottom_toBottomOf="parent"
