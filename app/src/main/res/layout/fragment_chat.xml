@@ -12,7 +12,7 @@
         android:id="@+id/viewConfetti"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:translationZ="13dp"/>
+        android:translationZ="13dp" />
 
 
     <HorizontalScrollView
@@ -54,8 +54,8 @@
         android:id="@+id/appBar"
         android:layout_width="match_parent"
         android:layout_height="57dp"
-        android:padding="6dp"
-        android:background="@color/white">
+        android:background="@color/white"
+        android:padding="6dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -69,7 +69,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"/>
 
             <ImageView
                 android:id="@+id/group_logo"
@@ -85,25 +85,25 @@
                 android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:gravity="bottom|center"
                 android:text="#ikuexperiment"
                 android:textColor="@android:color/black"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@id/topAppBar"
+                app:layout_constraintBottom_toTopOf="@id/subtitle"
                 app:layout_constraintStart_toStartOf="@+id/subtitle"
-                app:layout_constraintTop_toTopOf="@+id/topAppBar"
-                app:layout_constraintVertical_bias="0.15" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/subtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
+                android:gravity="center|top"
                 android:text="Community"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/group_logo"
-                app:layout_constraintTop_toBottomOf="@+id/title"
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintTop_toBottomOf="@+id/title" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/memberCount"
@@ -165,6 +165,67 @@
         app:layout_constraintVertical_bias="1.0">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/chatboxLinkPreview"
+            android:layout_width="0dp"
+            android:layout_height="85dp"
+            android:layout_marginBottom="5dp"
+            android:background="#CDCDCD"
+            android:padding="5dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@id/chatbox"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/linkPreviewImage"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/linkTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:padding="1dp"
+                android:singleLine="true"
+                android:textColor="@android:color/black"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@id/linkPreviewDescription"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/linkPreviewImage"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/linkPreviewDescription"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="5dp"
+                android:padding="1dp"
+                android:textColor="@android:color/black"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/linkPreviewImage"
+                app:layout_constraintTop_toBottomOf="@id/linkTitle" />
+
+            <ImageButton
+                android:id="@+id/close"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@drawable/ic_clear_32"
+                app:layout_constraintBottom_toBottomOf="@+id/linkTitle"
+                app:layout_constraintDimensionRatio="1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/chatbox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -181,9 +242,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp"
-                android:padding="4dp"
                 android:layout_marginTop="1dp"
                 android:layout_marginBottom="1dp"
                 android:layout_weight="1"
@@ -192,6 +250,9 @@
                 android:inputType="textCapSentences|textMultiLine"
                 android:maxLines="3"
                 android:minHeight="45dp"
+                android:padding="4dp"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/menuChatContainer"
                 app:layout_constraintStart_toStartOf="parent"
