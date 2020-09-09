@@ -18,7 +18,7 @@
 
             <ImageView
                 android:id="@+id/image"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="250dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -30,8 +30,9 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:maxLines="1"
-                android:textStyle="bold"
                 android:text="zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz"
+                android:textSize="18sp"
+                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/image" />
@@ -58,7 +59,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/button"
                 app:layout_constraintEnd_toStartOf="@id/button"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/description" />
+                app:layout_constraintTop_toTopOf="@id/button" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/button"
@@ -67,6 +68,7 @@
                 android:layout_margin="10dp"
                 android:text="Upvote"
                 android:textAllCaps="false"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/description" />
 
