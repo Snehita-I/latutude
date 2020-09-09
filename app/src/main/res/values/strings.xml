@@ -21,4 +21,9 @@
     <string name="ERROR_USER_TOKEN_EXPIRED">The user\'s credential is no longer valid. The user must sign in again.</string>
     <string name="prev_started">started</string>
 
+    <!--Firebase Cloud Messaging-->
+    <string name="data_type">direct_message</string>
+    <string name="GROUP_KEY_NOTIFICATION">iku experiment</string>
+
+
 </resources>
