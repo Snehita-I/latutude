@@ -24,7 +24,7 @@
             android:id="@+id/linkPreview"
             android:layout_width="match_parent"
             android:layout_height="85dp"
-            android:background="@color/colorPrimaryDark"
+            android:background="#66B2B2"
             android:minWidth="300dp"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@id/message"

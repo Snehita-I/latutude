@@ -79,7 +79,7 @@
             android:layout_marginStart="5dp"
             android:layout_marginTop="5dp"
             android:singleLine="true"
-            android:textColor="@color/colorBackground"
+            android:textColor="#66B2B2"
             app:layout_constraintStart_toStartOf="@id/constraintLayout"
             app:layout_constraintTop_toTopOf="@id/constraintLayout" />
 
