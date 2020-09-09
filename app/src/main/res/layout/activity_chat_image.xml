@@ -25,7 +25,7 @@
             app:srcCompat="@drawable/ic_arrow_back_24" />
     </LinearLayout>
 
-    <ImageView
+    <com.github.chrisbanes.photoview.PhotoView
         android:id="@+id/chosenImage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
