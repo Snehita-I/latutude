@@ -36,7 +36,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:singleLine="true"
-                android:text="ABHISHEK GREAT"
                 android:textColor="@android:color/white"
                 android:textSize="12sp"
                 app:layout_constraintBottom_toTopOf="@id/postTime"
@@ -52,7 +51,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:singleLine="true"
-                android:text="ABHISHEK not so GREAT"
                 android:textColor="@android:color/white"
                 android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -69,8 +67,8 @@
     <!--Image-->
     <com.github.chrisbanes.photoview.PhotoView
         android:id="@+id/viewed_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/heartsArea"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

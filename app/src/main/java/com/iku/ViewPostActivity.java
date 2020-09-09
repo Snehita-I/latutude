@@ -9,9 +9,13 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
+
 public class ViewPostActivity extends AppCompatActivity {
 
-    private String imageUrl;
+    private SimpleDateFormat sfdMainDate = new SimpleDateFormat("hh:mm a, MMMM dd, yyyy");
+
+    private Bundle extras;
 
     private ActivityViewPostBinding viewPostBinding;
 
@@ -21,18 +25,28 @@ public class ViewPostActivity extends AppCompatActivity {
         viewPostBinding = ActivityViewPostBinding.inflate(getLayoutInflater());
         setContentView(viewPostBinding.getRoot());
 
-        setImage();
+        extras = this.getIntent().getExtras();
 
+        setImage();
+        setDetails();
+
+    }
+
+    private void setDetails() {
+
+        String userName = extras.getString("EXTRA_PERSON_NAME");
+        long timestamp = extras.getLong("EXTRA_POST_TIMESTAMP");
+
+        viewPostBinding.userName.setText(userName);
+        viewPostBinding.postTime.setText(sfdMainDate.format(timestamp));
     }
 
     private void setImage() {
 
-        Bundle extras = this.getIntent().getExtras();
 
-        String userName = extras.getString("EXTRA_PERSON_NAME");
-        imageUrl = extras.getString("EXTRA_IMAGE_URL");
+        String imageUrl = extras.getString("EXTRA_IMAGE_URL");
 
-        if (userName != null && imageUrl != null) {
+        if (imageUrl != null) {
             Picasso.get()
                     .load(imageUrl)
                     .noFade()

@@ -298,9 +298,11 @@ public class ChatFragment extends Fragment {
             ChatModel chatModel = documentSnapshot.toObject(ChatModel.class);
             String name = chatModel.getUserName();
             String url = chatModel.getimageUrl();
+            long timestamp = chatModel.getTimestamp();
             if (name != null && url != null) {
                 viewChatImageIntent.putExtra("EXTRA_PERSON_NAME", name);
                 viewChatImageIntent.putExtra("EXTRA_IMAGE_URL", url);
+                viewChatImageIntent.putExtra("EXTRA_POST_TIMESTAMP", timestamp);
                 startActivity(viewChatImageIntent);
             }
         });
