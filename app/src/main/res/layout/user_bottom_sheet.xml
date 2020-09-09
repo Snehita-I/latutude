@@ -11,160 +11,183 @@
     app:behavior_hideable="true"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/heartsArea"
         android:layout_width="0dp"
-        android:layout_height="60dp"
-        android:layout_alignParentStart="true"
-        android:gravity="center_horizontal|top"
+        android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <FrameLayout
-            android:id="@+id/heartUp"
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp"
-            android:background="@drawable/hearts_button_background"
-            android:elevation="2dp"
+            android:layout_height="60dp"
+            android:gravity="center"
+            android:weightSum="6"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <ImageButton
-                android:id="@+id/choose"
+            <FrameLayout
+                android:id="@+id/heartUp"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
-                android:background="?selectableItemBackgroundBorderless"
-                android:padding="0dp"
-                app:srcCompat="@drawable/ic_heart" />
-        </FrameLayout>
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/hearts_button_background"
+                android:elevation="2dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-        <FrameLayout
-            android:id="@+id/emoji1"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:layout_gravity="center"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp"
-            android:background="@drawable/hearts_button_background"
-            android:elevation="2dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+                <ImageButton
+                    android:id="@+id/choose"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:padding="0dp"
+                    app:srcCompat="@drawable/ic_heart" />
+            </FrameLayout>
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/choose1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="?selectableItemBackgroundBorderless"
-                android:padding="0dp"
-                android:text="👍"
-                android:textSize="20sp" />
-        </FrameLayout>
+            <FrameLayout
+                android:id="@+id/emoji1"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_toEndOf="@+id/heartUp"
+                android:layout_toRightOf="@id/heartUp"
+                android:layout_weight="1"
+                android:background="@drawable/hearts_button_background"
+                android:elevation="2dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-        <FrameLayout
-            android:id="@+id/emoji2"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:layout_gravity="center"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp"
-            android:background="@drawable/hearts_button_background"
-            android:elevation="2dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/choose1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:padding="0dp"
+                    android:text="👍"
+                    android:textSize="20sp" />
+            </FrameLayout>
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/choose2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="?selectableItemBackgroundBorderless"
-                android:padding="0dp"
-                android:text="👏"
-                android:textSize="20sp" />
-        </FrameLayout>
+            <FrameLayout
+                android:id="@+id/emoji2"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_toEndOf="@+id/emoji1"
+                android:layout_toRightOf="@id/emoji1"
+                android:layout_weight="1"
+                android:background="@drawable/hearts_button_background"
+                android:elevation="2dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-        <FrameLayout
-            android:id="@+id/emoji3"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:layout_gravity="center"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp"
-            android:background="@drawable/hearts_button_background"
-            android:elevation="2dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/choose2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:padding="0dp"
+                    android:text="👏"
+                    android:textSize="20sp" />
+            </FrameLayout>
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/choose3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="?selectableItemBackgroundBorderless"
-                android:padding="0dp"
-                android:text="🤔"
-                android:textSize="20sp" />
-        </FrameLayout>
+            <FrameLayout
+                android:id="@+id/emoji3"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_toEndOf="@+id/emoji2"
+                android:layout_toRightOf="@id/emoji2"
+                android:layout_weight="1"
+                android:background="@drawable/hearts_button_background"
+                android:elevation="2dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-        <FrameLayout
-            android:id="@+id/emoji4"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:layout_gravity="center"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="10dp"
-            android:background="@drawable/hearts_button_background"
-            android:elevation="2dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/choose3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:padding="0dp"
+                    android:text="🤔"
+                    android:textSize="20sp" />
+            </FrameLayout>
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/choose4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="?selectableItemBackgroundBorderless"
-                android:padding="0dp"
-                android:text="💡"
-                android:textSize="20sp" />
-        </FrameLayout>
+            <FrameLayout
+                android:id="@+id/emoji4"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_marginStart="5dp"
+                android:layout_toEndOf="@+id/emoji3"
+                android:layout_toRightOf="@id/emoji3"
+                android:layout_weight="1"
+                android:background="@drawable/hearts_button_background"
+                android:elevation="2dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-        <View
-            android:layout_width="1dp"
-            android:layout_height="45dp"
-            android:layout_gravity="center"
-            android:background="#B3B3B3" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/choose4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:padding="0dp"
+                    android:text="💡"
+                    android:textSize="20sp" />
+            </FrameLayout>
 
-        <FrameLayout
-            android:id="@+id/heartDown"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:layout_gravity="center"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="5dp"
-            android:background="@drawable/hearts_button_background"
-            android:elevation="2dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            <View
+                android:id="@+id/div"
+                android:layout_width="1dp"
+                android:layout_height="45dp"
+                android:layout_marginStart="10dp"
+                android:layout_toEndOf="@+id/emoji4"
+                android:layout_toRightOf="@id/emoji4"
+                android:background="#B3B3B3" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/choose6"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="?selectableItemBackgroundBorderless"
-                android:padding="0dp"
-                android:text="👎"
-                android:textSize="20sp" />
-        </FrameLayout>
+            <FrameLayout
+                android:id="@+id/heartDown"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_alignParentEnd="false"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="5dp"
+                android:layout_toEndOf="@+id/div"
+                android:layout_toRightOf="@id/div"
+                android:layout_weight="1"
+                android:background="@drawable/hearts_button_background"
+                android:elevation="2dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-    </LinearLayout>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/choose6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:padding="0dp"
+                    android:text="👎"
+                    android:textSize="20sp" />
+            </FrameLayout>
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
         android:id="@+id/profile_layout"

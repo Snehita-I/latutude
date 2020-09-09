@@ -14,7 +14,6 @@
         android:layout_height="match_parent"
         android:translationZ="13dp" />
 
-
     <HorizontalScrollView
         android:id="@+id/categories"
         android:layout_width="wrap_content"
@@ -50,6 +49,7 @@
         </com.google.android.material.chip.ChipGroup>
     </HorizontalScrollView>
 
+    <!--App Bar Layout-->
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBar"
         android:layout_width="match_parent"
@@ -92,8 +92,7 @@
                 android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@id/subtitle"
                 app:layout_constraintStart_toStartOf="@+id/subtitle"
-                app:layout_constraintTop_toTopOf="@+id/topAppBar"
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintTop_toTopOf="@+id/topAppBar" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/subtitle"
@@ -129,6 +128,7 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
+    <!--To display date at the top of chat-->
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/chatDate"
         android:layout_width="wrap_content"
@@ -140,6 +140,7 @@
         android:padding="4dp"
         android:translationZ="1dp" />
 
+    <!--Chat section-->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/chatRecyclerView"
         android:layout_width="match_parent"
@@ -153,6 +154,7 @@
         android:overScrollMode="never"
         android:paddingTop="4dp" />
 
+    <!--This section send messages-->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/messageArea"
         android:layout_width="match_parent"
@@ -165,12 +167,13 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0">
 
+        <!--Link previews-->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/chatboxLinkPreview"
             android:layout_width="0dp"
             android:layout_height="85dp"
             android:layout_marginBottom="5dp"
-            android:background="#CDCDCD"
+            android:background="@drawable/url_preview_background"
             android:padding="5dp"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@id/chatbox"
@@ -226,6 +229,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <!--Message composer-->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/chatbox"
             android:layout_width="0dp"
@@ -281,6 +285,7 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <!--Send message-->
         <ImageButton
             android:id="@+id/sendMessageButton"
             android:layout_width="45dp"
