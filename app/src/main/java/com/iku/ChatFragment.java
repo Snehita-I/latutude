@@ -28,7 +28,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -81,8 +80,6 @@ public class ChatFragment extends Fragment {
 
     private RecyclerView mChatRecyclerview;
 
-    private BottomSheetBehavior mBottomSheetBehavior;
-
     private LinearLayout mBottomSheet;
 
     private ChatAdapter chatadapter;
@@ -102,17 +99,88 @@ public class ChatFragment extends Fragment {
         binding = FragmentChatBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
 
+        initItems(view);
+        initButtons();
+        initRecyclerView();
+        watchTextBox();
+        getGroupMemberCount();
+
+        return view;
+    }
+
+    private void deleteMessage(String messageDocumentID) {
+        db.collection("iku_earth_messages").document(messageDocumentID)
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        //Log event
+                        Bundle delete_bundle = new Bundle();
+                        delete_bundle.putString("UID", user.getUid());
+                        delete_bundle.putString("Name", user.getDisplayName());
+                        mFirebaseAnalytics.logEvent("deleted_message", delete_bundle);
+
+                        Toast.makeText(getActivity(), "Message deleted!", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                    }
+                });
+    }
+
+    private void initItems(View view) {
+
+        db = FirebaseFirestore.getInstance();
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
+        mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
 
         memberCount = view.findViewById(R.id.memberCount);
-
         mChatRecyclerview = view.findViewById(R.id.chatRecyclerView);
         mBottomSheet = view.findViewById(R.id.user_bottom_sheet);
 
-        initItems();
-        initButtons();
-        watchTextBox();
-        getGroupMemberCount();
+        binding.chatDate.setVisibility(View.GONE);
+
+    }
+
+    private void initButtons() {
+
+        binding.groupIcon.setOnClickListener(view -> {
+            Intent goToLeaderboard = new Intent(getActivity(), LeaderboardActivity.class);
+            startActivity(goToLeaderboard);
+
+            /*Log event*/
+            Bundle leaderboard_bundle = new Bundle();
+            leaderboard_bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Leaderboard");
+            leaderboard_bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "View");
+            mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW, leaderboard_bundle);
+        });
+
+        binding.sendMessageButton.setOnClickListener(view -> {
+            final String message = String.valueOf(binding.messageTextField.getText());
+            if (!message.isEmpty()) {
+                sendTheMessage(message);
+                binding.messageTextField.setText("");
+                binding.messageTextField.requestFocus();
+            }
+        });
+
+        binding.choose.setOnClickListener(view -> {
+            if (ContextCompat.checkSelfPermission(getActivity(),
+                    Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                    && ContextCompat.checkSelfPermission(getActivity(),
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                requestPermission();
+            } else {
+                Intent goToImageSend = new Intent(getActivity(), ChatImageActivity.class);
+                startActivity(goToImageSend);
+            }
+        });
+    }
+
+    private void initRecyclerView() {
 
         Query query = db.collection("iku_earth_messages").orderBy("timestamp", Query.Direction.DESCENDING);
 
@@ -125,6 +193,17 @@ public class ChatFragment extends Fragment {
         ((SimpleItemAnimator) mChatRecyclerview.getItemAnimator()).setSupportsChangeAnimations(false);
         linearLayoutManager.setReverseLayout(true);
         mChatRecyclerview.setLayoutManager(linearLayoutManager);
+
+        chatadapter = new ChatAdapter(getContext(), options);
+        chatadapter.startListening();
+        chatadapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                mChatRecyclerview.smoothScrollToPosition(0);
+            }
+        });
+
+        mChatRecyclerview.setAdapter(chatadapter);
 
         mChatRecyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -144,17 +223,6 @@ public class ChatFragment extends Fragment {
                 }
             }
         });
-
-        chatadapter = new ChatAdapter(getContext(), options);
-        chatadapter.startListening();
-        chatadapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
-            @Override
-            public void onItemRangeInserted(int positionStart, int itemCount) {
-                mChatRecyclerview.smoothScrollToPosition(0);
-            }
-        });
-
-        mChatRecyclerview.setAdapter(chatadapter);
 
         ItemClickSupport.addTo(mChatRecyclerview).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
             @Override
@@ -354,74 +422,6 @@ public class ChatFragment extends Fragment {
             }
         });
 
-
-        return view;
-    }
-
-    private void deleteMessage(String messageDocumentID) {
-        db.collection("iku_earth_messages").document(messageDocumentID)
-                .delete()
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        //Log event
-                        Bundle delete_bundle = new Bundle();
-                        delete_bundle.putString("UID", user.getUid());
-                        delete_bundle.putString("Name", user.getDisplayName());
-                        mFirebaseAnalytics.logEvent("deleted_message", delete_bundle);
-
-                        Toast.makeText(getActivity(), "Message deleted!", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                    }
-                });
-    }
-
-    private void initItems() {
-
-        db = FirebaseFirestore.getInstance();
-        mAuth = FirebaseAuth.getInstance();
-        user = mAuth.getCurrentUser();
-        binding.chatDate.setVisibility(View.GONE);
-
-    }
-
-    private void initButtons() {
-
-        binding.groupIcon.setOnClickListener(view -> {
-            Intent goToLeaderboard = new Intent(getActivity(), LeaderboardActivity.class);
-            startActivity(goToLeaderboard);
-
-            /*Log event*/
-            Bundle leaderboard_bundle = new Bundle();
-            leaderboard_bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Leaderboard");
-            leaderboard_bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "View");
-            mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW, leaderboard_bundle);
-        });
-
-        binding.sendMessageButton.setOnClickListener(view -> {
-            final String message = String.valueOf(binding.messageTextField.getText());
-            if (!message.isEmpty()) {
-                sendTheMessage(message);
-                binding.messageTextField.setText("");
-                binding.messageTextField.requestFocus();
-            }
-        });
-
-        binding.choose.setOnClickListener(view -> {
-            if (ContextCompat.checkSelfPermission(getActivity(),
-                    Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-                    && ContextCompat.checkSelfPermission(getActivity(),
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                requestPermission();
-            } else {
-                Intent goToImageSend = new Intent(getActivity(), ChatImageActivity.class);
-                startActivity(goToImageSend);
-            }
-        });
     }
 
     private void watchTextBox() {
