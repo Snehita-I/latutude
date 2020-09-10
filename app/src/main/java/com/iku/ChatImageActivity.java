@@ -147,6 +147,17 @@ public class ChatImageActivity extends AppCompatActivity {
                     docData.put("upvoteCount", 0);
                     ArrayList<Object> upvotersArray = new ArrayList<>();
                     docData.put("upvoters", upvotersArray);
+                    ArrayList<Object> thumbsUpArray = new ArrayList<>();
+                    docData.put("emoji1", thumbsUpArray);
+                    ArrayList<Object> clapsArray = new ArrayList<>();
+                    docData.put("emoji2", clapsArray);
+                    ArrayList<Object> thinkArray = new ArrayList<>();
+                    docData.put("emoji3", thinkArray);
+                    ArrayList<Object> ideaArray = new ArrayList<>();
+                    docData.put("emoji4", ideaArray);
+                    ArrayList<Object> dounvotersArray = new ArrayList<>();
+                    docData.put("downvoters", dounvotersArray);
+                    docData.put("downvoteCount", 0);
 
                     Map<String, Object> normalMessage = new HashMap<>();
                     normalMessage.put("firstImage", true);

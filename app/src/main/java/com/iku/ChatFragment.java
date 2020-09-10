@@ -12,11 +12,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -29,6 +31,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
@@ -83,6 +86,15 @@ public class ChatFragment extends Fragment {
     private LinearLayout mBottomSheet;
 
     private ChatAdapter chatadapter;
+
+    private long upvotesCount;
+
+    private long downvotesCount;
+
+    private ArrayList HeartUpArray, emoji1Array, emoji2Array, emoji3Array, emoji4Array, HeartDownArray;
+
+    private String authorOfMessage;
+
 
     private int STORAGE_PERMISSION_CODE = 10;
 
@@ -193,9 +205,6 @@ public class ChatFragment extends Fragment {
         ((SimpleItemAnimator) mChatRecyclerview.getItemAnimator()).setSupportsChangeAnimations(false);
         linearLayoutManager.setReverseLayout(true);
         mChatRecyclerview.setLayoutManager(linearLayoutManager);
-
-
-
 
 
         chatadapter = new ChatAdapter(getContext(), options);
@@ -387,6 +396,61 @@ public class ChatFragment extends Fragment {
                 ChatModel chatModel = documentSnapshot.toObject(ChatModel.class);
                 LinearLayout profileView = parentView.findViewById(R.id.profile_layout);
                 LinearLayout deleteMessageView = parentView.findViewById(R.id.delete_layout);
+
+                ConstraintLayout emojiArea = parentView.findViewById(R.id.heartsArea);
+                LinearLayout emojiLayout = emojiArea.findViewById(R.id.emoji_group);
+
+                ImageButton heartUpView = parentView.findViewById(R.id.chooseHeart);
+                MaterialButton emoji1View = parentView.findViewById(R.id.choose1);
+                MaterialButton emoji2View = parentView.findViewById(R.id.choose2);
+                MaterialButton emoji3View = parentView.findViewById(R.id.choose3);
+                MaterialButton emoji4View = parentView.findViewById(R.id.choose4);
+                MaterialButton heartDownView = parentView.findViewById(R.id.choose6);
+
+                heartUpView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(getActivity(), "Heart clicked", Toast.LENGTH_SHORT).show();
+                        userVote(documentSnapshot.getId(), "upvoters");
+                        bottomSheetDialog.dismiss();
+                    }
+                });
+                emoji1View.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        userVote(documentSnapshot.getId(), "emoji1");
+                        bottomSheetDialog.dismiss();
+                    }
+                });
+                emoji2View.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        userVote(documentSnapshot.getId(), "emoji2");
+                        bottomSheetDialog.dismiss();
+                    }
+                });
+                emoji3View.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        userVote(documentSnapshot.getId(), "emoji3");
+                        bottomSheetDialog.dismiss();
+                    }
+                });
+                emoji4View.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        userVote(documentSnapshot.getId(), "emoji4");
+                        bottomSheetDialog.dismiss();
+                    }
+                });
+                heartDownView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        userVote(documentSnapshot.getId(), "downvoters");
+                        bottomSheetDialog.dismiss();
+                    }
+                });
+
                 String UID = chatModel.getUID();
                 if (UID.equals(user.getUid())) {
                     profileView.setVisibility(View.GONE);
@@ -464,6 +528,17 @@ public class ChatFragment extends Fragment {
             docData.put("upvoteCount", 0);
             ArrayList<Object> upvotersArray = new ArrayList<>();
             docData.put("upvoters", upvotersArray);
+            ArrayList<Object> thumbsUpArray = new ArrayList<>();
+            docData.put("emoji1", thumbsUpArray);
+            ArrayList<Object> clapsArray = new ArrayList<>();
+            docData.put("emoji2", clapsArray);
+            ArrayList<Object> thinkArray = new ArrayList<>();
+            docData.put("emoji3", thinkArray);
+            ArrayList<Object> ideaArray = new ArrayList<>();
+            docData.put("emoji4", ideaArray);
+            ArrayList<Object> dounvotersArray = new ArrayList<>();
+            docData.put("downvoters", dounvotersArray);
+            docData.put("downvoteCount", 0);
 
             Map<String, Object> normalMessage = new HashMap<>();
             normalMessage.put("firstMessage", true);
@@ -535,6 +610,346 @@ public class ChatFragment extends Fragment {
                         }
                     });
         } else {
+        }
+    }
+
+    public void userVote(String messageDocumentID, String emoji) {
+        DocumentReference docRef = db.collection("iku_earth_messages").document(messageDocumentID);
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Log.i(TAG, "DocumentSnapshot data: " + document.getData());
+                        authorOfMessage = (String) document.get("uid");
+                        Log.i(TAG, "onComplete: " + authorOfMessage + " user " + user.getUid());
+                        if (!authorOfMessage.equals(user.getUid())) {
+                            Toast.makeText(getActivity(), "different", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getActivity(), "same" + user.getUid(), Toast.LENGTH_SHORT).show();
+                        }
+                        ArrayList<String> HeartUpArray = (ArrayList) document.get("upvoters");
+                        ArrayList<String> emoji1Array = (ArrayList) document.get("emoji1");
+                        ArrayList<String> emoji2Array = (ArrayList) document.get("emoji2");
+                        ArrayList<String> emoji3Array = (ArrayList) document.get("emoji3");
+                        ArrayList<String> emoji4Array = (ArrayList) document.get("emoji4");
+                        ArrayList<String> HeartDownArray = (ArrayList) document.get("downvoters");
+                        upvotesCount = (long) document.get("upvoteCount");
+                        downvotesCount = (long) document.get("downvoteCount");
+                        Boolean HeartupLiked = false;
+                        Boolean emoji1Liked = false;
+                        Boolean emoji2Liked = false;
+                        Boolean emoji3Liked = false;
+                        Boolean emoji4Liked = false;
+                        Boolean disliked = false;
+
+                        if (upvotesCount >= 0) {
+                            for (String element : HeartUpArray) {
+                                if (element.contains(user.getUid())) {
+                                    HeartupLiked = true;
+                                    break;
+                                }
+                            }
+                            for (String element : emoji1Array) {
+                                if (element.contains(user.getUid())) {
+                                    emoji1Liked = true;
+                                    break;
+                                }
+                            }
+                            for (String element : emoji2Array) {
+                                if (element.contains(user.getUid())) {
+                                    emoji2Liked = true;
+                                    break;
+                                }
+                            }
+                            for (String element : emoji3Array) {
+                                if (element.contains(user.getUid())) {
+                                    emoji3Liked = true;
+                                    break;
+                                }
+                            }
+                            for (String element : emoji4Array) {
+                                if (element.contains(user.getUid())) {
+                                    emoji4Liked = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (downvotesCount >= 0) {
+                            for (String element : HeartDownArray) {
+                                if (element.contains(user.getUid())) {
+                                    disliked = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (HeartupLiked && emoji == "upvoters") {
+                            changeLikesArray(messageDocumentID, emoji, "upvoters", upvotesCount, downvotesCount, authorOfMessage);
+                        } else if (emoji1Liked && emoji == "upvoters") {
+                            changeLikesArray(messageDocumentID, emoji, "emoji1", upvotesCount, downvotesCount, authorOfMessage);
+                        } else if (emoji2Liked && emoji == "upvoters") {
+                            changeLikesArray(messageDocumentID, emoji, "emoji2", upvotesCount, downvotesCount, authorOfMessage);
+                        } else if (emoji3Liked && emoji == "upvoters") {
+                            changeLikesArray(messageDocumentID, emoji, "emoji3", upvotesCount, downvotesCount, authorOfMessage);
+                        } else if (emoji4Liked && emoji == "upvoters") {
+                            changeLikesArray(messageDocumentID, emoji, "emoji4", upvotesCount, downvotesCount, authorOfMessage);
+                        } else if (disliked && emoji == "upvoters") {
+                            changeLikesArray(messageDocumentID, emoji, "downvoters", upvotesCount, downvotesCount, authorOfMessage);
+                        } else if (HeartupLiked && emoji == "emoji1") {
+                            changeLikesArray(messageDocumentID, emoji, "upvoters", upvotesCount, downvotesCount, authorOfMessage);
+                        } else if (emoji1Liked && emoji == "emoji1") {
+                            changeLikesArray(messageDocumentID, emoji, "emoji1", upvotesCount, downvotesCount, authorOfMessage);
+                        } else if (emoji2Array.contains(user.getUid()) && emoji == "emoji1") {
+                            changeLikesArray(messageDocumentID, emoji, "emoji2", upvotesCount, downvotesCount, authorOfMessage);
+                        } else if (emoji3Array.contains(user.getUid()) && emoji == "emoji1") {
+                            changeLikesArray(messageDocumentID, emoji, "emoji3", upvotesCount, downvotesCount, authorOfMessage);
+                        } else if (emoji4Array.contains(user.getUid()) && emoji == "emoji1") {
+                            changeLikesArray(messageDocumentID, emoji, "emoji4", upvotesCount, downvotesCount, authorOfMessage);
+                        } else if (HeartDownArray.contains(user.getUid()) && emoji == "emoji1") {
+                            changeLikesArray(messageDocumentID, emoji, "downvoters", upvotesCount, downvotesCount, authorOfMessage);
+                        } else if (HeartupLiked && emoji == "emoji2") {
+                            changeLikesArray(messageDocumentID, emoji, "upvoters", upvotesCount, downvotesCount, authorOfMessage);
+                        } else if (emoji1Liked && emoji == "emoji2") {
+                            changeLikesArray(messageDocumentID, emoji, "emoji1", upvotesCount, downvotesCount, authorOfMessage);
+                        } else if (emoji2Liked && emoji == "emoji2") {
+                            changeLikesArray(messageDocumentID, emoji, "emoji2", upvotesCount, downvotesCount, authorOfMessage);
+                        } else if (emoji3Liked && emoji == "emoji2") {
+                            changeLikesArray(messageDocumentID, emoji, "emoji3", upvotesCount, downvotesCount, authorOfMessage);
+                        } else if (emoji4Liked && emoji == "emoji2") {
+                            changeLikesArray(messageDocumentID, emoji, "emoji4", upvotesCount, downvotesCount, authorOfMessage);
+                        } else if (disliked && emoji == "emoji2") {
+                            changeLikesArray(messageDocumentID, emoji, "downvoters", upvotesCount, downvotesCount, authorOfMessage);
+                        } else if (HeartupLiked && emoji == "emoji3") {
+                            changeLikesArray(messageDocumentID, emoji, "upvoters", upvotesCount, downvotesCount, authorOfMessage);
+                        } else if (emoji1Liked && emoji == "emoji3") {
+                            changeLikesArray(messageDocumentID, emoji, "emoji1", upvotesCount, downvotesCount, authorOfMessage);
+                        } else if (emoji2Liked && emoji == "emoji3") {
+                            changeLikesArray(messageDocumentID, emoji, "emoji2", upvotesCount, downvotesCount, authorOfMessage);
+                        } else if (emoji3Liked && emoji == "emoji3") {
+                            changeLikesArray(messageDocumentID, emoji, "emoji3", upvotesCount, downvotesCount, authorOfMessage);
+                        } else if (emoji4Liked && emoji == "emoji3") {
+                            changeLikesArray(messageDocumentID, emoji, "emoji4", upvotesCount, downvotesCount, authorOfMessage);
+                        } else if (disliked && emoji == "emoji3") {
+                            changeLikesArray(messageDocumentID, emoji, "downvoters", upvotesCount, downvotesCount, authorOfMessage);
+                        } else if (HeartupLiked && emoji == "emoji4") {
+                            changeLikesArray(messageDocumentID, emoji, "upvoters", upvotesCount, downvotesCount, authorOfMessage);
+                        } else if (emoji1Liked && emoji == "emoji4") {
+                            changeLikesArray(messageDocumentID, emoji, "emoji1", upvotesCount, downvotesCount, authorOfMessage);
+                        } else if (emoji2Liked && emoji == "emoji4") {
+                            changeLikesArray(messageDocumentID, emoji, "emoji2", upvotesCount, downvotesCount, authorOfMessage);
+                        } else if (emoji3Liked && emoji == "emoji4") {
+                            changeLikesArray(messageDocumentID, emoji, "emoji3", upvotesCount, downvotesCount, authorOfMessage);
+                        } else if (emoji4Liked && emoji == "emoji4") {
+                            changeLikesArray(messageDocumentID, emoji, "emoji4", upvotesCount, downvotesCount, authorOfMessage);
+                        } else if (disliked && emoji == "emoji4") {
+                            changeLikesArray(messageDocumentID, emoji, "downvoters", upvotesCount, downvotesCount, authorOfMessage);
+                        } else if (HeartupLiked && emoji == "downvoters") {
+                            changeLikesArray(messageDocumentID, emoji, "upvoters", upvotesCount, downvotesCount, authorOfMessage);
+                        } else if (emoji1Liked && emoji == "downvoters") {
+                            changeLikesArray(messageDocumentID, emoji, "emoji1", upvotesCount, downvotesCount, authorOfMessage);
+                        } else if (emoji2Liked && emoji == "downvoters") {
+                            changeLikesArray(messageDocumentID, emoji, "emoji2", upvotesCount, downvotesCount, authorOfMessage);
+                        } else if (emoji3Liked && emoji == "downvoters") {
+                            changeLikesArray(messageDocumentID, emoji, "emoji3", upvotesCount, downvotesCount, authorOfMessage);
+                        } else if (emoji4Liked && emoji == "downvoters") {
+                            changeLikesArray(messageDocumentID, emoji, "emoji4", upvotesCount, downvotesCount, authorOfMessage);
+                        } else if (disliked && emoji == "downvoters") {
+                            changeLikesArray(messageDocumentID, emoji, "downvoters", upvotesCount, downvotesCount, authorOfMessage);
+                        } else if (!HeartupLiked && !emoji1Liked && !emoji2Liked && !emoji3Liked && !emoji4Liked && !disliked) {
+                            Toast.makeText(getActivity(), "First emoji to this message", Toast.LENGTH_SHORT).show();
+                            Log.d(TAG, "newLikeorDislike function called");
+                            newLikeorDislike(messageDocumentID, emoji, upvotesCount, downvotesCount, authorOfMessage);
+                        }
+                    } else {
+                        Log.d(TAG, "No such document");
+                    }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
+            }
+        });
+
+    }
+
+    private void changeLikesArray(String messageDocumentID, String currentEmoji, String previousEmoji, long upvotesCount, long downvotesCount, String authorOfMessage) {
+        if (currentEmoji == previousEmoji) {
+            if (currentEmoji == "upvoters" || currentEmoji == "emoji1" || currentEmoji == "emoji2" || currentEmoji == "emoji3" || currentEmoji == "emoji4") {
+                if (!authorOfMessage.equals(user.getUid())) {
+                    db.collection("users").document(authorOfMessage)
+                            .get()
+                            .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                @Override
+                                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                    final LeaderboardModel usersData = documentSnapshot.toObject(LeaderboardModel.class);
+                                    db.collection("users").document(authorOfMessage)
+                                            .update("points", usersData.getPoints() - 1)
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                }
+                                            });
+                                }
+                            });
+                }
+                db.collection("iku_earth_messages").document(messageDocumentID)
+                        .update("upvoteCount", upvotesCount - 1,
+                                currentEmoji, FieldValue.arrayRemove(user.getUid()))
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                            }
+                        });
+            } else if (currentEmoji == "downvoters") {
+                if (!authorOfMessage.equals(user.getUid())) {
+                    db.collection("users").document(authorOfMessage).get()
+                            .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                @Override
+                                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                    final LeaderboardModel usersData = documentSnapshot.toObject(LeaderboardModel.class);
+                                    db.collection("users").document(authorOfMessage)
+                                            .update("points", usersData.getPoints() + 1)
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                }
+                                            });
+                                }
+                            });
+                }
+                db.collection("iku_earth_messages").document(messageDocumentID)
+                        .update("downvoteCount", downvotesCount - 1,
+                                currentEmoji, FieldValue.arrayRemove(user.getUid()))
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                            }
+                        });
+            }
+
+        } else if ((currentEmoji != previousEmoji) && (currentEmoji == "downvoters")) {
+            if (!authorOfMessage.equals(user.getUid())) {
+                db.collection("users").document(authorOfMessage).get()
+                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                            @Override
+                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                final LeaderboardModel usersData = documentSnapshot.toObject(LeaderboardModel.class);
+                                db.collection("users").document(authorOfMessage)
+                                        .update("points", usersData.getPoints() - 2)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                Toast.makeText(getActivity(), "Downvote points increased for user", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                            }
+                        });
+            }
+            db.collection("iku_earth_messages").document(messageDocumentID)
+                    .update(previousEmoji, FieldValue.arrayRemove(user.getUid()),
+                            currentEmoji, FieldValue.arrayUnion(user.getUid()),
+                            "upvoteCount", upvotesCount - 1,
+                            "downvoteCount", downvotesCount + 1)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                        }
+                    });
+
+        } else if ((previousEmoji == "downvoters") && (currentEmoji != previousEmoji)) {
+            if (!authorOfMessage.equals(user.getUid())) {
+                db.collection("users").document(authorOfMessage).get()
+                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                            @Override
+                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                final LeaderboardModel usersData = documentSnapshot.toObject(LeaderboardModel.class);
+                                db.collection("users").document(authorOfMessage)
+                                        .update("points", usersData.getPoints() + 2)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+
+                                            }
+                                        });
+                            }
+                        });
+            }
+            db.collection("iku_earth_messages").document(messageDocumentID)
+                    .update(previousEmoji, FieldValue.arrayRemove(user.getUid()),
+                            currentEmoji, FieldValue.arrayUnion(user.getUid()),
+                            "upvoteCount", upvotesCount + 1,
+                            "downvoteCount", downvotesCount - 1
+                    )
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                        }
+                    });
+        } else {
+            db.collection("iku_earth_messages").document(messageDocumentID)
+                    .update(previousEmoji, FieldValue.arrayRemove(user.getUid()),
+                            currentEmoji, FieldValue.arrayUnion(user.getUid()))
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                        }
+                    });
+        }
+    }
+
+    private void newLikeorDislike(String messageDocumentID, String emoji, long UpvotesCount, long DownvotesCount, String authorOfMessage) {
+        if (emoji == "downvoters") {
+
+            if (!authorOfMessage.equals(user.getUid())) {
+                db.collection("users").document(authorOfMessage).get()
+                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                            @Override
+                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                final LeaderboardModel usersData = documentSnapshot.toObject(LeaderboardModel.class);
+                                db.collection("users").document(authorOfMessage)
+                                        .update("points", usersData.getPoints() - 1)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+
+                                            }
+                                        });
+                            }
+                        });
+            }
+            db.collection("iku_earth_messages").document(messageDocumentID)
+                    .update(emoji, FieldValue.arrayUnion(user.getUid()),
+                            "downvoteCount", DownvotesCount + 1)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                        }
+                    });
+        } else {
+            if (!authorOfMessage.equals(user.getUid())) {
+                db.collection("users").document(authorOfMessage).get()
+                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                            @Override
+                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                final LeaderboardModel usersData = documentSnapshot.toObject(LeaderboardModel.class);
+                                db.collection("users").document(authorOfMessage)
+                                        .update("points", usersData.getPoints() + 1)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                            }
+                                        });
+                            }
+                        });
+            }
+            db.collection("iku_earth_messages").document(messageDocumentID)
+                    .update(emoji, FieldValue.arrayUnion(user.getUid()),
+                            "upvoteCount", UpvotesCount + 1)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                        }
+                    });
         }
     }
 
