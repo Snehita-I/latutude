@@ -20,7 +20,7 @@
             android:id="@+id/sentImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:adjustViewBounds="true"
             android:scaleType="centerInside"
             app:layout_constraintEnd_toEndOf="@id/constraintLayout"
@@ -33,14 +33,32 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_marginTop="5dp"
-            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginEnd="40dp"
             android:autoLink="web"
             android:textSize="14sp"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/white"
-            app:layout_constraintEnd_toEndOf="@id/constraintLayout"
+            app:layout_constraintBottom_toTopOf="@id/message_time"
+            app:layout_constraintEnd_toStartOf="@id/message_time2"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@id/constraintLayout"
+            app:layout_constraintTop_toBottomOf="@id/sentImage" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/message_time2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:layout_marginEnd="7dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_toEndOf="@+id/message"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/constraintLayout"
+            app:layout_constraintEnd_toEndOf="@id/constraintLayout"
             app:layout_constraintTop_toBottomOf="@id/sentImage" />
 
         <com.google.android.material.textview.MaterialTextView
@@ -53,6 +71,7 @@
             android:layout_toEndOf="@+id/message"
             android:textColor="@color/white"
             android:textSize="12sp"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@id/constraintLayout"
             app:layout_constraintEnd_toEndOf="@id/constraintLayout"
             app:layout_constraintTop_toBottomOf="@+id/message" />
