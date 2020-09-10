@@ -24,6 +24,9 @@
     <!--Firebase Cloud Messaging-->
     <string name="data_type">direct_message</string>
     <string name="GROUP_KEY_NOTIFICATION">iku experiment</string>
+    <string name="back_button_content_desc">back</string>
+    <string name="submit">Submit</string>
+    <string name="cancel">Cancel</string>
 
 
 </resources>
