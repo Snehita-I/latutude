@@ -1,8 +1,10 @@
 package com.iku;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,10 +22,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.iku.databinding.ActivityHomeBinding;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.net.InetAddress;
 
 import nl.joery.animatedbottombar.AnimatedBottomBar;
 
@@ -32,8 +37,6 @@ public class HomeActivity extends AppCompatActivity {
     private ActivityHomeBinding homeBinding;
 
     private FragmentManager fragmentManager;
-
-    private ChatFragment chatFragment;
 
     boolean doubleBackToExitPressedOnce = false;
 
@@ -51,6 +54,8 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(homeBinding.getRoot());
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
+        networkChecker();
 
         boolean hasMenuKey = ViewConfiguration.get(getApplicationContext()).hasPermanentMenuKey();
         boolean hasBackKey = KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_BACK);
@@ -143,6 +148,22 @@ public class HomeActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void networkChecker() {
+        if (!CheckInternet.isNetwork(HomeActivity.this)) {
+            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this)
+                    .setCancelable(false)
+                    .setView(R.layout.no_internet_dialog)
+                    .setPositiveButton("Reconnect", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            // Do nothing.
+                        }
+                    });
+            Dialog dialog = builder.show();
+            dialog.setCanceledOnTouchOutside(false);
+
+        }
     }
 
     @Override
