@@ -24,11 +24,24 @@ public class ChatModel {
     private long timestamp;
     @PropertyName("upvoters")
     private ArrayList<String> upvoters;
+    @PropertyName("emoji1")
+    private ArrayList<String> emoji1;
+    @PropertyName("emoji2")
+    private ArrayList<String> emoji2;
+    @PropertyName("emoji3")
+    private ArrayList<String> emoji3;
+    @PropertyName("emoji4")
+    private ArrayList<String> emoji4;
+    @PropertyName("downvoters")
+    private ArrayList<String> downvoters;
+    @PropertyName("downvoteCount")
+    private int downvoteCount;
 
     private ChatModel() {
     }
 
-    private ChatModel(String message, long timestamp, String UID, String userName, String type, int upvoteCount, String imageUrl, ArrayList<String> upvoters) {
+    private ChatModel(String message, long timestamp, String UID, String userName, String type, int upvoteCount, String imageUrl, ArrayList<String> upvoters,
+                      ArrayList<String> emoji1, ArrayList<String> emoji2, ArrayList<String> emoji3, ArrayList<String> emoji4, ArrayList<String> downvoters, int downvoteCount) {
         this.message = message;
         this.UID = UID;
         this.timestamp = timestamp;
@@ -37,6 +50,12 @@ public class ChatModel {
         this.imageUrl = imageUrl;
         this.upvoteCount = upvoteCount;
         this.upvoters = upvoters;
+        this.emoji1 = emoji1;
+        this.emoji2 = emoji2;
+        this.emoji3 = emoji3;
+        this.emoji4 = emoji4;
+        this.downvoters = downvoters;
+        this.downvoteCount = downvoteCount;
     }
 
     public String getMessage() {
@@ -105,4 +124,51 @@ public class ChatModel {
         this.upvoters = upvoters;
     }
 
+    public ArrayList<String> getEmoji1() {
+        return emoji1;
+    }
+
+    public void setEmoji1(ArrayList<String> emoji1) {
+        this.emoji1 = emoji1;
+    }
+
+    public ArrayList<String> getEmoji2() {
+        return emoji2;
+    }
+
+    public void setEmoji2(ArrayList<String> emoji2) {
+        this.emoji2 = emoji2;
+    }
+
+    public ArrayList<String> getEmoji3() {
+        return emoji3;
+    }
+
+    public void setEmoji3(ArrayList<String> emoji3) {
+        this.emoji3 = emoji3;
+    }
+
+    public ArrayList<String> getEmoji4() {
+        return emoji4;
+    }
+
+    public void setEmoji4(ArrayList<String> emoji4) {
+        this.emoji4 = emoji4;
+    }
+
+    public ArrayList<String> getDownvoters() {
+        return downvoters;
+    }
+
+    public void setDownvoters(ArrayList<String> downvoters) {
+        this.downvoters = downvoters;
+    }
+
+    public int getDownvoteCount() {
+        return downvoteCount;
+    }
+
+    public void setDownvoteCount(int downvoteCount) {
+        this.downvoteCount = downvoteCount;
+    }
 }
