@@ -12,6 +12,7 @@
         android:id="@+id/appBar"
         android:layout_width="match_parent"
         android:layout_height="56dp"
+        app:contentInsetStart="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -38,13 +39,14 @@
                 android:layout_marginStart="10dp"
                 android:singleLine="true"
                 android:textColor="@android:color/white"
-                android:textSize="12sp"
+                android:textSize="18sp"
+                android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@id/postTime"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/back_button"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.80" />
+                app:layout_constraintVertical_bias="0.0" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/postTime"
@@ -58,8 +60,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/back_button"
-                app:layout_constraintTop_toBottomOf="@id/user_name"
-                app:layout_constraintVertical_bias="0.2" />
+                app:layout_constraintTop_toBottomOf="@id/user_name" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
