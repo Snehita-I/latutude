@@ -14,6 +14,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
@@ -56,48 +57,20 @@ public class HomeActivity extends AppCompatActivity {
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         networkChecker();
-
-        boolean hasMenuKey = ViewConfiguration.get(getApplicationContext()).hasPermanentMenuKey();
-        boolean hasBackKey = KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_BACK);
-
-        findViewById(android.R.id.content).getRootView().getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
             @Override
-            public void onGlobalLayout() {
-                Rect r = new Rect();
-                findViewById(android.R.id.content).getRootView().getWindowVisibleDisplayFrame(r);
-                int heightDiff = findViewById(android.R.id.content).getRootView().getRootView().getHeight() - (r.bottom - r.top);
-
-                boolean hasBackKey = KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_BACK);
-                boolean hasHomeKey = KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_HOME);
-
-                if (hasBackKey && hasHomeKey) {
-                    if (heightDiff > 100) { // if more than 100 pixels, its probably a keyboard...
-                        //ok now we know the keyboard is up...
-                        homeBinding.animatedBottomBar.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                //ok now we know the keyboard is down...
-                                homeBinding.animatedBottomBar.setVisibility(View.GONE);
-                            }
-                        });
-
-                    } else {
-                        homeBinding.animatedBottomBar.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                //ok now we know the keyboard is down...
-                                homeBinding.animatedBottomBar.setVisibility(View.VISIBLE);
-                            }
-                        });
-                    }
-                } else {
-                    if (findViewById(R.id.messageTextField) != null) {
-                        if (findViewById(R.id.messageTextField).hasFocus())
-                            homeBinding.animatedBottomBar.setVisibility(View.GONE);
-                    }
+            public void run() {
+                handler.postDelayed(this, 1000);
+                if (findViewById(R.id.messageTextField) != null) {
+                    if (findViewById(R.id.messageTextField).hasFocus())
+                        homeBinding.animatedBottomBar.setVisibility(View.GONE);
+                    else
+                        homeBinding.animatedBottomBar.setVisibility(View.VISIBLE);
                 }
             }
-        });
+        }, 1000);
+
 
         if (savedInstanceState == null) {
             homeBinding.animatedBottomBar.selectTabById(R.id.chat, true);
@@ -157,7 +130,7 @@ public class HomeActivity extends AppCompatActivity {
                     .setView(R.layout.no_internet_dialog)
                     .setPositiveButton("Reconnect", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
-                            // Do nothing.
+                            networkChecker();
                         }
                     });
             Dialog dialog = builder.show();
