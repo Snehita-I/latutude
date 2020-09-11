@@ -28,7 +28,6 @@ import java.util.Date;
 
 public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerView.ViewHolder> {
 
-
     public static final int MSG_TYPE_LEFT = 0;
     public static final int MSG_TYPE_RIGHT = 1;
     public static final int MSG_TYPE_IMAGE_LEFT = 2;
@@ -41,9 +40,10 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
     private Context mContext;
 
     private SimpleDateFormat sfd = new SimpleDateFormat("hh:mm a");
-    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-    private String TAG = ChatAdapter.class.getSimpleName();
+    private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+    private static final String TAG = ChatAdapter.class.getSimpleName();
 
     @Override
     protected void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i, @NonNull final ChatModel chatModel) {
@@ -56,25 +56,79 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
                 chatLeftViewHolder.messageText.setText(chatModel.getMessage());
                 chatLeftViewHolder.messageTime.setText(sfd.format(new Date(timeStampLeft)));
                 chatLeftViewHolder.senderName.setText(chatModel.getUserName());
-                if (chatModel.getUpvoteCount() == 0) {
-                    chatLeftViewHolder.itemView.findViewById(R.id.upvotesLayout).setVisibility(View.GONE);
-                } else
+
+                if (chatModel.getUpvoteCount() > 0) {
                     chatLeftViewHolder.itemView.findViewById(R.id.upvotesLayout).setVisibility(View.VISIBLE);
-                chatLeftViewHolder.upvoteCount.setText(String.valueOf(chatModel.getUpvoteCount()));
+                    chatLeftViewHolder.upvoteCount.setText(String.valueOf(chatModel.getUpvoteCount()));
+                    if (chatModel.getupvoters().size() > 0)
+                        chatLeftViewHolder.itemView.findViewById(R.id.heartImage).setVisibility(View.VISIBLE);
+                    else
+                        chatLeftViewHolder.itemView.findViewById(R.id.heartImage).setVisibility(View.GONE);
+
+                    if (chatModel.getEmoji1().size() > 0)
+                        chatLeftViewHolder.itemView.findViewById(R.id.emoji1).setVisibility(View.VISIBLE);
+                    else
+                        chatLeftViewHolder.itemView.findViewById(R.id.emoji1).setVisibility(View.GONE);
+
+                    if (chatModel.getEmoji2().size() > 0)
+                        chatLeftViewHolder.itemView.findViewById(R.id.emoji2).setVisibility(View.VISIBLE);
+                    else
+                        chatLeftViewHolder.itemView.findViewById(R.id.emoji2).setVisibility(View.GONE);
+
+                    if (chatModel.getEmoji3().size() > 0)
+                        chatLeftViewHolder.itemView.findViewById(R.id.emoji3).setVisibility(View.VISIBLE);
+                    else
+                        chatLeftViewHolder.itemView.findViewById(R.id.emoji3).setVisibility(View.GONE);
+
+                    if (chatModel.getEmoji4().size() > 0)
+                        chatLeftViewHolder.itemView.findViewById(R.id.emoji4).setVisibility(View.VISIBLE);
+                    else
+                        chatLeftViewHolder.itemView.findViewById(R.id.emoji4).setVisibility(View.GONE);
+                } else
+                    chatLeftViewHolder.itemView.findViewById(R.id.upvotesLayout).setVisibility(View.GONE);
+
                 break;
 
             case MSG_TYPE_RIGHT:
                 ChatRightViewHolder chatRightViewHolder = (ChatRightViewHolder) viewHolder;
                 long timeStampRight = chatModel.getTimestamp();
+                if (chatModel.getUpvoteCount() > 0) {
+                    chatRightViewHolder.itemView.findViewById(R.id.upvotesLayout).setVisibility(View.VISIBLE);
+                    chatRightViewHolder.upvoteCount.setText(String.valueOf(chatModel.getUpvoteCount()));
+
+                    if (chatModel.getupvoters().size() > 0)
+                        chatRightViewHolder.itemView.findViewById(R.id.heartImage).setVisibility(View.VISIBLE);
+                    else
+                        chatRightViewHolder.itemView.findViewById(R.id.heartImage).setVisibility(View.GONE);
+
+                    if (chatModel.getEmoji1().size() > 0)
+                        chatRightViewHolder.itemView.findViewById(R.id.emoji1).setVisibility(View.VISIBLE);
+                    else
+                        chatRightViewHolder.itemView.findViewById(R.id.emoji1).setVisibility(View.GONE);
+
+                    if (chatModel.getEmoji2().size() > 0)
+                        chatRightViewHolder.itemView.findViewById(R.id.emoji2).setVisibility(View.VISIBLE);
+                    else
+                        chatRightViewHolder.itemView.findViewById(R.id.emoji2).setVisibility(View.GONE);
+
+                    if (chatModel.getEmoji3().size() > 0)
+                        chatRightViewHolder.itemView.findViewById(R.id.emoji3).setVisibility(View.VISIBLE);
+                    else
+                        chatRightViewHolder.itemView.findViewById(R.id.emoji3).setVisibility(View.GONE);
+
+                    if (chatModel.getEmoji4().size() > 0)
+                        chatRightViewHolder.itemView.findViewById(R.id.emoji4).setVisibility(View.VISIBLE);
+                    else
+                        chatRightViewHolder.itemView.findViewById(R.id.emoji4).setVisibility(View.GONE);
+                } else
+                    chatRightViewHolder.itemView.findViewById(R.id.upvotesLayout).setVisibility(View.GONE);
 
                 chatRightViewHolder.messageText.setText(chatModel.getMessage());
                 chatRightViewHolder.messageTime.setText(sfd.format(new Date(timeStampRight)));
-                if (chatModel.getUpvoteCount() == 0) {
-                    chatRightViewHolder.itemView.findViewById(R.id.upvotesLayout).setVisibility(View.GONE);
-                } else
-                    chatRightViewHolder.itemView.findViewById(R.id.upvotesLayout).setVisibility(View.VISIBLE);
                 chatRightViewHolder.upvoteCount.setText(String.valueOf(chatModel.getUpvoteCount()));
+
                 break;
+
 
             case MSG_TYPE_IMAGE_LEFT:
                 final ChatLeftImageViewHolder chatLeftImageViewHolder = (ChatLeftImageViewHolder) viewHolder;
@@ -83,11 +137,37 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
                 chatLeftImageViewHolder.messageText.setText(chatModel.getMessage());
                 chatLeftImageViewHolder.messageTime.setText(sfd.format(new Date(timeStampImageLeft)));
                 chatLeftImageViewHolder.senderName.setText(chatModel.getUserName());
-                if (chatModel.getUpvoteCount() == 0) {
-                    chatLeftImageViewHolder.itemView.findViewById(R.id.upvotesLayout).setVisibility(View.GONE);
-                } else
+
+                if (chatModel.getUpvoteCount() > 0) {
                     chatLeftImageViewHolder.itemView.findViewById(R.id.upvotesLayout).setVisibility(View.VISIBLE);
-                chatLeftImageViewHolder.upvoteCount.setText(String.valueOf(chatModel.getUpvoteCount()));
+                    chatLeftImageViewHolder.upvoteCount.setText(String.valueOf(chatModel.getUpvoteCount()));
+                    if (chatModel.getupvoters().size() > 0)
+                        chatLeftImageViewHolder.itemView.findViewById(R.id.heartImage).setVisibility(View.VISIBLE);
+                    else
+                        chatLeftImageViewHolder.itemView.findViewById(R.id.heartImage).setVisibility(View.GONE);
+
+                    if (chatModel.getEmoji1().size() > 0)
+                        chatLeftImageViewHolder.itemView.findViewById(R.id.emoji1).setVisibility(View.VISIBLE);
+                    else
+                        chatLeftImageViewHolder.itemView.findViewById(R.id.emoji1).setVisibility(View.GONE);
+
+                    if (chatModel.getEmoji2().size() > 0)
+                        chatLeftImageViewHolder.itemView.findViewById(R.id.emoji2).setVisibility(View.VISIBLE);
+                    else
+                        chatLeftImageViewHolder.itemView.findViewById(R.id.emoji2).setVisibility(View.GONE);
+
+                    if (chatModel.getEmoji3().size() > 0)
+                        chatLeftImageViewHolder.itemView.findViewById(R.id.emoji3).setVisibility(View.VISIBLE);
+                    else
+                        chatLeftImageViewHolder.itemView.findViewById(R.id.emoji3).setVisibility(View.GONE);
+
+                    if (chatModel.getEmoji4().size() > 0)
+                        chatLeftImageViewHolder.itemView.findViewById(R.id.emoji4).setVisibility(View.VISIBLE);
+                    else
+                        chatLeftImageViewHolder.itemView.findViewById(R.id.emoji4).setVisibility(View.GONE);
+                } else
+                    chatLeftImageViewHolder.itemView.findViewById(R.id.upvotesLayout).setVisibility(View.GONE);
+
                 Picasso.get()
                         .load(chatModel.getimageUrl())
                         .noFade()
@@ -114,11 +194,36 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
 
                 chatRightImageViewHolder.messageText.setText(chatModel.getMessage());
                 chatRightImageViewHolder.messageTime.setText(sfd.format(new Date(timeStampImageRight)));
-                if (chatModel.getUpvoteCount() == 0) {
-                    chatRightImageViewHolder.itemView.findViewById(R.id.upvotesLayout).setVisibility(View.GONE);
-                } else
+                if (chatModel.getUpvoteCount() > 0) {
                     chatRightImageViewHolder.itemView.findViewById(R.id.upvotesLayout).setVisibility(View.VISIBLE);
-                chatRightImageViewHolder.upvoteCount.setText(String.valueOf(chatModel.getUpvoteCount()));
+                    chatRightImageViewHolder.upvoteCount.setText(String.valueOf(chatModel.getUpvoteCount()));
+                    if (chatModel.getupvoters().size() > 0)
+                        chatRightImageViewHolder.itemView.findViewById(R.id.heartImage).setVisibility(View.VISIBLE);
+                    else
+                        chatRightImageViewHolder.itemView.findViewById(R.id.heartImage).setVisibility(View.GONE);
+
+                    if (chatModel.getEmoji1().size() > 0)
+                        chatRightImageViewHolder.itemView.findViewById(R.id.emoji1).setVisibility(View.VISIBLE);
+                    else
+                        chatRightImageViewHolder.itemView.findViewById(R.id.emoji1).setVisibility(View.GONE);
+
+                    if (chatModel.getEmoji2().size() > 0)
+                        chatRightImageViewHolder.itemView.findViewById(R.id.emoji2).setVisibility(View.VISIBLE);
+                    else
+                        chatRightImageViewHolder.itemView.findViewById(R.id.emoji2).setVisibility(View.GONE);
+
+                    if (chatModel.getEmoji3().size() > 0)
+                        chatRightImageViewHolder.itemView.findViewById(R.id.emoji3).setVisibility(View.VISIBLE);
+                    else
+                        chatRightImageViewHolder.itemView.findViewById(R.id.emoji3).setVisibility(View.GONE);
+
+                    if (chatModel.getEmoji4().size() > 0)
+                        chatRightImageViewHolder.itemView.findViewById(R.id.emoji4).setVisibility(View.VISIBLE);
+                    else
+                        chatRightImageViewHolder.itemView.findViewById(R.id.emoji4).setVisibility(View.GONE);
+                } else
+                    chatRightImageViewHolder.itemView.findViewById(R.id.upvotesLayout).setVisibility(View.GONE);
+
                 Picasso.get()
                         .load(chatModel.getimageUrl())
                         .noFade()
@@ -337,6 +442,4 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
         else
             return 0;
     }
-
-
 }

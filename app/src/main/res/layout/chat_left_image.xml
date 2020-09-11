@@ -164,7 +164,8 @@
                 android:layout_gravity="center_vertical"
                 android:padding="3dp"
                 android:src="@drawable/ic_heart"
-                android:translationZ="5dp" />
+                android:translationZ="5dp"
+                android:visibility="invisible" />
 
             <TextView
                 android:id="@+id/emoji1"
@@ -177,7 +178,7 @@
                 android:textSize="14sp"
                 android:translationX="-2dp"
                 android:translationZ="4dp"
-                android:visibility="visible" />
+                android:visibility="invisible" />
 
             <TextView
                 android:id="@+id/emoji2"
@@ -189,7 +190,7 @@
                 android:textSize="14sp"
                 android:translationX="-5dp"
                 android:translationZ="3dp"
-                android:visibility="visible" />
+                android:visibility="invisible" />
 
             <TextView
                 android:id="@+id/emoji3"
@@ -201,7 +202,7 @@
                 android:textSize="14sp"
                 android:translationX="-7dp"
                 android:translationZ="2dp"
-                android:visibility="visible" />
+                android:visibility="invisible" />
 
             <TextView
                 android:id="@+id/emoji4"
@@ -213,7 +214,7 @@
                 android:textSize="14sp"
                 android:translationX="-9dp"
                 android:translationZ="1dp"
-                android:visibility="visible" />
+                android:visibility="invisible" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/upvoteCount"
