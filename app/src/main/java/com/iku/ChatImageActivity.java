@@ -16,8 +16,10 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.ParcelFileDescriptor;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -43,14 +45,20 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.iku.databinding.ActivityChatImageBinding;
 
+import java.io.Closeable;
 import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.channels.FileChannel;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class ChatImageActivity extends AppCompatActivity {
@@ -65,10 +73,19 @@ public class ChatImageActivity extends AppCompatActivity {
 
     private FirebaseAnalytics mFirebaseAnalytics;
 
+    private SimpleDateFormat dateFormatter;
+
+
     private Uri mImageUri;
 
-    private int PICK_IMAGE = 1;
+    private File file;
+    private File sourceFile;
+    private File destFile;
 
+    private int PICK_IMAGE = 1;
+    public static final String DATE_FORMAT = "yyyyMMdd_HHmmss";
+
+    public static final String IMAGE_DIRECTORY = "iku/iku images/Sent Images";
     private int STORAGE_PERMISSION_CODE = 10;
 
     private String[] appPermissions = {
@@ -85,6 +102,15 @@ public class ChatImageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         chatImageBinding = ActivityChatImageBinding.inflate(getLayoutInflater());
         setContentView(chatImageBinding.getRoot());
+
+        dateFormatter = new SimpleDateFormat(
+                DATE_FORMAT, Locale.US);
+
+        file = new File(Environment.getExternalStorageDirectory()
+                + "/" + IMAGE_DIRECTORY);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
 
         initItems();
         initButtons();
@@ -126,9 +152,11 @@ public class ChatImageActivity extends AppCompatActivity {
     }
 
     private void uploadFile(String message) {
-        if (mImageUri != null) {
+        Uri finalUri = Uri.fromFile(destFile);
+        Log.d(TAG, "uploadFile: " + finalUri);
+        if (finalUri != null) {
             StorageReference imageRef = mStorageRef.child(System.currentTimeMillis() + ".");
-            UploadTask uploadTask = imageRef.putFile(mImageUri);
+            UploadTask uploadTask = imageRef.putFile(finalUri);
             uploadTask.addOnSuccessListener(taskSnapshot -> {
                 Task<Uri> downloadUrl = imageRef.getDownloadUrl();
                 downloadUrl.addOnSuccessListener(uri -> {
@@ -240,7 +268,22 @@ public class ChatImageActivity extends AppCompatActivity {
         if (requestCode == PICK_IMAGE && resultCode == RESULT_OK && data != null) {
             mImageUri = data.getData();
             Log.i(TAG, "onActivityResult: " + mImageUri);
-            chatImageBinding.chosenImage.setImageURI(mImageUri);
+            Log.d(TAG + ".PICK_GALLERY_IMAGE", "Selected image uri path :" + mImageUri.toString());
+
+
+            sourceFile = new File(getPathFromGooglePhotosUri(mImageUri));
+
+            destFile = new File(file, "img_" + dateFormatter.format(new Date()) + ".png");
+
+            Log.d(TAG, "Source File Path :" + sourceFile);
+
+            try {
+                copyFile(sourceFile, destFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Bitmap bitmap =decodeFile(destFile);
+            chatImageBinding.chosenImage.setImageBitmap(bitmap);
         } else
             onBackPressed();
     }
@@ -260,5 +303,124 @@ public class ChatImageActivity extends AppCompatActivity {
             return false;
         }
         return true;
+    }
+
+    private Bitmap decodeFile(File f) {
+        Bitmap b = null;
+
+        //Decode image size
+        BitmapFactory.Options o = new BitmapFactory.Options();
+        o.inJustDecodeBounds = true;
+
+        FileInputStream fis = null;
+        try {
+            fis = new FileInputStream(f);
+            BitmapFactory.decodeStream(fis, null, o);
+            fis.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        int IMAGE_MAX_SIZE = 1024;
+        int scale = 1;
+        if (o.outHeight > IMAGE_MAX_SIZE || o.outWidth > IMAGE_MAX_SIZE) {
+            scale = (int) Math.pow(2, (int) Math.ceil(Math.log(IMAGE_MAX_SIZE /
+                    (double) Math.max(o.outHeight, o.outWidth)) / Math.log(0.5)));
+        }
+
+        //Decode with inSampleSize
+        BitmapFactory.Options o2 = new BitmapFactory.Options();
+        o2.inSampleSize = scale;
+        try {
+            fis = new FileInputStream(f);
+            b = BitmapFactory.decodeStream(fis, null, o2);
+            fis.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Log.d(TAG, "Width :" + b.getWidth() + " Height :" + b.getHeight());
+
+        destFile = new File(file, "img_"
+                + dateFormatter.format(new Date()) + ".png");
+
+        Log.d(TAG, "decodeFile: " + destFile);
+
+
+        try {
+            FileOutputStream out = new FileOutputStream(destFile);
+            b.compress(Bitmap.CompressFormat.PNG, 90, out);
+            out.flush();
+            out.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return b;
+    }
+
+    public String getPathFromGooglePhotosUri(Uri uriPhoto) {
+        if (uriPhoto == null)
+            return null;
+
+        FileInputStream input = null;
+        FileOutputStream output = null;
+        try {
+            ParcelFileDescriptor pfd = getContentResolver().openFileDescriptor(uriPhoto, "r");
+            FileDescriptor fd = pfd.getFileDescriptor();
+            input = new FileInputStream(fd);
+
+            String tempFilename = getTempFilename(this);
+            output = new FileOutputStream(tempFilename);
+
+            int read;
+            byte[] bytes = new byte[4096];
+            while ((read = input.read(bytes)) != -1) {
+                output.write(bytes, 0, read);
+            }
+            return tempFilename;
+        } catch (IOException ignored) {
+            // Nothing we can do
+        } finally {
+            closeSilently(input);
+            closeSilently(output);
+        }
+        return null;
+    }
+
+    public static void closeSilently(Closeable c) {
+        if (c == null)
+            return;
+        try {
+            c.close();
+        } catch (Throwable t) {
+            // Do nothing
+        }
+    }
+
+    private static String getTempFilename(Context context) throws IOException {
+        File outputDir = context.getCacheDir();
+        File outputFile = File.createTempFile("image", "tmp", outputDir);
+        return outputFile.getAbsolutePath();
+    }
+
+    private void copyFile(File sourceFile, File destFile) throws IOException {
+        if (!sourceFile.exists()) {
+            return;
+        }
+
+        FileChannel source = null;
+        FileChannel destination = null;
+        source = new FileInputStream(sourceFile).getChannel();
+        destination = new FileOutputStream(destFile).getChannel();
+        if (destination != null && source != null) {
+            destination.transferFrom(source, 0, source.size());
+        }
+        if (source != null) {
+            source.close();
+        }
+        if (destination != null) {
+            destination.close();
+        }
     }
 }
