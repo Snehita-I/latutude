@@ -61,22 +61,24 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
                 //Change the visibilty according to the visibility of the sender's name.
                 if(chatLeftViewHolder.edited.getVisibility() == View.VISIBLE){
                     chatLeftViewHolder.messageTime3.setVisibility(View.VISIBLE);
+                    chatLeftViewHolder.messageTime.setVisibility(View.GONE);
                 }else{
                     //Change the visibilities according to senderName's visibility
-                    if(chatLeftViewHolder.senderName.getVisibility() == View.VISIBLE)
+                    if(chatLeftViewHolder.senderName.getVisibility() == View.VISIBLE) {
                         chatLeftViewHolder.messageTime.setVisibility(View.VISIBLE);
-                    else {
-                        if (chatModel.getMessage().length() <= 25)
+                        chatLeftViewHolder.messageTime2.setVisibility(View.GONE);
+                        chatLeftViewHolder.messageTime3.setVisibility(View.GONE);
+                    } else {
+                        if (chatModel.getMessage().length() <= 25) {
                             chatLeftViewHolder.messageTime2.setVisibility(View.VISIBLE);
-                        else
+                            chatLeftViewHolder.messageTime.setVisibility(View.GONE);
+                            chatLeftViewHolder.messageTime3.setVisibility(View.GONE);
+                        }else {
                             chatLeftViewHolder.messageTime3.setVisibility(View.VISIBLE);
+                            chatLeftViewHolder.messageTime.setVisibility(View.GONE);
+                            chatLeftViewHolder.messageTime2.setVisibility(View.GONE);
+                        }
                     }
-                }
-                if(chatModel.getMessage().length() <= 25){
-                    chatLeftViewHolder.messageTime.setVisibility(View.VISIBLE);
-                }
-                else{
-                    chatLeftViewHolder.messageTime.setVisibility(View.VISIBLE);
                 }
                 if (chatModel.getUpvoteCount() > 0) {
                     chatLeftViewHolder.itemView.findViewById(R.id.upvotesLayout).setVisibility(View.VISIBLE);
@@ -151,11 +153,15 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
 
                 if(chatRightViewHolder.edited.getVisibility() == View.VISIBLE){
                     chatRightViewHolder.messageTime2.setVisibility(View.VISIBLE);
-                }else{
-                    if(chatModel.getMessage().length() <= 25)
+                }else if(chatRightViewHolder.edited.getVisibility() == View.GONE){
+                    if(chatModel.getMessage().length() <= 25) {
                         chatRightViewHolder.messageTime.setVisibility(View.VISIBLE);
-                    else
+                        chatRightViewHolder.messageTime2.setVisibility(View.GONE);
+                    }else{
                         chatRightViewHolder.messageTime2.setVisibility(View.VISIBLE);
+                        chatRightViewHolder.messageTime.setVisibility(View.GONE);
+
+                    }
                 }
                 break;
 
@@ -172,15 +178,24 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
 
                 if(chatLeftImageViewHolder.edited.getVisibility() == View.VISIBLE){
                     chatLeftImageViewHolder.messageTime3.setVisibility(View.VISIBLE);
+                    chatLeftImageViewHolder.messageTime.setVisibility(View.GONE);
+                    chatLeftImageViewHolder.messageTime2.setVisibility(View.GONE);
                 }else{
                     //Change the visibilities according to senderName's visibility
-                    if(chatLeftImageViewHolder.senderName.getVisibility() == View.VISIBLE)
+                    if(chatLeftImageViewHolder.senderName.getVisibility() == View.VISIBLE) {
                         chatLeftImageViewHolder.messageTime.setVisibility(View.VISIBLE);
-                    else {
-                        if (chatModel.getMessage().length() <= 25)
+                        chatLeftImageViewHolder.messageTime2.setVisibility(View.GONE);
+                        chatLeftImageViewHolder.messageTime3.setVisibility(View.GONE);
+                    }else {
+                        if (chatModel.getMessage().length() <= 25) {
                             chatLeftImageViewHolder.messageTime2.setVisibility(View.VISIBLE);
-                        else
+                            chatLeftImageViewHolder.messageTime.setVisibility(View.GONE);
+                            chatLeftImageViewHolder.messageTime3.setVisibility(View.GONE);
+                        } else {
                             chatLeftImageViewHolder.messageTime3.setVisibility(View.VISIBLE);
+                            chatLeftImageViewHolder.messageTime.setVisibility(View.GONE);
+                            chatLeftImageViewHolder.messageTime2.setVisibility(View.GONE);
+                        }
                     }
                 }
 
@@ -244,10 +259,14 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
                 if(chatRightImageViewHolder.edited.getVisibility() == View.VISIBLE)
                     chatRightImageViewHolder.messageTime2.setVisibility(View.VISIBLE);
                 else{
-                    if(chatModel.getMessage().length() <= 25)
+                    if(chatModel.getMessage().length() <= 25) {
                         chatRightImageViewHolder.messageTime.setVisibility(View.VISIBLE);
-                    else
-                        chatRightImageViewHolder.messageTime.setVisibility(View.VISIBLE);
+                        chatRightImageViewHolder.messageTime2.setVisibility(View.GONE);
+                    }else {
+                        chatRightImageViewHolder.messageTime2.setVisibility(View.VISIBLE);
+                        chatRightImageViewHolder.messageTime.setVisibility(View.GONE);
+
+                    }
                 }
 
                 if (chatModel.getUpvoteCount() > 0) {
@@ -433,7 +452,6 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
             messageText = itemView.findViewById(R.id.message);
             messageTime = itemView.findViewById(R.id.message_time);
             messageTime2 = itemView.findViewById(R.id.message_time2);
-            messageTime3 = itemView.findViewById(R.id.message_time3);
             upvoteCount = itemView.findViewById(R.id.upvoteCount);
             edited = itemView.findViewById(R.id.editFlag);
 
