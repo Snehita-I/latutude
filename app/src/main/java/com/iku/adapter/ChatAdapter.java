@@ -55,8 +55,29 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
 
                 chatLeftViewHolder.messageText.setText(chatModel.getMessage());
                 chatLeftViewHolder.messageTime.setText(sfd.format(new Date(timeStampLeft)));
+                chatLeftViewHolder.messageTime2.setText(sfd.format(new Date(timeStampLeft)));
+                chatLeftViewHolder.messageTime3.setText(sfd.format(new Date(timeStampLeft)));
                 chatLeftViewHolder.senderName.setText(chatModel.getUserName());
-
+                //Change the visibilty according to the visibility of the sender's name.
+                if(chatLeftViewHolder.edited.getVisibility() == View.VISIBLE){
+                    chatLeftViewHolder.messageTime3.setVisibility(View.VISIBLE);
+                }else{
+                    //Change the visibilities according to senderName's visibility
+                    if(chatLeftViewHolder.senderName.getVisibility() == View.VISIBLE)
+                        chatLeftViewHolder.messageTime.setVisibility(View.VISIBLE);
+                    else {
+                        if (chatModel.getMessage().length() <= 25)
+                            chatLeftViewHolder.messageTime2.setVisibility(View.VISIBLE);
+                        else
+                            chatLeftViewHolder.messageTime3.setVisibility(View.VISIBLE);
+                    }
+                }
+                if(chatModel.getMessage().length() <= 25){
+                    chatLeftViewHolder.messageTime.setVisibility(View.VISIBLE);
+                }
+                else{
+                    chatLeftViewHolder.messageTime.setVisibility(View.VISIBLE);
+                }
                 if (chatModel.getUpvoteCount() > 0) {
                     chatLeftViewHolder.itemView.findViewById(R.id.upvotesLayout).setVisibility(View.VISIBLE);
                     chatLeftViewHolder.upvoteCount.setText(String.valueOf(chatModel.getUpvoteCount()));
@@ -125,8 +146,17 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
 
                 chatRightViewHolder.messageText.setText(chatModel.getMessage());
                 chatRightViewHolder.messageTime.setText(sfd.format(new Date(timeStampRight)));
+                chatRightViewHolder.messageTime2.setText(sfd.format(new Date(timeStampRight)));
                 chatRightViewHolder.upvoteCount.setText(String.valueOf(chatModel.getUpvoteCount()));
 
+                if(chatRightViewHolder.edited.getVisibility() == View.VISIBLE){
+                    chatRightViewHolder.messageTime2.setVisibility(View.VISIBLE);
+                }else{
+                    if(chatModel.getMessage().length() <= 25)
+                        chatRightViewHolder.messageTime.setVisibility(View.VISIBLE);
+                    else
+                        chatRightViewHolder.messageTime2.setVisibility(View.VISIBLE);
+                }
                 break;
 
 
@@ -136,7 +166,23 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
 
                 chatLeftImageViewHolder.messageText.setText(chatModel.getMessage());
                 chatLeftImageViewHolder.messageTime.setText(sfd.format(new Date(timeStampImageLeft)));
+                chatLeftImageViewHolder.messageTime2.setText(sfd.format(new Date(timeStampImageLeft)));
+                chatLeftImageViewHolder.messageTime3.setText(sfd.format(new Date(timeStampImageLeft)));
                 chatLeftImageViewHolder.senderName.setText(chatModel.getUserName());
+
+                if(chatLeftImageViewHolder.edited.getVisibility() == View.VISIBLE){
+                    chatLeftImageViewHolder.messageTime3.setVisibility(View.VISIBLE);
+                }else{
+                    //Change the visibilities according to senderName's visibility
+                    if(chatLeftImageViewHolder.senderName.getVisibility() == View.VISIBLE)
+                        chatLeftImageViewHolder.messageTime.setVisibility(View.VISIBLE);
+                    else {
+                        if (chatModel.getMessage().length() <= 25)
+                            chatLeftImageViewHolder.messageTime2.setVisibility(View.VISIBLE);
+                        else
+                            chatLeftImageViewHolder.messageTime3.setVisibility(View.VISIBLE);
+                    }
+                }
 
                 if (chatModel.getUpvoteCount() > 0) {
                     chatLeftImageViewHolder.itemView.findViewById(R.id.upvotesLayout).setVisibility(View.VISIBLE);
@@ -194,6 +240,16 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
 
                 chatRightImageViewHolder.messageText.setText(chatModel.getMessage());
                 chatRightImageViewHolder.messageTime.setText(sfd.format(new Date(timeStampImageRight)));
+                chatRightImageViewHolder.messageTime2.setText(sfd.format(new Date(timeStampImageRight)));
+                if(chatRightImageViewHolder.edited.getVisibility() == View.VISIBLE)
+                    chatRightImageViewHolder.messageTime2.setVisibility(View.VISIBLE);
+                else{
+                    if(chatModel.getMessage().length() <= 25)
+                        chatRightImageViewHolder.messageTime.setVisibility(View.VISIBLE);
+                    else
+                        chatRightImageViewHolder.messageTime.setVisibility(View.VISIBLE);
+                }
+
                 if (chatModel.getUpvoteCount() > 0) {
                     chatRightImageViewHolder.itemView.findViewById(R.id.upvotesLayout).setVisibility(View.VISIBLE);
                     chatRightImageViewHolder.upvoteCount.setText(String.valueOf(chatModel.getUpvoteCount()));
@@ -249,16 +305,18 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
 
     public class ChatLeftViewHolder extends RecyclerView.ViewHolder {
 
-        private MaterialTextView messageText, messageTime, senderName, upvoteCount;
+        private MaterialTextView messageText, messageTime, messageTime2, messageTime3,  senderName, upvoteCount, edited;
 
         public ChatLeftViewHolder(@NonNull View itemView) {
             super(itemView);
 
             messageText = itemView.findViewById(R.id.message);
             messageTime = itemView.findViewById(R.id.message_time);
+            messageTime2 = itemView.findViewById(R.id.message_time2);
+            messageTime3 = itemView.findViewById(R.id.message_time3);
             senderName = itemView.findViewById(R.id.sender_name);
             upvoteCount = itemView.findViewById(R.id.upvoteCount);
-
+            edited = itemView.findViewById(R.id.editFlag);
             messageText.setLinkTextColor(Color.parseColor("#1111b7"));
             Linkify.addLinks(messageText, Linkify.WEB_URLS);
 
@@ -279,7 +337,7 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
 
     public class ChatLeftImageViewHolder extends RecyclerView.ViewHolder {
 
-        private MaterialTextView messageText, messageTime, senderName, upvoteCount;
+        private MaterialTextView messageText, messageTime, messageTime2, messageTime3, senderName, upvoteCount, edited;
         private ImageView receiverImage;
 
         public ChatLeftImageViewHolder(@NonNull View itemView) {
@@ -287,9 +345,12 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
 
             messageText = itemView.findViewById(R.id.message);
             messageTime = itemView.findViewById(R.id.message_time);
+            messageTime2 = itemView.findViewById(R.id.message_time2);
+            messageTime3 = itemView.findViewById(R.id.message_time3);
             senderName = itemView.findViewById(R.id.sender_name);
             receiverImage = itemView.findViewById(R.id.receivedImage);
             upvoteCount = itemView.findViewById(R.id.upvoteCount);
+            edited = itemView.findViewById(R.id.editFlag);
 
             messageText.setLinkTextColor(Color.parseColor("#1111b7"));
             Linkify.addLinks(messageText, Linkify.WEB_URLS);
@@ -321,7 +382,7 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
 
     public class ChatRightImageViewHolder extends RecyclerView.ViewHolder {
 
-        private MaterialTextView messageText, messageTime, upvoteCount;
+        private MaterialTextView messageText, messageTime, messageTime2, messageTime3, upvoteCount, edited;
         private ImageView sentImage;
 
         public ChatRightImageViewHolder(@NonNull View itemView) {
@@ -329,8 +390,11 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
 
             messageText = itemView.findViewById(R.id.message);
             messageTime = itemView.findViewById(R.id.message_time);
+            messageTime2 = itemView.findViewById(R.id.message_time2);
+            messageTime3 = itemView.findViewById(R.id.message_time3);
             sentImage = itemView.findViewById(R.id.sentImage);
             upvoteCount = itemView.findViewById(R.id.upvoteCount);
+            edited = itemView.findViewById(R.id.editFlag);
 
             messageText.setLinkTextColor(Color.parseColor("#1111b7"));
             Linkify.addLinks(messageText, Linkify.WEB_URLS);
@@ -361,14 +425,17 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
 
     public class ChatRightViewHolder extends RecyclerView.ViewHolder {
 
-        private MaterialTextView messageText, messageTime, upvoteCount;
+        private MaterialTextView messageText, messageTime, messageTime2, messageTime3, upvoteCount, edited;
 
         public ChatRightViewHolder(@NonNull View itemView) {
             super(itemView);
 
             messageText = itemView.findViewById(R.id.message);
             messageTime = itemView.findViewById(R.id.message_time);
+            messageTime2 = itemView.findViewById(R.id.message_time2);
+            messageTime3 = itemView.findViewById(R.id.message_time3);
             upvoteCount = itemView.findViewById(R.id.upvoteCount);
+            edited = itemView.findViewById(R.id.editFlag);
 
             messageText.setLinkTextColor(Color.parseColor("#1111b7"));
             Linkify.addLinks(messageText, Linkify.WEB_URLS);
