@@ -124,11 +124,11 @@ public class LeaderboardActivity extends AppCompatActivity {
                             konfettiView.build()
                                     .addColors(Color.BLUE, Color.LTGRAY, getResources().getColor(R.color.colorPrimary), getResources().getColor(R.color.colorAccent))
                                     .setDirection(0.0, 359.0)
-                                    .setSpeed(1f, 10f)
+                                    .setSpeed(1f, 8f)
                                     .setFadeOutEnabled(true)
                                     .setTimeToLive(2000L)
                                     .addShapes(Shape.Square.INSTANCE, Shape.Circle.INSTANCE)
-                                    .addSizes(new Size(8, 10f))
+                                    .addSizes(new Size(10, 10f))
                                     .setPosition(-50f, konfettiView.getWidth() + 50f, -50f, -50f)
                                     .streamFor(300, 5000L);
 

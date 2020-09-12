@@ -625,11 +625,11 @@ public class ChatFragment extends Fragment {
                                                                         binding.viewConfetti.build()
                                                                                 .addColors(Color.BLUE, Color.LTGRAY, getResources().getColor(R.color.colorPrimary), getResources().getColor(R.color.colorAccent))
                                                                                 .setDirection(0.0, 359.0)
-                                                                                .setSpeed(1f, 10f)
+                                                                                .setSpeed(1f, 8f)
                                                                                 .setFadeOutEnabled(true)
                                                                                 .setTimeToLive(2000L)
                                                                                 .addShapes(Shape.Square.INSTANCE, Shape.Circle.INSTANCE)
-                                                                                .addSizes(new Size(8, 10f))
+                                                                                .addSizes(new Size(10, 10f))
                                                                                 .setPosition(-50f, binding.viewConfetti.getWidth() + 50f, -50f, -50f)
                                                                                 .streamFor(300, 5000L);
 
@@ -639,7 +639,7 @@ public class ChatFragment extends Fragment {
                                                                         params.putString("uid", user.getUid());
                                                                         mFirebaseAnalytics.logEvent("first_message", params);
 
-                                                                        Toast.makeText(getActivity(), "Way to go!", Toast.LENGTH_SHORT).show();
+                                                                        //Toast.makeText(getActivity(), "Way to go!", Toast.LENGTH_SHORT).show();
 
                                                                     }
                                                                 })

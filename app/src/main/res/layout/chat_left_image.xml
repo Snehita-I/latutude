@@ -7,6 +7,7 @@
     android:layout_marginTop="4dp"
     android:layout_marginEnd="50dp">
 
+    <!--message contents-->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
         android:layout_width="wrap_content"
@@ -17,6 +18,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <!--Sender's name-->
         <TextView
             android:id="@+id/sender_name"
             android:layout_width="wrap_content"
@@ -30,6 +32,7 @@
             app:layout_constraintStart_toStartOf="@id/constraintLayout"
             app:layout_constraintTop_toTopOf="@id/constraintLayout" />
 
+        <!--Primary view for timestamp-->
         <TextView
             android:id="@+id/message_time"
             android:layout_width="wrap_content"
@@ -48,6 +51,7 @@
             app:layout_constraintStart_toEndOf="@+id/sender_name"
             app:layout_constraintTop_toTopOf="@+id/sender_name" />
 
+        <!--Received image is shown here-->
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/receivedImage"
             android:layout_width="wrap_content"
@@ -59,6 +63,7 @@
             app:layout_constraintStart_toStartOf="@id/constraintLayout"
             app:layout_constraintTop_toBottomOf="@+id/sender_name" />
 
+        <!--Message container-->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout2"
             android:layout_width="0dp"
@@ -68,6 +73,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/receivedImage">
 
+            <!--Message body-->
             <TextView
                 android:id="@+id/message"
                 android:layout_width="wrap_content"
@@ -87,6 +93,7 @@
                 app:layout_constraintStart_toStartOf="@id/constraintLayout2"
                 app:layout_constraintTop_toTopOf="parent"/>
 
+            <!--Secondary view for timestamp-->
             <TextView
                 android:id="@+id/message_time2"
                 android:layout_width="wrap_content"
@@ -105,6 +112,7 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <!--Tertiary view for timestamp-->
         <TextView
             android:id="@+id/message_time3"
             android:layout_width="wrap_content"
@@ -144,6 +152,7 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <!--hearts content-->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/heartscount"
         android:layout_width="wrap_content"
@@ -154,6 +163,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
 
+        <!--Parent container-->
         <LinearLayout
             android:id="@+id/upvotesLayout"
             android:layout_width="match_parent"
@@ -170,6 +180,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
+            <!--Heart-->
             <ImageView
                 android:id="@+id/heartImage"
                 android:layout_width="20dp"
@@ -179,6 +190,7 @@
                 android:src="@drawable/ic_heart"
                 android:translationZ="5dp" />
 
+            <!--First emoji-->
             <TextView
                 android:id="@+id/emoji1"
                 android:layout_width="wrap_content"
@@ -190,6 +202,7 @@
                 android:textSize="14sp"
                 android:visibility="gone" />
 
+            <!--Second emoji-->
             <TextView
                 android:id="@+id/emoji2"
                 android:layout_width="wrap_content"
@@ -200,6 +213,7 @@
                 android:textSize="14sp"
                 android:visibility="gone" />
 
+            <!--Third emoji-->
             <TextView
                 android:id="@+id/emoji3"
                 android:layout_width="wrap_content"
@@ -210,6 +224,7 @@
                 android:textSize="14sp"
                 android:visibility="gone" />
 
+            <!--Fourth emoji-->
             <TextView
                 android:id="@+id/emoji4"
                 android:layout_width="wrap_content"
@@ -220,6 +235,7 @@
                 android:textSize="14sp"
                 android:visibility="gone" />
 
+            <!--Upvote count-->
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/upvoteCount"
                 android:layout_width="wrap_content"

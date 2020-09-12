@@ -216,7 +216,7 @@
             <View
                 android:id="@+id/div"
                 android:layout_width="1dp"
-                android:layout_height="45dp"
+                android:layout_height="35dp"
                 android:layout_marginStart="10dp"
                 android:background="#B3B3B3" />
 
