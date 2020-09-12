@@ -1,25 +1,14 @@
 package com.iku;
 
 import android.Manifest;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.media.ExifInterface;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.ParcelFileDescriptor;
-import android.provider.DocumentsContract;
-import android.provider.MediaStore;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -49,7 +38,6 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
@@ -75,7 +63,6 @@ public class ChatImageActivity extends AppCompatActivity {
 
     private SimpleDateFormat dateFormatter;
 
-
     private Uri mImageUri;
 
     private File file;
@@ -83,9 +70,9 @@ public class ChatImageActivity extends AppCompatActivity {
     private File destFile;
 
     private int PICK_IMAGE = 1;
+
     public static final String DATE_FORMAT = "yyyyMMdd_HHmmss";
 
-    public static final String IMAGE_DIRECTORY = "iku/iku images/Sent Images";
     private int STORAGE_PERMISSION_CODE = 10;
 
     private String[] appPermissions = {
@@ -103,15 +90,6 @@ public class ChatImageActivity extends AppCompatActivity {
         chatImageBinding = ActivityChatImageBinding.inflate(getLayoutInflater());
         setContentView(chatImageBinding.getRoot());
 
-        dateFormatter = new SimpleDateFormat(
-                DATE_FORMAT, Locale.US);
-
-        file = new File(Environment.getExternalStorageDirectory()
-                + "/" + IMAGE_DIRECTORY);
-        if (!file.exists()) {
-            file.mkdirs();
-        }
-
         initItems();
         initButtons();
 
@@ -124,6 +102,15 @@ public class ChatImageActivity extends AppCompatActivity {
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         mStorageRef = FirebaseStorage.getInstance().getReference(user.getUid());
         db = FirebaseFirestore.getInstance();
+
+        dateFormatter = new SimpleDateFormat(
+                DATE_FORMAT, Locale.US);
+
+        file = new File(String.valueOf(getCacheDir()));
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+
     }
 
     private void initButtons() {
@@ -155,7 +142,8 @@ public class ChatImageActivity extends AppCompatActivity {
         Uri finalUri = Uri.fromFile(destFile);
         Log.d(TAG, "uploadFile: " + finalUri);
         if (finalUri != null) {
-            StorageReference imageRef = mStorageRef.child(System.currentTimeMillis() + ".");
+            StorageReference imageRef = mStorageRef.child("IKU-img_"
+                    + dateFormatter.format(new Date()) + ".png");
             UploadTask uploadTask = imageRef.putFile(finalUri);
             uploadTask.addOnSuccessListener(taskSnapshot -> {
                 Task<Uri> downloadUrl = imageRef.getDownloadUrl();
@@ -273,7 +261,8 @@ public class ChatImageActivity extends AppCompatActivity {
 
             sourceFile = new File(getPathFromGooglePhotosUri(mImageUri));
 
-            destFile = new File(file, "img_" + dateFormatter.format(new Date()) + ".png");
+            destFile = new File(file, "IKU-img_"
+                    + dateFormatter.format(new Date()) + ".png");
 
             Log.d(TAG, "Source File Path :" + sourceFile);
 
@@ -341,7 +330,7 @@ public class ChatImageActivity extends AppCompatActivity {
 
         Log.d(TAG, "Width :" + b.getWidth() + " Height :" + b.getHeight());
 
-        destFile = new File(file, "img_"
+        destFile = new File(file, "IKU-img_"
                 + dateFormatter.format(new Date()) + ".png");
 
         Log.d(TAG, "decodeFile: " + destFile);
