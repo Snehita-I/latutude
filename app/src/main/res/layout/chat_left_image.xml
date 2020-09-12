@@ -177,57 +177,48 @@
                 android:layout_gravity="center_vertical"
                 android:padding="3dp"
                 android:src="@drawable/ic_heart"
-                android:translationZ="5dp"
-                android:visibility="invisible" />
+                android:translationZ="5dp" />
 
             <TextView
                 android:id="@+id/emoji1"
-                android:layout_width="20dp"
+                android:layout_width="wrap_content"
                 android:layout_height="20dp"
                 android:gravity="center"
                 android:padding="0dp"
                 android:text="👍"
                 android:textColor="@android:color/black"
                 android:textSize="14sp"
-                android:translationX="-2dp"
-                android:translationZ="4dp"
-                android:visibility="invisible" />
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/emoji2"
-                android:layout_width="20dp"
+                android:layout_width="wrap_content"
                 android:layout_height="20dp"
                 android:gravity="center"
                 android:text="👏"
                 android:textColor="@android:color/black"
                 android:textSize="14sp"
-                android:translationX="-5dp"
-                android:translationZ="3dp"
-                android:visibility="invisible" />
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/emoji3"
-                android:layout_width="20dp"
+                android:layout_width="wrap_content"
                 android:layout_height="20dp"
                 android:gravity="center"
                 android:text="🤔"
                 android:textColor="@android:color/black"
                 android:textSize="14sp"
-                android:translationX="-7dp"
-                android:translationZ="2dp"
-                android:visibility="invisible" />
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/emoji4"
-                android:layout_width="20dp"
+                android:layout_width="wrap_content"
                 android:layout_height="20dp"
                 android:gravity="center"
                 android:text="💡"
                 android:textColor="@android:color/black"
                 android:textSize="14sp"
-                android:translationX="-9dp"
-                android:translationZ="1dp"
-                android:visibility="invisible" />
+                android:visibility="gone" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/upvoteCount"

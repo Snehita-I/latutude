@@ -97,13 +97,13 @@ public class OnboardingActivity extends AppCompatActivity {
 
         OnboardingScreenModel itemIkuScreen2 = new OnboardingScreenModel();
         //itemIkuScreen2.setTitle("Heading 2");
-        itemIkuScreen2.setDescription("So, share your efforts of living sustainably - no matter how small an effort.");
+        itemIkuScreen2.setDescription("Where you can show off your efforts of living sustainably - no matter how small an effort.");
         itemIkuScreen2.setImage(R.drawable.ic_undraw_publish_post_vowb);
         onboardingItems.add(itemIkuScreen2);
 
         OnboardingScreenModel itemIkuScreen3 = new OnboardingScreenModel();
         //itemIkuScreen3.setTitle("Heading 3");
-        itemIkuScreen3.setDescription("Be inspired by others how to be more sustainable.\n" + "\n" + "Got a question? Ask Away.");
+        itemIkuScreen3.setDescription("Not sure if you are sustainable?\n" + "\n" + "Be inspired by others on how to be more sustainable in the meantime.\n" + "\n" + "Got a question? Ask Away.");
         itemIkuScreen3.setImage(R.drawable.ic_undraw_faq_rjoy);
         onboardingItems.add(itemIkuScreen3);
 
@@ -115,7 +115,7 @@ public class OnboardingActivity extends AppCompatActivity {
 
         OnboardingScreenModel itemIkuScreen5 = new OnboardingScreenModel();
         //itemIkuScreen5.setTitle("Heading 5");
-        itemIkuScreen5.setDescription("You win, We win, Earth wins.\n" + "\n" + "Iku - world's first social app for sustainability.");
+        itemIkuScreen5.setDescription("You win, We win. The Earth wins.\n" + "\n" + "Iku - world's first social app for sustainability.");
         itemIkuScreen5.setImage(R.drawable.ic_undraw_messenger_e7iu);
         onboardingItems.add(itemIkuScreen5);
 
