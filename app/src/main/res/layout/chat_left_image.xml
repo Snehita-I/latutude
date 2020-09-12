@@ -35,7 +35,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="5dp"
             android:layout_marginEnd="5dp"
             android:gravity="end|bottom"
             android:text="12:34 PM"
@@ -45,23 +44,24 @@
             app:layout_constraintBottom_toBottomOf="@+id/sender_name"
             app:layout_constraintEnd_toEndOf="@id/constraintLayout"
             app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintVertical_bias="1.0"
             app:layout_constraintStart_toEndOf="@+id/sender_name"
             app:layout_constraintTop_toTopOf="@+id/sender_name" />
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/receivedImage"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginTop="5dp"
-            android:adjustViewBounds="true"
-            android:scaleType="centerInside"
+            android:scaleType="centerCrop"
+            app:layout_constraintDimensionRatio="1"
             app:layout_constraintEnd_toEndOf="@id/constraintLayout"
             app:layout_constraintStart_toStartOf="@id/constraintLayout"
             app:layout_constraintTop_toBottomOf="@+id/sender_name" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout2"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginEnd="5dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -70,7 +70,7 @@
 
             <TextView
                 android:id="@+id/message"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="5dp"
@@ -81,8 +81,10 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="#4A4A4A"
                 android:textSize="14sp"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintEnd_toStartOf="@id/message_time2"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="@id/constraintLayout2"
                 app:layout_constraintTop_toTopOf="parent"/>
 
             <TextView
@@ -96,9 +98,9 @@
                 android:textSize="12sp"
                 android:visibility="visible"
                 app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintVertical_bias="1.0"
                 app:layout_constraintBottom_toBottomOf="@id/message"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/message"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -136,6 +138,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintVertical_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/constraintLayout2"/>
 
