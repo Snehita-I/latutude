@@ -2,19 +2,15 @@ package com.iku;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
-import android.view.View;
 import android.view.WindowManager;
+import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.SignInMethodQueryResult;
 import com.iku.databinding.ActivityEmailInputBinding;
 
 public class EmailInputActivity extends AppCompatActivity {
@@ -39,78 +35,66 @@ public class EmailInputActivity extends AppCompatActivity {
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
-        binding.backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
+        binding.backButton.setOnClickListener(view -> onBackPressed());
 
-        binding.emailNextButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        binding.emailNextButton.setOnClickListener(view -> {
 
-                binding.emailNextButton.setEnabled(false);
+            binding.emailNextButton.setEnabled(false);
 
-                email = binding.enterEmail.getText().toString().trim();
+            email = binding.enterEmail.getText().toString().trim();
 
-                //validations
-                if (email.isEmpty()) {
-                    binding.enterEmail.setError("Email cannot be empty");
-                    binding.emailNextButton.setEnabled(true);
-                    return;
-                }
-
+            if (isValidEmail(binding.enterEmail.getText().toString().trim()) && !email.isEmpty()) {
                 fAuth.fetchSignInMethodsForEmail(email).addOnCompleteListener(
-                        new OnCompleteListener<SignInMethodQueryResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
+                        task -> {
 
 
-                                Log.d(TAG, "" + task.getResult().getSignInMethods().size());
-                                if (task.getResult().getSignInMethods().size() == 0) {
+                            Log.d(TAG, "" + task.getResult().getSignInMethods().size());
+                            if (task.getResult().getSignInMethods().size() == 0) {
 
-                                    //log event
-                                    Bundle signup_bundle = new Bundle();
-                                    signup_bundle.putString(FirebaseAnalytics.Param.METHOD, "Email");
-                                    signup_bundle.putString("state", "new user");
-                                    mFirebaseAnalytics.logEvent("email_entered", signup_bundle);
+                                //log event
+                                Bundle signup_bundle = new Bundle();
+                                signup_bundle.putString(FirebaseAnalytics.Param.METHOD, "Email");
+                                signup_bundle.putString("state", "new user");
+                                mFirebaseAnalytics.logEvent("email_entered", signup_bundle);
 
-                                    // email not existed
-                                    //Go to Signup page
-                                    Intent goToNewPasswordActivity = new Intent(EmailInputActivity.this, NewPasswordInputActivity.class);
-                                    goToNewPasswordActivity.putExtra("email", email);
-                                    startActivity(goToNewPasswordActivity);
+                                // email not existed
+                                //Go to Signup page
+                                Intent goToNewPasswordActivity = new Intent(EmailInputActivity.this, NewPasswordInputActivity.class);
+                                goToNewPasswordActivity.putExtra("email", email);
+                                startActivity(goToNewPasswordActivity);
 
-                                } else {
-                                    //log event
-                                    Bundle signin_bundle = new Bundle();
-                                    signin_bundle.putString(FirebaseAnalytics.Param.METHOD, "Email");
-                                    signin_bundle.putString("state", "existing user");
-                                    mFirebaseAnalytics.logEvent("email_entered", signin_bundle);
+                            } else {
+                                //log event
+                                Bundle signin_bundle = new Bundle();
+                                signin_bundle.putString(FirebaseAnalytics.Param.METHOD, "Email");
+                                signin_bundle.putString("state", "existing user");
+                                mFirebaseAnalytics.logEvent("email_entered", signin_bundle);
 
-                                    // email existed
-                                    // Go to Login page
-                                    Intent goToPasswordActivity = new Intent(EmailInputActivity.this, PasswordInputActivity.class);
-                                    goToPasswordActivity.putExtra("email", email);
-                                    startActivity(goToPasswordActivity);
-                                }
+                                // email existed
+                                // Go to Login page
+                                Intent goToPasswordActivity = new Intent(EmailInputActivity.this, PasswordInputActivity.class);
+                                goToPasswordActivity.putExtra("email", email);
+                                startActivity(goToPasswordActivity);
                             }
-                        }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        binding.emailNextButton.setEnabled(false);
-                        e.printStackTrace();
-                        Bundle signin_bundle = new Bundle();
-                        signin_bundle.putString(FirebaseAnalytics.Param.METHOD, "Email");
-                        signin_bundle.putString("state", "failed to fetch method");
-                        mFirebaseAnalytics.logEvent("email_entered", signin_bundle);
+                        }).addOnFailureListener(e -> {
+                    binding.emailNextButton.setEnabled(true);
+                    e.printStackTrace();
+                    Bundle signin_bundle = new Bundle();
+                    signin_bundle.putString(FirebaseAnalytics.Param.METHOD, "Email");
+                    signin_bundle.putString("state", "failed to fetch method");
+                    mFirebaseAnalytics.logEvent("email_entered", signin_bundle);
 
-                    }
                 });
+            } else {
+                Toast.makeText(EmailInputActivity.this, "Enter valid email-ID", Toast.LENGTH_SHORT).show();
+                binding.emailNextButton.setEnabled(true);
             }
         });
 
+    }
+
+    public static boolean isValidEmail(CharSequence target) {
+        return !TextUtils.isEmpty(target) && android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
     }
 
     @Override
