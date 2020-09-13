@@ -56,7 +56,6 @@ public class HomeActivity extends AppCompatActivity {
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
-        networkChecker();
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -121,22 +120,6 @@ public class HomeActivity extends AppCompatActivity {
                 }
             }
         });
-    }
-
-    private void networkChecker() {
-        if (!CheckInternet.isNetwork(HomeActivity.this)) {
-            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this)
-                    .setCancelable(false)
-                    .setView(R.layout.no_internet_dialog)
-                    .setPositiveButton("Reconnect", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                            networkChecker();
-                        }
-                    });
-            Dialog dialog = builder.show();
-            dialog.setCanceledOnTouchOutside(false);
-
-        }
     }
 
     @Override
