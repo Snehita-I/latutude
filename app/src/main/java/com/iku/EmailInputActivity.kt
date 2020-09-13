@@ -11,34 +11,41 @@ import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.analytics.ktx.logEvent
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.ktx.Firebase
-import kotlinx.android.synthetic.main.activity_email_input.*
+import com.iku.databinding.ActivityEmailInputBinding
 
 class EmailInputActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityEmailInputBinding
     private lateinit var mAuth: FirebaseAuth
     private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_email_input)
-
+        binding = ActivityEmailInputBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
         mAuth = FirebaseAuth.getInstance()
         firebaseAnalytics = Firebase.analytics
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
-
-        back_button.setOnClickListener { onBackPressed() }
-        email_next_button.setOnClickListener {
-            email_next_button.isEnabled = false
-            val email = enter_email.text.toString().trim()
-
-            if (email.isNotEmpty() && !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+        binding.enterEmail.requestFocus()
+        binding.backButton.setOnClickListener { onBackPressed() }
+        binding.emailNextButton.setOnClickListener {
+            binding.emailNextButton.isEnabled = false
+            val email = binding.enterEmail.text.toString().trim()
+            if (email.isEmpty()) {
+                binding.enterEmail.error = "Cannot be empty"
+                binding.emailNextButton.isEnabled = true
+                return@setOnClickListener
+            }
+            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                 Toast.makeText(this, "Enter valid email-ID", Toast.LENGTH_SHORT).show()
-                email_next_button.isEnabled = true
+                binding.emailNextButton.isEnabled = true
                 return@setOnClickListener
             }
             checkUser(email)
         }
     }
+
     private fun checkUser(email: String) {
         mAuth.fetchSignInMethodsForEmail(email)
                 .addOnCompleteListener(this) { task ->
@@ -61,7 +68,7 @@ class EmailInputActivity : AppCompatActivity() {
                     }
                 }
                 .addOnFailureListener { e ->
-                    email_next_button.isEnabled = true
+                    binding.emailNextButton.isEnabled = true
                     e.printStackTrace()
                     firebaseAnalytics.logEvent("email_entered") {
                         param(FirebaseAnalytics.Param.METHOD, "Email")
@@ -69,8 +76,9 @@ class EmailInputActivity : AppCompatActivity() {
                     }
                 }
     }
+
     override fun onResume() {
         super.onResume()
-        email_next_button.isEnabled = true
+        binding.emailNextButton.isEnabled = true
     }
 }
