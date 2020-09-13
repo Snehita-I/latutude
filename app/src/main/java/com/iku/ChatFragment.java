@@ -86,6 +86,10 @@ public class ChatFragment extends Fragment {
 
     private int STORAGE_PERMISSION_CODE = 10;
 
+    private boolean isLiked;
+
+    private boolean isDisliked;
+
     public ChatFragment() {
         // Required empty public constructor
     }
@@ -231,15 +235,27 @@ public class ChatFragment extends Fragment {
 
             @Override
             public void onItemDoubleClicked(RecyclerView recyclerView, final int position, View v) {
-                boolean isLiked = false;
+                isLiked = false;
+                isDisliked = false;
                 String reactedEmojiArray = "upvoters";
                 int upvotesCount = chatadapter.getItem(position).getUpvoteCount();
+                int downvotesCount = chatadapter.getItem(position).getDownvoteCount();
                 ArrayList<String> upvotersList = chatadapter.getItem(position).getupvoters();
                 ArrayList<String> emoji1Array = chatadapter.getItem(position).getEmoji1();
                 ArrayList<String> emoji2Array = chatadapter.getItem(position).getEmoji2();
                 ArrayList<String> emoji3Array = chatadapter.getItem(position).getEmoji3();
                 ArrayList<String> emoji4Array = chatadapter.getItem(position).getEmoji4();
+                ArrayList<String> downvotersArray = chatadapter.getItem(position).getDownvoters();
                 String myUID = user.getUid();
+                if(downvotesCount >=0){
+                    for (String element : downvotersArray) {
+                        if (element.contains(myUID)) {
+                            isDisliked = true;
+                            reactedEmojiArray = "downvoters";
+                            break;
+                        }
+                    }
+                }
                 if (upvotesCount >= 0) {
                     if (!isLiked) {
                         for (String element : upvotersList) {
@@ -286,120 +302,134 @@ public class ChatFragment extends Fragment {
                             }
                         }
                     }
-                    if (!isLiked) {
-                        DocumentSnapshot snapshot = chatadapter.getSnapshots().getSnapshot(position);
-                        String documentID = snapshot.getId();
-                        db.collection("iku_earth_messages").document(documentID)
-                                .update("upvoteCount", chatadapter.getItem(position).getUpvoteCount() + 1,
-                                        "upvoters", FieldValue.arrayUnion(user.getUid()))
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        if (chatadapter.getItem(position).getUID().equals(user.getUid())) {
-                                            //Log event
-                                            Bundle heart_params = new Bundle();
-                                            heart_params.putString("type", "heart_up");
-                                            heart_params.putString("messageID", documentID);
-                                            heart_params.putString("author_UID", chatadapter.getItem(position).getUID());
-                                            heart_params.putString("action_by", user.getUid());
-                                            mFirebaseAnalytics.logEvent("hearts", heart_params);
-                                        } else {
-                                            db.collection("users").document(chatadapter.getItem(position).getUID())
-                                                    .get()
-                                                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                                        @Override
-                                                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                                            final LeaderboardModel usersData = documentSnapshot.toObject(LeaderboardModel.class);
-                                                            db.collection("users").document(chatadapter.getItem(position).getUID())
-                                                                    .update("points", usersData.getPoints() + 1)
-                                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                        @Override
-                                                                        public void onSuccess(Void aVoid) {
-
-                                                                            //Log event
-                                                                            Bundle heart_params = new Bundle();
-                                                                            heart_params.putString("type", "heart_up");
-                                                                            heart_params.putString("messageID", documentID);
-                                                                            heart_params.putString("author_UID", chatadapter.getItem(position).getUID());
-                                                                            heart_params.putString("action_by", user.getUid());
-                                                                            mFirebaseAnalytics.logEvent("hearts", heart_params);
-                                                                        }
-                                                                    })
-                                                                    .addOnFailureListener(new OnFailureListener() {
-                                                                        @Override
-                                                                        public void onFailure(@NonNull Exception e) {
-
-                                                                        }
-                                                                    });
-                                                        }
-                                                    });
-                                        }
-                                    }
-                                })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-
-                                    }
-                                });
-                    } else {
-                        DocumentSnapshot snapshot = chatadapter.getSnapshots().getSnapshot(position);
-                        String documentID = snapshot.getId();
-                        db.collection("iku_earth_messages").document(documentID)
-                                .update("upvoteCount", chatadapter.getItem(position).getUpvoteCount() - 1,
-                                        reactedEmojiArray, FieldValue.arrayRemove(user.getUid()))
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        if (chatadapter.getItem(position).getUID().equals(user.getUid())) {
-                                            //Log event
-                                            Bundle params = new Bundle();
-                                            params.putString("type", "heart_down");
-                                            params.putString("messageID", documentID);
-                                            params.putString("author_UID", chatadapter.getItem(position).getUID());
-                                            params.putString("action_by", user.getUid());
-                                            mFirebaseAnalytics.logEvent("hearts", params);
-                                        } else {
-                                            db.collection("users").document(chatadapter.getItem(position).getUID())
-                                                    .get()
-                                                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                                        @Override
-                                                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                                            final LeaderboardModel usersData = documentSnapshot.toObject(LeaderboardModel.class);
-                                                            db.collection("users").document(chatadapter.getItem(position).getUID())
-                                                                    .update("points", usersData.getPoints() - 1)
-                                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                        @Override
-                                                                        public void onSuccess(Void aVoid) {
-
-                                                                            //Log event
-                                                                            Bundle heart_params = new Bundle();
-                                                                            heart_params.putString("type", "heart_down");
-                                                                            heart_params.putString("messageID", documentID);
-                                                                            heart_params.putString("author_UID", chatadapter.getItem(position).getUID());
-                                                                            heart_params.putString("action_by", user.getUid());
-                                                                            mFirebaseAnalytics.logEvent("hearts", heart_params);
-                                                                        }
-                                                                    })
-                                                                    .addOnFailureListener(new OnFailureListener() {
-                                                                        @Override
-                                                                        public void onFailure(@NonNull Exception e) {
-
-                                                                        }
-                                                                    });
-                                                        }
-                                                    });
-                                        }
-                                    }
-                                })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-
-                                    }
-                                });
-                    }
                 }
+
+                if (!isLiked) {
+                    Map<String, Object> docData = new HashMap<>();
+                    if(isDisliked){
+                        docData.put("downvoteCount",  chatadapter.getItem(position).getDownvoteCount()- 1);
+                        docData.put("downvoters",FieldValue.arrayRemove(user.getUid()));
+                    }
+                    docData.put("upvoteCount", chatadapter.getItem(position).getUpvoteCount() + 1);
+                    docData.put("upvoters", FieldValue.arrayUnion(user.getUid()));
+
+                    DocumentSnapshot snapshot = chatadapter.getSnapshots().getSnapshot(position);
+                    String documentID = snapshot.getId();
+                    db.collection("iku_earth_messages").document(documentID)
+                            .update(docData)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    if (chatadapter.getItem(position).getUID().equals(user.getUid())) {
+                                        //Log event
+                                        Bundle heart_params = new Bundle();
+                                        heart_params.putString("type", "heart_up");
+                                        heart_params.putString("messageID", documentID);
+                                        heart_params.putString("author_UID", chatadapter.getItem(position).getUID());
+                                        heart_params.putString("action_by", user.getUid());
+                                        mFirebaseAnalytics.logEvent("hearts", heart_params);
+                                    } else {
+                                        db.collection("users").document(chatadapter.getItem(position).getUID())
+                                                .get()
+                                                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                                    @Override
+                                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                                        final LeaderboardModel usersData = documentSnapshot.toObject(LeaderboardModel.class);
+                                                        Map<String, Object> docData = new HashMap<>();
+                                                        if(isDisliked)
+                                                            docData.put("points",usersData.getPoints() + 2);
+                                                        else
+                                                            docData.put("points",usersData.getPoints() + 1);
+                                                        db.collection("users").document(chatadapter.getItem(position).getUID())
+                                                                .update(docData)
+                                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                    @Override
+                                                                    public void onSuccess(Void aVoid) {
+
+                                                                        //Log event
+                                                                        Bundle heart_params = new Bundle();
+                                                                        heart_params.putString("type", "heart_up");
+                                                                        heart_params.putString("messageID", documentID);
+                                                                        heart_params.putString("author_UID", chatadapter.getItem(position).getUID());
+                                                                        heart_params.putString("action_by", user.getUid());
+                                                                        mFirebaseAnalytics.logEvent("hearts", heart_params);
+                                                                    }
+                                                                })
+                                                                .addOnFailureListener(new OnFailureListener() {
+                                                                    @Override
+                                                                    public void onFailure(@NonNull Exception e) {
+
+                                                                    }
+                                                                });
+                                                    }
+                                                });
+                                    }
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+
+                                }
+                            });
+                } else {
+                    DocumentSnapshot snapshot = chatadapter.getSnapshots().getSnapshot(position);
+                    String documentID = snapshot.getId();
+                    db.collection("iku_earth_messages").document(documentID)
+                            .update("upvoteCount", chatadapter.getItem(position).getUpvoteCount() - 1,
+                                    reactedEmojiArray, FieldValue.arrayRemove(user.getUid()))
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    if (chatadapter.getItem(position).getUID().equals(user.getUid())) {
+                                        //Log event
+                                        Bundle params = new Bundle();
+                                        params.putString("type", "heart_down");
+                                        params.putString("messageID", documentID);
+                                        params.putString("author_UID", chatadapter.getItem(position).getUID());
+                                        params.putString("action_by", user.getUid());
+                                        mFirebaseAnalytics.logEvent("hearts", params);
+                                    } else {
+                                        db.collection("users").document(chatadapter.getItem(position).getUID())
+                                                .get()
+                                                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                                    @Override
+                                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                                        final LeaderboardModel usersData = documentSnapshot.toObject(LeaderboardModel.class);
+                                                        db.collection("users").document(chatadapter.getItem(position).getUID())
+                                                                .update("points", usersData.getPoints() - 1)
+                                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                    @Override
+                                                                    public void onSuccess(Void aVoid) {
+
+                                                                        //Log event
+                                                                        Bundle heart_params = new Bundle();
+                                                                        heart_params.putString("type", "heart_down");
+                                                                        heart_params.putString("messageID", documentID);
+                                                                        heart_params.putString("author_UID", chatadapter.getItem(position).getUID());
+                                                                        heart_params.putString("action_by", user.getUid());
+                                                                        mFirebaseAnalytics.logEvent("hearts", heart_params);
+                                                                    }
+                                                                })
+                                                                .addOnFailureListener(new OnFailureListener() {
+                                                                    @Override
+                                                                    public void onFailure(@NonNull Exception e) {
+
+                                                                    }
+                                                                });
+                                                    }
+                                                });
+                                    }
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+
+                                }
+                            });
+                }
+
                 chatadapter.notifyItemChanged(position);
             }
         });
@@ -411,10 +441,12 @@ public class ChatFragment extends Fragment {
             String name = chatModel.getUserName();
             String url = chatModel.getimageUrl();
             long timestamp = chatModel.getTimestamp();
+            String messageId = documentSnapshot.getId();
             if (name != null && url != null) {
                 viewChatImageIntent.putExtra("EXTRA_PERSON_NAME", name);
                 viewChatImageIntent.putExtra("EXTRA_IMAGE_URL", url);
                 viewChatImageIntent.putExtra("EXTRA_POST_TIMESTAMP", timestamp);
+                viewChatImageIntent.putExtra("EXTRA_MESSAGE_ID", messageId);
                 startActivity(viewChatImageIntent);
             }
         });
@@ -438,7 +470,6 @@ public class ChatFragment extends Fragment {
                 heartUpView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Toast.makeText(getActivity(), "Heart clicked", Toast.LENGTH_SHORT).show();
                         userVote(documentSnapshot.getId(), "upvoters", position);
                         bottomSheetDialog.dismiss();
                     }
@@ -567,7 +598,7 @@ public class ChatFragment extends Fragment {
             ArrayList<Object> dounvotersArray = new ArrayList<>();
             docData.put("downvoters", dounvotersArray);
             docData.put("downvoteCount", 0);
-
+            docData.put("edited", false);
             Map<String, Object> normalMessage = new HashMap<>();
             normalMessage.put("firstMessage", true);
 
@@ -652,11 +683,6 @@ public class ChatFragment extends Fragment {
                         Log.i(TAG, "DocumentSnapshot data: " + document.getData());
                         authorOfMessage = (String) document.get("uid");
                         Log.i(TAG, "onComplete: " + authorOfMessage + " user " + user.getUid());
-                        if (!authorOfMessage.equals(user.getUid())) {
-                            Toast.makeText(getActivity(), "different", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(getActivity(), "same" + user.getUid(), Toast.LENGTH_SHORT).show();
-                        }
                         ArrayList<String> HeartUpArray = (ArrayList) document.get("upvoters");
                         ArrayList<String> emoji1Array = (ArrayList) document.get("emoji1");
                         ArrayList<String> emoji2Array = (ArrayList) document.get("emoji2");
@@ -785,7 +811,6 @@ public class ChatFragment extends Fragment {
                         } else if (disliked && emoji == "downvoters") {
                             changeLikesArray(messageDocumentID, emoji, "downvoters", upvotesCount, downvotesCount, authorOfMessage, position);
                         } else if (!HeartupLiked && !emoji1Liked && !emoji2Liked && !emoji3Liked && !emoji4Liked && !disliked) {
-                            Toast.makeText(getActivity(), "First emoji to this message", Toast.LENGTH_SHORT).show();
                             Log.d(TAG, "newLikeorDislike function called");
                             newLikeorDislike(messageDocumentID, emoji, upvotesCount, downvotesCount, authorOfMessage, position);
                         }
@@ -866,7 +891,7 @@ public class ChatFragment extends Fragment {
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void aVoid) {
-                                                Toast.makeText(getActivity(), "Downvote points increased for user", Toast.LENGTH_SHORT).show();
+
                                             }
                                         });
                             }

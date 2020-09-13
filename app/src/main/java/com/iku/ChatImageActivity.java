@@ -171,6 +171,7 @@ public class ChatImageActivity extends AppCompatActivity {
                     ArrayList<Object> dounvotersArray = new ArrayList<>();
                     docData.put("downvoters", dounvotersArray);
                     docData.put("downvoteCount", 0);
+                    docData.put("edited", false);
 
                     Map<String, Object> normalMessage = new HashMap<>();
                     normalMessage.put("firstImage", true);
