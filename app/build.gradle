@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.google.gms.google-services'
 
 // Apply the Crashlytics Gradle plugin
@@ -79,6 +80,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-perf:19.0.8'
     //ViewPager2
     implementation "androidx.viewpager2:viewpager2:1.0.0"
+    implementation 'com.google.firebase:firebase-analytics-ktx:17.5.0'
     //Confetti-feature
     implementation 'nl.dionsegijn:konfetti:1.2.2'
     //PhotoView
