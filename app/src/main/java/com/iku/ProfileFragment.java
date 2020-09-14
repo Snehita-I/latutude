@@ -10,22 +10,19 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.amulyakhare.textdrawable.TextDrawable;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.MetadataChanges;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.iku.databinding.FragmentProfileBinding;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
@@ -185,25 +182,24 @@ public class ProfileFragment extends Fragment {
 
     private void getUserHearts() {
         if (user != null) {
-            db.collection("users").whereEqualTo("uid", user.getUid())
-                    .addSnapshotListener(MetadataChanges.INCLUDE, new EventListener<QuerySnapshot>() {
+            db.collection("users").document(user.getUid()).get()
+                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         @Override
-                        public void onEvent(@Nullable QuerySnapshot querySnapshot,
-                                            @Nullable FirebaseFirestoreException e) {
-                            if (e != null) {
-                                Log.w(TAG, "Listen error", e);
-                                return;
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                DocumentSnapshot document = task.getResult();
+                                int hearts = (int) document.get("points");
+                                if (hearts == 0)
+                                    profileBinding.userHearts.setText("Yet to win some hearts!");
+                                else
+                                    profileBinding.userHearts.setText("Hearts won: " + hearts);
                             }
-
-                            for (DocumentChange change : querySnapshot.getDocumentChanges()) {
-                                if (change.getType() == DocumentChange.Type.ADDED) {
-                                    userHeartsTextView.setText("Hearts Won: " + change.getDocument().get("points"));
-                                }
-
-                                String source = querySnapshot.getMetadata().isFromCache() ?
-                                        "local cache" : "server";
-                            }
-
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            e.printStackTrace();
                         }
                     });
         }
