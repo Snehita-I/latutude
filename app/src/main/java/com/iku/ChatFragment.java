@@ -163,7 +163,7 @@ public class ChatFragment extends Fragment {
         });
 
         binding.sendMessageButton.setOnClickListener(view -> {
-            final String message = String.valueOf(binding.messageTextField.getText());
+            final String message = binding.messageTextField.getText().toString().trim();
             if (!message.isEmpty()) {
                 sendTheMessage(message);
                 binding.messageTextField.setText("");
@@ -579,7 +579,7 @@ public class ChatFragment extends Fragment {
         long timestamp = d.getTime();
         if (user != null) {
             Map<String, Object> docData = new HashMap<>();
-            docData.put("message", message.trim());
+            docData.put("message", message);
             docData.put("timestamp", timestamp);
             docData.put("uid", user.getUid());
             docData.put("type", "text");
