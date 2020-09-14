@@ -16,6 +16,7 @@
         android:minHeight="30dp"
         android:minWidth="160dp"
         android:background="@drawable/chat_sender_bubble"
+        android:elevation="1dp"
         android:padding="5dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"

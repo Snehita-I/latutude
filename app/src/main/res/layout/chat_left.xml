@@ -15,6 +15,7 @@
         android:background="@drawable/chat_receiver_bubble"
         android:minWidth="160dp"
         android:padding="5dp"
+        android:elevation="1dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
