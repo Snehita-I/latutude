@@ -188,7 +188,7 @@ public class ProfileFragment extends Fragment {
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                             if (task.isSuccessful()) {
                                 DocumentSnapshot document = task.getResult();
-                                int hearts = (int) document.get("points");
+                                long hearts = (long) document.get("points");
                                 if (hearts == 0)
                                     profileBinding.userHearts.setText("Yet to win some hearts!");
                                 else

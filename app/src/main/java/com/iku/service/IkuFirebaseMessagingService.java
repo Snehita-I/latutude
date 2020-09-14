@@ -65,17 +65,14 @@ public class IkuFirebaseMessagingService extends FirebaseMessagingService {
                             timeStamp = (long) document.get("lastSeen");
                             Log.d(TAG, "onComplete: " + timeStamp);
 
-                            db.collection("iku_earth_messages").orderBy("timestamp", Query.Direction.DESCENDING).limit(4)
+                            db.collection("iku_earth_messages").whereGreaterThan("timestamp", timeStamp).orderBy("timestamp", Query.Direction.DESCENDING).limit(4)
                                     .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                     if (task.isSuccessful()) {
                                         for (QueryDocumentSnapshot document : task.getResult()) {
-                                            long time = (long) document.get("timestamp");
-                                            if (timeStamp < time) {
-                                                titleList.add((String) document.get("userName"));
-                                                messageList.add((String) document.get("message"));
-                                            }
+                                            titleList.add((String) document.get("userName"));
+                                            messageList.add((String) document.get("message"));
                                         }
                                         Log.i(TAG, "onComplete: " + titleList + "\nMESSAGES" + messageList);
                                         sendMessageNotification(title, message, titleList, messageList);
@@ -100,7 +97,6 @@ public class IkuFirebaseMessagingService extends FirebaseMessagingService {
                 Log.e(TAG, "onFailure: ", e);
             }
         });
-
     }
 
     private void sendMessageNotification(String title, String message, ArrayList titles, ArrayList messages) {
@@ -117,7 +113,7 @@ public class IkuFirebaseMessagingService extends FirebaseMessagingService {
 
         Log.i(TAG, "sendMessageNotification: " + titles.size());
         if (titles.size() > 0) {
-            for (int i = titles.size()-1; i >=0; i--) {
+            for (int i = titles.size() - 1; i >= 0; i--) {
                 Log.i(TAG, "sendMessageNotification: Inside" + i);
                 notification.addLine(titles.get(i) + ": " + messages.get(i));
             }
@@ -160,6 +156,4 @@ public class IkuFirebaseMessagingService extends FirebaseMessagingService {
                     });
         }
     }
-
-
 }
