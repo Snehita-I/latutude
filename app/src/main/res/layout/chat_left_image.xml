@@ -69,7 +69,7 @@
             android:id="@+id/viewPostButton"
             android:layout_height="35dp"
             android:layout_width="0dp"
-            android:text="View Post"
+            android:text="View"
             android:textAllCaps="false"
             style="@style/AppTheme"
             android:gravity="center|bottom"

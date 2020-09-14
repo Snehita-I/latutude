@@ -41,7 +41,7 @@
             android:layout_height="35dp"
             android:background="#60ffffff"
             android:gravity="center|bottom"
-            android:text="View Post"
+            android:text="View"
             android:textAllCaps="false"
             app:backgroundTint="@android:color/black"
             app:icon="@drawable/ic_next_36"
