@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -467,6 +469,58 @@ public class ChatFragment extends Fragment {
                 MaterialButton emoji3View = parentView.findViewById(R.id.choose3);
                 MaterialButton emoji4View = parentView.findViewById(R.id.choose4);
                 MaterialButton heartDownView = parentView.findViewById(R.id.choose6);
+
+                FrameLayout heartupLayout = parentView.findViewById(R.id.heartUp);
+                FrameLayout emoji1Layout = parentView.findViewById(R.id.emoji1);
+                FrameLayout emoji2Layout = parentView.findViewById(R.id.emoji2);
+                FrameLayout emoji3Layout = parentView.findViewById(R.id.emoji3);
+                FrameLayout emoji4Layout = parentView.findViewById(R.id.emoji4);
+                FrameLayout heartdownLayout = parentView.findViewById(R.id.heartDown);
+                ArrayList<String> HeartUpArray = (ArrayList) documentSnapshot.get("upvoters");
+                ArrayList<String> emoji1Array = (ArrayList) documentSnapshot.get("emoji1");
+                ArrayList<String> emoji2Array = (ArrayList) documentSnapshot.get("emoji2");
+                ArrayList<String> emoji3Array = (ArrayList) documentSnapshot.get("emoji3");
+                ArrayList<String> emoji4Array = (ArrayList) documentSnapshot.get("emoji4");
+                ArrayList<String> HeartDownArray = (ArrayList) documentSnapshot.get("downvoters");
+
+
+                    for (String element : HeartUpArray) {
+                        if (element.contains(user.getUid())) {
+                            heartupLayout.setBackground(getResources().getDrawable(R.drawable.hearts_button_background_selected));
+                            break;
+                        }
+                    }
+                    for (String element : emoji1Array) {
+                        if (element.contains(user.getUid())) {
+                            emoji1Layout.setBackground(getResources().getDrawable(R.drawable.hearts_button_background_selected));
+                            break;
+                        }
+                    }
+                    for (String element : emoji2Array) {
+                        if (element.contains(user.getUid())) {
+                            emoji2Layout.setBackground(getResources().getDrawable(R.drawable.hearts_button_background_selected));
+                            break;
+                        }
+                    }
+                    for (String element : emoji3Array) {
+                        if (element.contains(user.getUid())) {
+                            emoji3Layout.setBackground(getResources().getDrawable(R.drawable.hearts_button_background_selected));
+                            break;
+                        }
+                    }
+                    for (String element : emoji4Array) {
+                        if (element.contains(user.getUid())) {
+                            emoji4Layout.setBackground(getResources().getDrawable(R.drawable.hearts_button_background_selected));
+                            break;
+                        }
+                    }
+                    for (String element : HeartDownArray) {
+                        if (element.contains(user.getUid())) {
+                            heartdownLayout.setBackground(getResources().getDrawable(R.drawable.hearts_button_background_selected));
+                            break;
+                        }
+                    }
+
 
                 heartUpView.setOnClickListener(new View.OnClickListener() {
                     @Override
