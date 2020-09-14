@@ -194,7 +194,7 @@
         android:layout_alignParentEnd="true"
         android:layout_marginTop="202dp"
         android:layout_marginEnd="23dp"
-        android:text="Hearts"
+        android:text="Hearts Won"
         android:textColor="@android:color/black"
         android:textSize="18dp"
         android:textStyle="bold" />

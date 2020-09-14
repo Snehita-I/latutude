@@ -5,8 +5,8 @@
     android:layout_height="wrap_content"
     android:layout_gravity="end"
     android:layout_marginStart="50dp"
-    android:layout_marginEnd="0dp"
-    android:layout_marginTop="4dp">
+    android:layout_marginTop="4dp"
+    android:layout_marginEnd="0dp">
 
     <!--Message container-->
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -15,8 +15,8 @@
         android:layout_height="wrap_content"
         android:background="@drawable/chat_sender_bubble"
         android:minWidth="160dp"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -25,8 +25,8 @@
             android:id="@+id/sentImage"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:minWidth="250dp"
             android:layout_marginTop="10dp"
+            android:minWidth="250dp"
             android:scaleType="centerCrop"
             app:layout_constraintDimensionRatio="1"
             app:layout_constraintEnd_toEndOf="@id/constraintLayout"
@@ -36,21 +36,21 @@
         <!--View post button-->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/viewPostButton"
-            android:layout_height="40dp"
+            style="@style/AppTheme"
             android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:background="#60ffffff"
+            android:gravity="center|bottom"
             android:text="View Post"
             android:textAllCaps="false"
-            style="@style/AppTheme"
-            android:gravity="center"
+            app:backgroundTint="@android:color/black"
             app:icon="@drawable/ic_next_36"
+            app:iconGravity="textEnd"
             app:iconPadding="10dp"
             app:iconSize="15dp"
-            app:iconGravity="textEnd"
-            android:background="#60ffffff"
-            app:backgroundTint="@android:color/black"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/sentImage"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="@id/sentImage"/>
+            app:layout_constraintStart_toStartOf="parent" />
 
         <!--Message container-->
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -76,9 +76,9 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/white"
                 android:textSize="14sp"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -96,9 +96,9 @@
                 app:layout_constraintBottom_toBottomOf="@id/message"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintVertical_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/message" />
+                app:layout_constraintTop_toTopOf="@id/message"
+                app:layout_constraintVertical_bias="1.0" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <!--Secondary view for timestamp-->
@@ -114,10 +114,10 @@
             android:textColor="@color/white"
             android:textSize="12sp"
             android:visibility="gone"
-            app:layout_constraintVertical_bias="1.0"
             app:layout_constraintBottom_toBottomOf="@id/constraintLayout"
             app:layout_constraintEnd_toEndOf="@id/constraintLayout"
-            app:layout_constraintTop_toBottomOf="@id/constraintLayout2" />
+            app:layout_constraintTop_toBottomOf="@id/constraintLayout2"
+            app:layout_constraintVertical_bias="1.0" />
 
         <!--flag to show message is edited-->
         <TextView
@@ -134,9 +134,9 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintVertical_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/constraintLayout2" />
+            app:layout_constraintTop_toBottomOf="@id/constraintLayout2"
+            app:layout_constraintVertical_bias="1.0" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -218,9 +218,7 @@
                 android:layout_gravity="center_vertical"
                 android:padding="3dp"
                 android:src="@drawable/ic_heart"
-                android:translationZ="5dp"
-                android:visibility="invisible"
-                android:translationX="-12dp" />
+                android:visibility="invisible" />
 
             <!--Upvote count-->
             <com.google.android.material.textview.MaterialTextView

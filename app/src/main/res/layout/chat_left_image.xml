@@ -67,12 +67,12 @@
         <!--View post button-->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/viewPostButton"
-            android:layout_height="40dp"
+            android:layout_height="35dp"
             android:layout_width="0dp"
             android:text="View Post"
             android:textAllCaps="false"
             style="@style/AppTheme"
-            android:gravity="center"
+            android:gravity="center|bottom"
             app:icon="@drawable/ic_next_36"
             app:iconPadding="10dp"
             app:iconSize="15dp"
