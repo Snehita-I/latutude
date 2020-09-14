@@ -18,18 +18,29 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.iku.databinding.ActivityHomeBinding;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.net.InetAddress;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import nl.joery.animatedbottombar.AnimatedBottomBar;
 
@@ -38,6 +49,10 @@ public class HomeActivity extends AppCompatActivity {
     private ActivityHomeBinding homeBinding;
 
     private FragmentManager fragmentManager;
+
+    private FirebaseFirestore db;
+
+    private FirebaseAuth mAuth;
 
     boolean doubleBackToExitPressedOnce = false;
 
@@ -48,13 +63,17 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.cancelAll();
-
         homeBinding = ActivityHomeBinding.inflate(getLayoutInflater());
         setContentView(homeBinding.getRoot());
 
+        NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancelAll();
+        db = FirebaseFirestore.getInstance();
+
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        mAuth = FirebaseAuth.getInstance();
+
+        setLastSeen(true);
 
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -122,9 +141,45 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
+
+    private void setLastSeen(Boolean status){
+        Date d = new Date();
+        long timestamp = d.getTime();
+
+        Map<String, Object> userInfo = new HashMap<>();
+        userInfo.put("lastSeen", timestamp);
+        userInfo.put("online", status);
+
+        db.collection("users").document(mAuth.getUid())
+                .update(userInfo)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        /*Log event*/
+                        Bundle status_bundle = new Bundle();
+                        status_bundle.putString(FirebaseAnalytics.Param.METHOD, "Last seen status");
+                        status_bundle.putString("Updating_last_seen", "He/She went offline");
+                        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SIGN_UP, status_bundle);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, e);
+                    }
+                });
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        setLastSeen(false);
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
+        setLastSeen(true);
         NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancelAll();
     }

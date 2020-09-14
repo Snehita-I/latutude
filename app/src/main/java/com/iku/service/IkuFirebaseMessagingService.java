@@ -16,6 +16,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -37,7 +38,8 @@ public class IkuFirebaseMessagingService extends FirebaseMessagingService {
     private FirebaseAuth mAuth;
     private FirebaseUser user;
 
-    private String TAG = IkuFirebaseMessagingService.class.getSimpleName();
+    private long timeStamp;
+    private static final String TAG = IkuFirebaseMessagingService.class.getSimpleName();
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
@@ -49,9 +51,11 @@ public class IkuFirebaseMessagingService extends FirebaseMessagingService {
         Log.d(TAG, "onMessageReceived: i am running" + message + title);
 
         db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
 
         ArrayList<String> titleList = new ArrayList<>();
         ArrayList<String> messageList = new ArrayList<>();
+
         db.collection("iku_earth_messages").orderBy("timestamp", Query.Direction.DESCENDING).limit(4)
                 .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
