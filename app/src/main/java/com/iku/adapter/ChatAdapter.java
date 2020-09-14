@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -358,6 +359,7 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
 
         private MaterialTextView messageText, messageTime, messageTime2, messageTime3, senderName, upvoteCount, edited;
         private ImageView receiverImage;
+        private MaterialButton viewPostBtn;
 
         public ChatLeftImageViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -370,6 +372,7 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
             receiverImage = itemView.findViewById(R.id.receivedImage);
             upvoteCount = itemView.findViewById(R.id.upvoteCount);
             edited = itemView.findViewById(R.id.editFlag);
+            viewPostBtn = itemView.findViewById(R.id.viewPostButton);
 
             messageText.setLinkTextColor(Color.parseColor("#1111b7"));
             Linkify.addLinks(messageText, Linkify.WEB_URLS);
@@ -385,7 +388,7 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
                 }
             });
 
-            receiverImage.setOnClickListener(new View.OnClickListener() {
+            viewPostBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     int position = getAdapterPosition();
@@ -403,6 +406,7 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
 
         private MaterialTextView messageText, messageTime, messageTime2, messageTime3, upvoteCount, edited;
         private ImageView sentImage;
+        private MaterialButton viewPostBtn;
 
         public ChatRightImageViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -414,6 +418,7 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
             sentImage = itemView.findViewById(R.id.sentImage);
             upvoteCount = itemView.findViewById(R.id.upvoteCount);
             edited = itemView.findViewById(R.id.editFlag);
+            viewPostBtn = itemView.findViewById(R.id.viewPostButton);
 
             messageText.setLinkTextColor(Color.parseColor("#1111b7"));
             Linkify.addLinks(messageText, Linkify.WEB_URLS);
@@ -429,7 +434,7 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
                 }
             });
 
-            sentImage.setOnClickListener(new View.OnClickListener() {
+            viewPostBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     int position = getAdapterPosition();
@@ -438,6 +443,7 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
                     }
                 }
             });
+
 
         }
     }
