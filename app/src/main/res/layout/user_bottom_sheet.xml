@@ -11,6 +11,7 @@
     app:behavior_hideable="true"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
+    <!--Hearts container-->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/heartsArea"
         android:layout_width="0dp"
@@ -19,6 +20,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <!--Container-->
         <LinearLayout
             android:id="@+id/emoji_group"
             android:layout_width="wrap_content"
@@ -30,6 +32,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
+            <!--Heart up-->
             <FrameLayout
                 android:id="@+id/heartUp"
                 android:layout_width="45dp"
@@ -52,6 +55,7 @@
                     app:srcCompat="@drawable/ic_heart" />
             </FrameLayout>
 
+            <!--First emoji-->
             <FrameLayout
                 android:id="@+id/emoji1"
                 android:layout_width="45dp"
@@ -77,6 +81,7 @@
                     android:textSize="20sp" />
             </FrameLayout>
 
+            <!--Second emoji-->
             <FrameLayout
                 android:id="@+id/emoji2"
                 android:layout_width="45dp"
@@ -102,6 +107,7 @@
                     android:textSize="20sp" />
             </FrameLayout>
 
+            <!--Third emoji-->
             <FrameLayout
                 android:id="@+id/emoji3"
                 android:layout_width="45dp"
@@ -127,6 +133,7 @@
                     android:textSize="20sp" />
             </FrameLayout>
 
+            <!--Fourth emoji-->
             <FrameLayout
                 android:id="@+id/emoji4"
                 android:layout_width="45dp"
@@ -161,6 +168,7 @@
                 android:layout_toRightOf="@id/emoji4"
                 android:background="#B3B3B3" />
 
+            <!--Heart down option-->
             <FrameLayout
                 android:id="@+id/heartDown"
                 android:layout_width="45dp"
@@ -191,12 +199,12 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <LinearLayout
+    <!--View profile option-->
+    <RelativeLayout
         android:id="@+id/profile_layout"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginTop="5dp"
-        android:gravity="center_vertical"
         android:orientation="horizontal"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
@@ -204,24 +212,37 @@
         app:layout_constraintTop_toBottomOf="@id/heartsArea">
 
         <ImageView
+            android:id="@+id/profile_icon"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:layout_gravity="center_vertical"
+            android:layout_centerInParent="true"
+            android:layout_alignParentStart="true"
             android:layout_marginStart="24dp"
             android:src="@drawable/ic_circle_account" />
 
         <com.google.android.material.textview.MaterialTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="12dp"
+            android:layout_centerInParent="true"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@+id/profile_icon"
             android:text="View Profile"
             android:textColor="@android:color/black"
             android:textSize="18sp" />
 
-    </LinearLayout>
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerInParent="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="24dp"
+            android:src="@drawable/ic_next_36" />
 
-    <LinearLayout
+    </RelativeLayout>
+
+    <!--Delete option-->
+    <RelativeLayout
         android:id="@+id/delete_layout"
         android:layout_width="match_parent"
         android:layout_height="50dp"
@@ -233,20 +254,34 @@
         app:layout_constraintTop_toBottomOf="@id/profile_layout">
 
         <ImageView
+            android:id="@+id/delete_icon"
             android:layout_width="32dp"
             android:layout_height="32dp"
+            android:layout_centerInParent="true"
+            android:layout_alignParentStart="true"
             android:layout_marginStart="24dp"
             android:src="@drawable/ic_delete_24" />
 
         <com.google.android.material.textview.MaterialTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_toEndOf="@id/delete_icon"
             android:layout_gravity="center"
-            android:layout_marginStart="12dp"
+            android:layout_marginStart="10dp"
             android:text="Delete Message"
             android:textColor="@android:color/black"
             android:textSize="18sp" />
 
-    </LinearLayout>
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerInParent="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="24dp"
+            android:src="@drawable/ic_next_36" />
+
+    </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
