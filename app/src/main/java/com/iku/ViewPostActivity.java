@@ -5,10 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textview.MaterialTextView;
@@ -26,6 +28,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class ViewPostActivity extends AppCompatActivity {
 
@@ -189,40 +192,42 @@ public class ViewPostActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 userVote(messageId, "upvoters");
+                disableEmojiButtons(false);
             }
-
         });
         viewPostBinding.choose1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 userVote(messageId, "emoji1");
-
+                disableEmojiButtons(false);
             }
         });
         viewPostBinding.choose2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 userVote(messageId, "emoji2");
-
+                disableEmojiButtons(false);
             }
         });
         viewPostBinding.choose3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 userVote(messageId, "emoji3");
-
+                disableEmojiButtons(false);
             }
         });
         viewPostBinding.choose4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 userVote(messageId, "emoji4");
+                disableEmojiButtons(false);
             }
         });
         viewPostBinding.choose6.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 userVote(messageId, "downvoters");
+                disableEmojiButtons(false);
             }
         });
     }
@@ -366,8 +371,14 @@ public class ViewPostActivity extends AppCompatActivity {
                                         viewPostBinding.emoji4.setBackgroundTintList(ContextCompat.getColorStateList(ViewPostActivity.this, R.color.colorTextSecondary));
                                         break;
                                 }
+                                disableEmojiButtons(true);
                             }
-                        });
+                        }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        disableEmojiButtons(true);
+                    }
+                });
             } else if (currentEmoji == "downvoters") {
                 if (!authorOfMessage.equals(user.getUid())) {
                     db.collection("users").document(authorOfMessage).get()
@@ -392,8 +403,14 @@ public class ViewPostActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(Void aVoid) {
                                 viewPostBinding.heartDown.setBackgroundTintList(ContextCompat.getColorStateList(ViewPostActivity.this, R.color.colorTextSecondary));
+                                disableEmojiButtons(true);
                             }
-                        });
+                        }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        disableEmojiButtons(true);
+                    }
+                });
             }
 
         } else if ((currentEmoji != previousEmoji) && (currentEmoji == "downvoters")) {
@@ -423,8 +440,14 @@ public class ViewPostActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(Void aVoid) {
                             changeEmojiBackground(currentEmoji, previousEmoji);
+                            disableEmojiButtons(true);
                         }
-                    });
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    disableEmojiButtons(true);
+                }
+            });
 
         } else if ((previousEmoji == "downvoters") && (currentEmoji != previousEmoji)) {
             if (!authorOfMessage.equals(user.getUid())) {
@@ -454,8 +477,14 @@ public class ViewPostActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(Void aVoid) {
                             changeEmojiBackground(currentEmoji, previousEmoji);
+                            disableEmojiButtons(true);
                         }
-                    });
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    disableEmojiButtons(true);
+                }
+            });
         } else {
             db.collection("iku_earth_messages").document(messageDocumentID)
                     .update(previousEmoji, FieldValue.arrayRemove(user.getUid()),
@@ -464,8 +493,14 @@ public class ViewPostActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(Void aVoid) {
                             changeEmojiBackground(currentEmoji, previousEmoji);
+                            disableEmojiButtons(true);
                         }
-                    });
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    disableEmojiButtons(true);
+                }
+            });
         }
     }
 
@@ -495,8 +530,14 @@ public class ViewPostActivity extends AppCompatActivity {
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
+                            disableEmojiButtons(true);
                         }
-                    });
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    disableEmojiButtons(true);
+                }
+            });
         } else {
             if (!authorOfMessage.equals(user.getUid())) {
                 db.collection("users").document(authorOfMessage).get()
@@ -536,8 +577,14 @@ public class ViewPostActivity extends AppCompatActivity {
                                 default:
                                     // code block
                             }
+                            disableEmojiButtons(true);
                         }
-                    });
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    disableEmojiButtons(true);
+                }
+            });
         }
     }
 
@@ -575,10 +622,22 @@ public class ViewPostActivity extends AppCompatActivity {
             case "emoji3":
                 viewPostBinding.emoji3.setBackgroundTintList(ContextCompat.getColorStateList(ViewPostActivity.this, R.color.colorTextSecondary));
                 break;
+            case "emoji4":
+                viewPostBinding.emoji4.setBackgroundTintList(ContextCompat.getColorStateList(ViewPostActivity.this, R.color.colorTextSecondary));
+                break;
             case "downvoters":
                 viewPostBinding.heartDown.setBackgroundTintList(ContextCompat.getColorStateList(ViewPostActivity.this, R.color.colorTextSecondary));
                 break;
         }
     }
 
+    private void disableEmojiButtons(Boolean status){
+
+        viewPostBinding.choose.setEnabled(status);
+        viewPostBinding.choose1.setEnabled(status);
+        viewPostBinding.choose2.setEnabled(status);
+        viewPostBinding.choose3.setEnabled(status);
+        viewPostBinding.choose4.setEnabled(status);
+        viewPostBinding.choose6.setEnabled(status);
+    }
 }
