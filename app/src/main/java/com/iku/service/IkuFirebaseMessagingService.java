@@ -16,6 +16,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -52,30 +53,54 @@ public class IkuFirebaseMessagingService extends FirebaseMessagingService {
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
 
-        /*ArrayList<String> titleList = new ArrayList<>();
+        ArrayList<String> titleList = new ArrayList<>();
         ArrayList<String> messageList = new ArrayList<>();
 
-        db.collection("iku_earth_messages").orderBy("timestamp", Query.Direction.DESCENDING).limit(4)
-                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        titleList.add((String) document.get("userName"));
-                        messageList.add((String) document.get("message"));
+        db.collection("users").document(mAuth.getUid()).get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            timeStamp = (long) document.get("lastSeen");
+                            Log.d(TAG, "onComplete: " + timeStamp);
+
+                            db.collection("iku_earth_messages").orderBy("timestamp", Query.Direction.DESCENDING).limit(4)
+                                    .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                            long time = (long) document.get("timestamp");
+                                            if (timeStamp < time) {
+                                                titleList.add((String) document.get("userName"));
+                                                messageList.add((String) document.get("message"));
+                                            }
+                                        }
+                                        Log.i(TAG, "onComplete: " + titleList + "\nMESSAGES" + messageList);
+                                        sendMessageNotification(title, message, titleList, messageList);
+                                    } else {
+                                        Log.d(TAG, "Error getting documents: ", task.getException());
+                                    }
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.e(TAG, "onFailure: ", e);
+                                }
+                            });
+
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
                     }
-                    if (titleList.size() == 4)
-                        sendMessageNotification(title, message, titleList, messageList);
-                } else {
-                    Log.d(TAG, "Error getting documents: ", task.getException());
-                }
-            }
-        }).addOnFailureListener(new OnFailureListener() {
+                }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Log.e(TAG, "onFailure: ", e);
             }
-        });*/
+        });
+
     }
 
     private void sendMessageNotification(String title, String message, ArrayList titles, ArrayList messages) {
@@ -84,10 +109,21 @@ public class IkuFirebaseMessagingService extends FirebaseMessagingService {
         PendingIntent piResult = PendingIntent.getActivity(this, 0, resultIntent, 0);
         Notification.Builder builder = new Notification.Builder(this)
                 .setSmallIcon(R.drawable.ic_iku)
-                .setContentTitle("Ikulogists")
-                .setContentText(title + ": " + message)
+                .setContentTitle("#IkuExperiment")
                 .setContentIntent(piResult);
 
+        Notification.InboxStyle notification = new Notification.InboxStyle();
+        notification.setBigContentTitle("#IkuExperiment");
+
+        Log.i(TAG, "sendMessageNotification: " + titles.size());
+        if (titles.size() > 0) {
+            for (int i = titles.size()-1; i >=0; i--) {
+                Log.i(TAG, "sendMessageNotification: Inside" + i);
+                notification.addLine(titles.get(i) + ": " + messages.get(i));
+            }
+        }
+
+        builder.setStyle(notification);
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(121, builder.build());
     }

@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -457,8 +458,8 @@ public class ChatFragment extends Fragment {
                 BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext());
                 View parentView = getLayoutInflater().inflate(R.layout.user_bottom_sheet, null);
                 ChatModel chatModel = documentSnapshot.toObject(ChatModel.class);
-                LinearLayout profileView = parentView.findViewById(R.id.profile_layout);
-                LinearLayout deleteMessageView = parentView.findViewById(R.id.delete_layout);
+                RelativeLayout profileView = parentView.findViewById(R.id.profile_layout);
+                RelativeLayout deleteMessageView = parentView.findViewById(R.id.delete_layout);
 
                 ImageButton heartUpView = parentView.findViewById(R.id.chooseHeart);
                 MaterialButton emoji1View = parentView.findViewById(R.id.choose1);
