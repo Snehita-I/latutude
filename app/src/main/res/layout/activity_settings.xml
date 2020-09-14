@@ -106,7 +106,7 @@
                     android:id="@+id/startext"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="How to rate your overall experience?"
+                    android:text="How would you rate your overall experience?"
                     android:textAlignment="center"
                     android:textColor="@android:color/black"
                     android:textSize="16sp" />
