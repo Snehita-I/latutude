@@ -16,7 +16,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -53,7 +52,7 @@ public class IkuFirebaseMessagingService extends FirebaseMessagingService {
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
 
-        ArrayList<String> titleList = new ArrayList<>();
+        /*ArrayList<String> titleList = new ArrayList<>();
         ArrayList<String> messageList = new ArrayList<>();
 
         db.collection("iku_earth_messages").orderBy("timestamp", Query.Direction.DESCENDING).limit(4)
@@ -65,8 +64,8 @@ public class IkuFirebaseMessagingService extends FirebaseMessagingService {
                         titleList.add((String) document.get("userName"));
                         messageList.add((String) document.get("message"));
                     }
-                    if (titleList.size()==4)
-                        sendMessageNotification(title, message,titleList,messageList);
+                    if (titleList.size() == 4)
+                        sendMessageNotification(title, message, titleList, messageList);
                 } else {
                     Log.d(TAG, "Error getting documents: ", task.getException());
                 }
@@ -74,30 +73,23 @@ public class IkuFirebaseMessagingService extends FirebaseMessagingService {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.e(TAG, "onFailure: ", e );
+                Log.e(TAG, "onFailure: ", e);
             }
-        });
+        });*/
     }
 
-    private void sendMessageNotification(String title, String message,ArrayList titles,ArrayList messages) {
+    private void sendMessageNotification(String title, String message, ArrayList titles, ArrayList messages) {
         Intent resultIntent = new Intent(this, HomeActivity.class);
         resultIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent piResult = PendingIntent.getActivity(this, 0, resultIntent, 0);
         Notification.Builder builder = new Notification.Builder(this)
                 .setSmallIcon(R.drawable.ic_iku)
-                .setContentTitle(title)
-                .setContentText(message)
+                .setContentTitle("Ikulogists")
+                .setContentText(title + ": " + message)
                 .setContentIntent(piResult);
 
-        Notification notification = new Notification.InboxStyle(builder)
-                .addLine(title + ": " + message)
-                .addLine((CharSequence) titles.get(1)+": " + messages.get(2))
-                .addLine((CharSequence) titles.get(2)+": " + messages.get(2))
-                .addLine((CharSequence) titles.get(3)+": " + messages.get(3))
-                .setBigContentTitle("Messages from ikulogists you missed")
-                .build();
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(121, notification);
+        notificationManager.notify(121, builder.build());
     }
 
     @Override
