@@ -1,5 +1,6 @@
 package com.iku;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -23,13 +24,16 @@ import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.iku.adapter.ChatAdapter;
 import com.iku.adapter.LeaderBoardAdapter;
+import com.iku.models.ChatModel;
 import com.iku.models.LeaderboardModel;
+import com.iku.utils.ItemClickSupport;
 
 import nl.dionsegijn.konfetti.KonfettiView;
 import nl.dionsegijn.konfetti.models.Shape;
@@ -108,7 +112,22 @@ public class LeaderboardActivity extends AppCompatActivity {
             }
         });
 
-
+        leaderboardadapter.setOnItemClickListener((documentSnapshot, position) -> {
+            LeaderboardModel leaderboardModel = documentSnapshot.toObject(LeaderboardModel.class);
+            if(leaderboardModel.getUid().equals(user.getUid())){
+                final KonfettiView viewConfetti = findViewById(R.id.viewConfetti);
+                viewConfetti.build()
+                        .addColors(Color.BLUE, Color.LTGRAY, getResources().getColor(R.color.colorPrimary), getResources().getColor(R.color.colorAccent))
+                        .setDirection(0.0, 359.0)
+                        .setSpeed(1f, 8f)
+                        .setFadeOutEnabled(true)
+                        .setTimeToLive(2000L)
+                        .addShapes(Shape.Square.INSTANCE, Shape.Circle.INSTANCE)
+                        .addSizes(new Size(10, 10f))
+                        .setPosition(-50f, viewConfetti.getWidth() + 50f, -50f, -50f)
+                        .streamFor(300, 5000L);
+            }
+        });
     }
 
 }
