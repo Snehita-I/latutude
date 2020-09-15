@@ -133,31 +133,33 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void setLastSeen(Boolean status) {
-        Date d = new Date();
-        long timestamp = d.getTime();
+        if (mAuth.getUid() != null) {
+            Date d = new Date();
+            long timestamp = d.getTime();
 
-        Map<String, Object> userInfo = new HashMap<>();
-        userInfo.put("lastSeen", timestamp);
-        userInfo.put("online", status);
+            Map<String, Object> userInfo = new HashMap<>();
+            userInfo.put("lastSeen", timestamp);
+            userInfo.put("online", status);
 
-        db.collection("users").document(mAuth.getUid())
-                .update(userInfo)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        /*Log event*/
-                        Bundle status_bundle = new Bundle();
-                        status_bundle.putString(FirebaseAnalytics.Param.METHOD, "Last seen status");
-                        status_bundle.putString("Updating_last_seen", "He/She went offline");
-                        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SIGN_UP, status_bundle);
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, e);
-                    }
-                });
+            db.collection("users").document(mAuth.getUid())
+                    .update(userInfo)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            /*Log event*/
+                            Bundle status_bundle = new Bundle();
+                            status_bundle.putString(FirebaseAnalytics.Param.METHOD, "Last seen status");
+                            status_bundle.putString("Updating_last_seen", "He/She went offline");
+                            mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SIGN_UP, status_bundle);
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w(TAG, e);
+                        }
+                    });
+        }
     }
 
     @Override
