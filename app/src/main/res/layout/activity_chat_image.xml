@@ -34,9 +34,9 @@
             <!--Back button-->
             <ImageView
                 android:id="@+id/backbutton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:padding="16dp"
                 android:background="?android:selectableItemBackground"
                 android:contentDescription="@string/back_button_content_desc"
                 android:src="@drawable/ic_arrow_back_24"
