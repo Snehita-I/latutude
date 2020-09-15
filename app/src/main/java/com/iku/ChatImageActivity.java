@@ -12,6 +12,7 @@ import android.os.ParcelFileDescriptor;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -94,7 +95,9 @@ public class ChatImageActivity extends AppCompatActivity {
         return outputFile.getAbsolutePath();
     }
 
-    private ImageButton backButton, sendImageChatbtn;
+    private ImageButton sendImageChatbtn;
+
+    private ImageView backButton;
 
     private PhotoView chosenImage;
 

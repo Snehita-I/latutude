@@ -152,21 +152,14 @@ public class ProfileFragment extends Fragment {
 
             db.collection("users").document(user.getUid())
                     .update(docData)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
+                    .addOnSuccessListener(aVoid -> {
 
-                            //Log event
-                            Bundle down_params = new Bundle();
-                            down_params.putString("received_picture", "User has google or FB picture");
-                            mFirebaseAnalytics.logEvent("profile_picture", down_params);
-                        }
+                        //Log event
+                        Bundle down_params = new Bundle();
+                        down_params.putString("received_picture", "User has google or FB picture");
+                        mFirebaseAnalytics.logEvent("profile_picture", down_params);
                     })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-
-                        }
+                    .addOnFailureListener(e -> {
                     });
         }
     }
@@ -174,25 +167,17 @@ public class ProfileFragment extends Fragment {
     private void getUserHearts() {
         if (user != null) {
             db.collection("users").document(user.getUid()).get()
-                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                            if (task.isSuccessful()) {
-                                DocumentSnapshot document = task.getResult();
-                                long hearts = (long) document.get("points");
-                                if (hearts == 0)
-                                    profileBinding.userHearts.setText("Yet to win some hearts!");
-                                else
-                                    profileBinding.userHearts.setText("Hearts won: " + hearts);
-                            }
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            long hearts = (long) document.get("points");
+                            if (hearts == 0)
+                                userHeartsTextView.setText("Yet to win some hearts!");
+                            else
+                                userHeartsTextView.setText("Hearts won: " + hearts);
                         }
                     })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            e.printStackTrace();
-                        }
-                    });
+                    .addOnFailureListener(e -> e.printStackTrace());
         }
     }
 
