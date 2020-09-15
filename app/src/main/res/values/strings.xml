@@ -5,9 +5,8 @@
     <string name="facebook_app_id">1247477352274007</string>
     <string name="fb_login_protocol_scheme">fb1247477352274007</string>
 
-
-    <!-- Firebase errors -->
     <string name="prev_started">started</string>
+    <string name="device_store">stored</string>
 
     <!--Firebase Cloud Messaging-->
     <string name="back_button_content_desc">back</string>

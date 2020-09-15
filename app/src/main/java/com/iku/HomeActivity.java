@@ -3,34 +3,27 @@ package com.iku;
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.iku.databinding.ActivityHomeBinding;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import nl.joery.animatedbottombar.AnimatedBottomBar;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -92,39 +85,36 @@ public class HomeActivity extends AppCompatActivity {
                     .commit();
         }
 
-        homeBinding.animatedBottomBar.setOnTabSelectListener(new AnimatedBottomBar.OnTabSelectListener() {
-            @Override
-            public void onTabSelected(int lastIndex, @Nullable AnimatedBottomBar.Tab lastTab, int newIndex, @NotNull AnimatedBottomBar.Tab newTab) {
-                Fragment fragment = null;
-                switch (newTab.getId()) {
-                    case R.id.chat:
-                        fragment = new ChatFragment();
+        homeBinding.animatedBottomBar.setOnTabSelectListener((lastIndex, lastTab, newIndex, newTab) -> {
+            Fragment fragment = null;
+            switch (newTab.getId()) {
+                case R.id.chat:
+                    fragment = new ChatFragment();
 
-                        /*Log event*/
-                        Bundle chat_bundle = new Bundle();
-                        chat_bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Main Chat");
-                        chat_bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "View");
-                        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW, chat_bundle);
-                        break;
+                    /*Log event*/
+                    Bundle chat_bundle = new Bundle();
+                    chat_bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Main Chat");
+                    chat_bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "View");
+                    mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW, chat_bundle);
+                    break;
 
-                    case R.id.profile:
+                case R.id.profile:
 
-                        fragment = new ProfileFragment();
+                    fragment = new ProfileFragment();
 
-                        /*Log event*/
-                        Bundle profile_bundle = new Bundle();
-                        profile_bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "My Profile");
-                        profile_bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "View");
-                        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW, profile_bundle);
-                        hideKeyboard(HomeActivity.this);
-                        break;
-                }
+                    /*Log event*/
+                    Bundle profile_bundle = new Bundle();
+                    profile_bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "My Profile");
+                    profile_bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "View");
+                    mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW, profile_bundle);
+                    hideKeyboard(HomeActivity.this);
+                    break;
+            }
 
-                if (fragment != null) {
-                    fragmentManager = getSupportFragmentManager();
-                    fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment)
-                            .commit();
-                }
+            if (fragment != null) {
+                fragmentManager = getSupportFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment)
+                        .commit();
             }
         });
     }
@@ -140,26 +130,20 @@ public class HomeActivity extends AppCompatActivity {
 
             db.collection("users").document(mAuth.getUid())
                     .update(userInfo)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            /*Log event*/
-                            Bundle status_bundle = new Bundle();
-                            status_bundle.putString(FirebaseAnalytics.Param.METHOD, "Last seen status");
-                            status_bundle.putString("Updating_last_seen", "He/She went offline");
-                            mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SIGN_UP, status_bundle);
-                        }
+                    .addOnSuccessListener(aVoid -> {
+                        /*Log event*/
+                        Bundle status_bundle = new Bundle();
+                        status_bundle.putString(FirebaseAnalytics.Param.METHOD, "Last seen status");
+                        status_bundle.putString("Updating_last_seen", "He/She went offline");
+                        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SIGN_UP, status_bundle);
                     })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.w(TAG, e);
-                        }
+                    .addOnFailureListener(e -> {
                     });
         }
     }
 
     private void verifyUser() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         if (mAuth.getUid() != null) {
             Map<String, Object> userDevInfo = new HashMap<>();
             userDevInfo.put("Device", Build.MANUFACTURER);
@@ -170,6 +154,9 @@ public class HomeActivity extends AppCompatActivity {
             db.collection("usersVerifiedInfo").document(mAuth.getUid())
                     .set(userDevInfo)
                     .addOnSuccessListener(aVoid -> {
+                        SharedPreferences.Editor edit = prefs.edit();
+                        edit.putBoolean(getString(R.string.device_store), true);
+                        edit.apply();
                     })
                     .addOnFailureListener(e -> {
                     });
@@ -192,7 +179,6 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-
         if (doubleBackToExitPressedOnce) {
             super.onBackPressed();
             return;
@@ -204,17 +190,8 @@ public class HomeActivity extends AppCompatActivity {
         }
 
         this.doubleBackToExitPressedOnce = true;
-        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).
-
-                show();
-
+        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
         new Handler()
-                .postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        doubleBackToExitPressedOnce = false;
-                    }
-                }, 2000);
-
+                .postDelayed(() -> doubleBackToExitPressedOnce = false, 2000);
     }
 }
