@@ -3,6 +3,7 @@ package com.iku;
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -66,6 +67,7 @@ public class HomeActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         setLastSeen(true);
+        verifyUser();
 
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -105,10 +107,6 @@ public class HomeActivity extends AppCompatActivity {
                         mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW, chat_bundle);
                         break;
 
-                    /*case R.id.social:
-                        fragment = new SocialFragment();
-                        break;*/
-
                     case R.id.profile:
 
                         fragment = new ProfileFragment();
@@ -126,7 +124,6 @@ public class HomeActivity extends AppCompatActivity {
                     fragmentManager = getSupportFragmentManager();
                     fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment)
                             .commit();
-                } else {
                 }
             }
         });
@@ -158,6 +155,23 @@ public class HomeActivity extends AppCompatActivity {
                         public void onFailure(@NonNull Exception e) {
                             Log.w(TAG, e);
                         }
+                    });
+        }
+    }
+
+    private void verifyUser() {
+        if (mAuth.getUid() != null) {
+            Map<String, Object> userDevInfo = new HashMap<>();
+            userDevInfo.put("Device", Build.MANUFACTURER);
+            userDevInfo.put("Model", Build.MODEL);
+            userDevInfo.put("Android", Build.VERSION.SDK_INT);
+            userDevInfo.put("Release", Build.VERSION.RELEASE);
+            userDevInfo.put("Kernel", System.getProperty("os.version"));
+            db.collection("usersVerifiedInfo").document(mAuth.getUid())
+                    .set(userDevInfo)
+                    .addOnSuccessListener(aVoid -> {
+                    })
+                    .addOnFailureListener(e -> {
                     });
         }
     }
