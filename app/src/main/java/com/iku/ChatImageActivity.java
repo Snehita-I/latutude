@@ -10,6 +10,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -18,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.github.chrisbanes.photoview.PhotoView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -31,7 +34,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.iku.databinding.ActivityChatImageBinding;
+import com.squareup.picasso.Picasso;
 
 import java.io.Closeable;
 import java.io.File;
@@ -62,6 +65,8 @@ public class ChatImageActivity extends AppCompatActivity {
     private File sourceFile;
     private File destFile;
     private int PICK_IMAGE = 1;
+    private String docId, message, imageUrl;
+
     private int STORAGE_PERMISSION_CODE = 10;
 
     private String[] appPermissions = {
@@ -69,7 +74,7 @@ public class ChatImageActivity extends AppCompatActivity {
             Manifest.permission.READ_EXTERNAL_STORAGE
     };
 
-    private ActivityChatImageBinding chatImageBinding;
+    //private ActivityChatImageBinding chatImageBinding;
 
     private String TAG = ChatImageActivity.class.getSimpleName();
 
@@ -89,16 +94,79 @@ public class ChatImageActivity extends AppCompatActivity {
         return outputFile.getAbsolutePath();
     }
 
+    private ImageButton backButton, sendImageChatbtn;
+
+    private PhotoView chosenImage;
+
+    private EditText messageEntered;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        chatImageBinding = ActivityChatImageBinding.inflate(getLayoutInflater());
-        setContentView(chatImageBinding.getRoot());
+        //chatImageBinding = ActivityChatImageBinding.inflate(getLayoutInflater());
+        setContentView(R.layout.activity_chat_image);
+//        setContentView(chatImageBinding.getRoot());
 
-        initItems();
-        initButtons();
+        mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        mStorageRef = FirebaseStorage.getInstance().getReference(user.getUid());
+        db = FirebaseFirestore.getInstance();
+        messageEntered = findViewById(R.id.messageTextField);
+        backButton = findViewById(R.id.backbutton);
+        sendImageChatbtn = findViewById(R.id.sendMessageButton);
+        chosenImage = findViewById(R.id.chosenImage);
+        dateFormatter = new SimpleDateFormat(
+                DATE_FORMAT, Locale.US);
 
-        openFileChooser();
+        file = new File(String.valueOf(getCacheDir()));
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        Bundle extras = getIntent().getExtras();
+        docId = extras.getString("documentId");
+        Toast.makeText(getApplicationContext(), docId, Toast.LENGTH_LONG).show();
+        if (docId.equals("default")) {
+            Toast.makeText(getApplicationContext(), "enterd1", Toast.LENGTH_LONG).show();
+            openFileChooser();
+        } else if (!docId.equals("default")) {
+            message = extras.getString("message");
+            messageEntered.setText(message);
+            imageUrl = extras.getString("imageUrl");
+            Picasso.get().load(imageUrl).into(chosenImage);
+        }
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
+
+        sendImageChatbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (!messageEntered.getText().toString().isEmpty()) {
+
+                    if (docId.equals("default")) {
+
+                        uploadFile(messageEntered.getText().toString());
+
+                        sendImageChatbtn.setClickable(false);
+
+                    } else if (!docId.equals("default")) {
+                        updateMessage(docId, messageEntered.getText().toString());
+                    }
+
+                } else
+                    Toast.makeText(ChatImageActivity.this, "Caption such empty..much wow!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+//        initItems();
+//        initButtons();
+//
+//        openFileChooser();
     }
 
     private void initItems() {
@@ -118,30 +186,30 @@ public class ChatImageActivity extends AppCompatActivity {
 
     }
 
-    private void initButtons() {
-
-        chatImageBinding.backbutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
-
-        chatImageBinding.sendMessageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!chatImageBinding.messageTextField.getText().toString().isEmpty()) {
-
-                    uploadFile(chatImageBinding.messageTextField.getText().toString());
-
-                    chatImageBinding.sendMessageButton.setClickable(false);
-
-                } else
-                    Toast.makeText(ChatImageActivity.this, "Caption such empty..much wow!", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-    }
+//    private void initButtons() {
+//
+//        chatImageBinding.backbutton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                onBackPressed();
+//            }
+//        });
+//
+//        chatImageBinding.sendMessageButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if (!chatImageBinding.messageTextField.getText().toString().isEmpty()) {
+//
+//                    uploadFile(chatImageBinding.messageTextField.getText().toString());
+//
+//                    chatImageBinding.sendMessageButton.setClickable(false);
+//
+//                } else
+//                    Toast.makeText(ChatImageActivity.this, "Caption such empty..much wow!", Toast.LENGTH_SHORT).show();
+//            }
+//        });
+//
+//    }
 
     private void uploadFile(String message) {
         Uri finalUri = Uri.fromFile(destFile);
@@ -222,9 +290,9 @@ public class ChatImageActivity extends AppCompatActivity {
                                             });
 
 
-                                    chatImageBinding.messageTextField.setText("");
+                                    messageEntered.setText("");
                                     Toast.makeText(ChatImageActivity.this, "Aren't you the best", Toast.LENGTH_LONG).show();
-                                    chatImageBinding.messageTextField.requestFocus();
+                                    messageEntered.requestFocus();
                                     ChatImageActivity.super.onBackPressed();
 
                                     //Log event
@@ -235,7 +303,8 @@ public class ChatImageActivity extends AppCompatActivity {
                                 }
                             })
                             .addOnFailureListener(e -> {
-                                chatImageBinding.sendMessageButton.setClickable(true);
+                                sendImageChatbtn.setClickable(true);
+                                Toast.makeText(ChatImageActivity.this, e.toString(), Toast.LENGTH_LONG).show();
                             });
                 });
             });
@@ -270,7 +339,7 @@ public class ChatImageActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             Bitmap bitmap = decodeFile(destFile);
-            chatImageBinding.chosenImage.setImageBitmap(bitmap);
+            chosenImage.setImageBitmap(bitmap);
         } else
             onBackPressed();
     }
@@ -389,4 +458,28 @@ public class ChatImageActivity extends AppCompatActivity {
             destination.close();
         }
     }
+
+    private void updateMessage(String messageDocumentID, String message) {
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("message", message);
+        map.put("edited", true);
+        db.collection("iku_earth_messages").document(messageDocumentID)
+                .update(map)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        messageEntered.setText("");
+                        Toast.makeText(ChatImageActivity.this, "Message edited", Toast.LENGTH_LONG).show();
+                        messageEntered.requestFocus();
+                        ChatImageActivity.super.onBackPressed();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                    }
+                });
+    }
+
 }

@@ -179,6 +179,7 @@ public class ChatFragment extends Fragment {
                 requestPermission();
             } else {
                 Intent goToImageSend = new Intent(getActivity(), ChatImageActivity.class);
+                goToImageSend.putExtra("documentId", "default");
                 startActivity(goToImageSend);
             }
         });
@@ -458,6 +459,7 @@ public class ChatFragment extends Fragment {
                 View parentView = getLayoutInflater().inflate(R.layout.user_bottom_sheet, null);
                 ChatModel chatModel = documentSnapshot.toObject(ChatModel.class);
                 RelativeLayout profileView = parentView.findViewById(R.id.profile_layout);
+                RelativeLayout updateMessageView = parentView.findViewById(R.id.edit_option_layout);
                 RelativeLayout deleteMessageView = parentView.findViewById(R.id.delete_layout);
 
                 ImageButton heartUpView = parentView.findViewById(R.id.chooseHeart);
@@ -565,6 +567,30 @@ public class ChatFragment extends Fragment {
                 String UID = chatModel.getUID();
                 if (UID.equals(user.getUid())) {
                     profileView.setVisibility(View.GONE);
+                    updateMessageView.setVisibility(View.VISIBLE);
+                    updateMessageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if (chatModel.getType() == "text") {
+                                binding.messageTextField.setText(chatModel.getMessage());
+                                bottomSheetDialog.dismiss();
+                                binding.sendMessageButton.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        updateMessage(documentSnapshot.getId(), position, binding.messageTextField.getText().toString());
+
+                                    }
+                                });
+                            } else if (chatModel.getType() == "image") {
+                                Intent goToImageSend = new Intent(getActivity(), ChatImageActivity.class);
+                                goToImageSend.putExtra("documentId", documentSnapshot.getId());
+                                goToImageSend.putExtra("message", chatModel.getMessage());
+                                goToImageSend.putExtra("imageUrl", chatModel.getimageUrl());
+                                bottomSheetDialog.dismiss();
+                                startActivity(goToImageSend);
+                            }
+                        }
+                    });
                     deleteMessageView.setVisibility(View.VISIBLE);
                     deleteMessageView.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -601,6 +627,29 @@ public class ChatFragment extends Fragment {
             }
         });
 
+    }
+
+    private void updateMessage(String messageDocumentID, int position, String message) {
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("message", message);
+        map.put("edited", true);
+        db.collection("iku_earth_messages").document(messageDocumentID)
+                .update(map)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(getActivity(), "Message updated!", Toast.LENGTH_SHORT).show();
+                        chatadapter.notifyItemChanged(position);
+                        binding.messageTextField.setText("");
+                        binding.messageTextField.requestFocus();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                    }
+                });
     }
 
     private void watchTextBox() {
@@ -785,80 +834,23 @@ public class ChatFragment extends Fragment {
                                 }
                             }
                         }
-                        if (HeartupLiked && emoji == "upvoters") {
-                            changeLikesArray(messageDocumentID, emoji, "upvoters", upvotesCount, downvotesCount, authorOfMessage, position);
-                        } else if (emoji1Liked && emoji == "upvoters") {
-                            changeLikesArray(messageDocumentID, emoji, "emoji1", upvotesCount, downvotesCount, authorOfMessage, position);
-                        } else if (emoji2Liked && emoji == "upvoters") {
-                            changeLikesArray(messageDocumentID, emoji, "emoji2", upvotesCount, downvotesCount, authorOfMessage, position);
-                        } else if (emoji3Liked && emoji == "upvoters") {
-                            changeLikesArray(messageDocumentID, emoji, "emoji3", upvotesCount, downvotesCount, authorOfMessage, position);
-                        } else if (emoji4Liked && emoji == "upvoters") {
-                            changeLikesArray(messageDocumentID, emoji, "emoji4", upvotesCount, downvotesCount, authorOfMessage, position);
-                        } else if (disliked && emoji == "upvoters") {
-                            changeLikesArray(messageDocumentID, emoji, "downvoters", upvotesCount, downvotesCount, authorOfMessage, position);
-                        } else if (HeartupLiked && emoji == "emoji1") {
-                            changeLikesArray(messageDocumentID, emoji, "upvoters", upvotesCount, downvotesCount, authorOfMessage, position);
-                        } else if (emoji1Liked && emoji == "emoji1") {
-                            changeLikesArray(messageDocumentID, emoji, "emoji1", upvotesCount, downvotesCount, authorOfMessage, position);
-                        } else if (emoji2Array.contains(user.getUid()) && emoji == "emoji1") {
-                            changeLikesArray(messageDocumentID, emoji, "emoji2", upvotesCount, downvotesCount, authorOfMessage, position);
-                        } else if (emoji3Array.contains(user.getUid()) && emoji == "emoji1") {
-                            changeLikesArray(messageDocumentID, emoji, "emoji3", upvotesCount, downvotesCount, authorOfMessage, position);
-                        } else if (emoji4Array.contains(user.getUid()) && emoji == "emoji1") {
-                            changeLikesArray(messageDocumentID, emoji, "emoji4", upvotesCount, downvotesCount, authorOfMessage, position);
-                        } else if (HeartDownArray.contains(user.getUid()) && emoji == "emoji1") {
-                            changeLikesArray(messageDocumentID, emoji, "downvoters", upvotesCount, downvotesCount, authorOfMessage, position);
-                        } else if (HeartupLiked && emoji == "emoji2") {
-                            changeLikesArray(messageDocumentID, emoji, "upvoters", upvotesCount, downvotesCount, authorOfMessage, position);
-                        } else if (emoji1Liked && emoji == "emoji2") {
-                            changeLikesArray(messageDocumentID, emoji, "emoji1", upvotesCount, downvotesCount, authorOfMessage, position);
-                        } else if (emoji2Liked && emoji == "emoji2") {
-                            changeLikesArray(messageDocumentID, emoji, "emoji2", upvotesCount, downvotesCount, authorOfMessage, position);
-                        } else if (emoji3Liked && emoji == "emoji2") {
-                            changeLikesArray(messageDocumentID, emoji, "emoji3", upvotesCount, downvotesCount, authorOfMessage, position);
-                        } else if (emoji4Liked && emoji == "emoji2") {
-                            changeLikesArray(messageDocumentID, emoji, "emoji4", upvotesCount, downvotesCount, authorOfMessage, position);
-                        } else if (disliked && emoji == "emoji2") {
-                            changeLikesArray(messageDocumentID, emoji, "downvoters", upvotesCount, downvotesCount, authorOfMessage, position);
-                        } else if (HeartupLiked && emoji == "emoji3") {
-                            changeLikesArray(messageDocumentID, emoji, "upvoters", upvotesCount, downvotesCount, authorOfMessage, position);
-                        } else if (emoji1Liked && emoji == "emoji3") {
-                            changeLikesArray(messageDocumentID, emoji, "emoji1", upvotesCount, downvotesCount, authorOfMessage, position);
-                        } else if (emoji2Liked && emoji == "emoji3") {
-                            changeLikesArray(messageDocumentID, emoji, "emoji2", upvotesCount, downvotesCount, authorOfMessage, position);
-                        } else if (emoji3Liked && emoji == "emoji3") {
-                            changeLikesArray(messageDocumentID, emoji, "emoji3", upvotesCount, downvotesCount, authorOfMessage, position);
-                        } else if (emoji4Liked && emoji == "emoji3") {
-                            changeLikesArray(messageDocumentID, emoji, "emoji4", upvotesCount, downvotesCount, authorOfMessage, position);
-                        } else if (disliked && emoji == "emoji3") {
-                            changeLikesArray(messageDocumentID, emoji, "downvoters", upvotesCount, downvotesCount, authorOfMessage, position);
-                        } else if (HeartupLiked && emoji == "emoji4") {
-                            changeLikesArray(messageDocumentID, emoji, "upvoters", upvotesCount, downvotesCount, authorOfMessage, position);
-                        } else if (emoji1Liked && emoji == "emoji4") {
-                            changeLikesArray(messageDocumentID, emoji, "emoji1", upvotesCount, downvotesCount, authorOfMessage, position);
-                        } else if (emoji2Liked && emoji == "emoji4") {
-                            changeLikesArray(messageDocumentID, emoji, "emoji2", upvotesCount, downvotesCount, authorOfMessage, position);
-                        } else if (emoji3Liked && emoji == "emoji4") {
-                            changeLikesArray(messageDocumentID, emoji, "emoji3", upvotesCount, downvotesCount, authorOfMessage, position);
-                        } else if (emoji4Liked && emoji == "emoji4") {
-                            changeLikesArray(messageDocumentID, emoji, "emoji4", upvotesCount, downvotesCount, authorOfMessage, position);
-                        } else if (disliked && emoji == "emoji4") {
-                            changeLikesArray(messageDocumentID, emoji, "downvoters", upvotesCount, downvotesCount, authorOfMessage, position);
-                        } else if (HeartupLiked && emoji == "downvoters") {
-                            changeLikesArray(messageDocumentID, emoji, "upvoters", upvotesCount, downvotesCount, authorOfMessage, position);
-                        } else if (emoji1Liked && emoji == "downvoters") {
-                            changeLikesArray(messageDocumentID, emoji, "emoji1", upvotesCount, downvotesCount, authorOfMessage, position);
-                        } else if (emoji2Liked && emoji == "downvoters") {
-                            changeLikesArray(messageDocumentID, emoji, "emoji2", upvotesCount, downvotesCount, authorOfMessage, position);
-                        } else if (emoji3Liked && emoji == "downvoters") {
-                            changeLikesArray(messageDocumentID, emoji, "emoji3", upvotesCount, downvotesCount, authorOfMessage, position);
-                        } else if (emoji4Liked && emoji == "downvoters") {
-                            changeLikesArray(messageDocumentID, emoji, "emoji4", upvotesCount, downvotesCount, authorOfMessage, position);
-                        } else if (disliked && emoji == "downvoters") {
-                            changeLikesArray(messageDocumentID, emoji, "downvoters", upvotesCount, downvotesCount, authorOfMessage, position);
-                        } else if (!HeartupLiked && !emoji1Liked && !emoji2Liked && !emoji3Liked && !emoji4Liked && !disliked) {
+
+                        if (!HeartupLiked && !emoji1Liked && !emoji2Liked && !emoji3Liked && !emoji4Liked && !disliked) {
                             newLikeorDislike(messageDocumentID, emoji, upvotesCount, downvotesCount, authorOfMessage, position);
+                        } else {
+                            if (HeartupLiked) {
+                                changeLikesArray(messageDocumentID, emoji, "upvoters", upvotesCount, downvotesCount, authorOfMessage, position);
+                            } else if (emoji1Liked) {
+                                changeLikesArray(messageDocumentID, emoji, "emoji1", upvotesCount, downvotesCount, authorOfMessage, position);
+                            } else if (emoji2Liked) {
+                                changeLikesArray(messageDocumentID, emoji, "emoji2", upvotesCount, downvotesCount, authorOfMessage, position);
+                            } else if (emoji3Liked) {
+                                changeLikesArray(messageDocumentID, emoji, "emoji3", upvotesCount, downvotesCount, authorOfMessage, position);
+                            } else if (emoji4Liked) {
+                                changeLikesArray(messageDocumentID, emoji, "emoji4", upvotesCount, downvotesCount, authorOfMessage, position);
+                            } else if (disliked) {
+                                changeLikesArray(messageDocumentID, emoji, "downvoters", upvotesCount, downvotesCount, authorOfMessage, position);
+                            }
                         }
                     } else {
                     }
@@ -1060,6 +1052,7 @@ public class ChatFragment extends Fragment {
         if (requestCode == STORAGE_PERMISSION_CODE && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(getActivity(), "Permission Granted!", Toast.LENGTH_SHORT).show();
             Intent i = new Intent(getActivity(), ChatImageActivity.class);
+            i.putExtra("documentId", "default");
             startActivity(i);
         }
     }

@@ -36,12 +36,14 @@ public class ChatModel {
     private ArrayList<String> downvoters;
     @PropertyName("downvoteCount")
     private int downvoteCount;
+    @PropertyName("edited")
+    private boolean edited;
 
     private ChatModel() {
     }
 
     private ChatModel(String message, long timestamp, String UID, String userName, String type, int upvoteCount, String imageUrl, ArrayList<String> upvoters,
-                      ArrayList<String> emoji1, ArrayList<String> emoji2, ArrayList<String> emoji3, ArrayList<String> emoji4, ArrayList<String> downvoters, int downvoteCount) {
+                      ArrayList<String> emoji1, ArrayList<String> emoji2, ArrayList<String> emoji3, ArrayList<String> emoji4, ArrayList<String> downvoters, int downvoteCount, boolean edited) {
         this.message = message;
         this.UID = UID;
         this.timestamp = timestamp;
@@ -56,6 +58,7 @@ public class ChatModel {
         this.emoji4 = emoji4;
         this.downvoters = downvoters;
         this.downvoteCount = downvoteCount;
+        this.edited = edited;
     }
 
     public String getMessage() {
@@ -170,5 +173,13 @@ public class ChatModel {
 
     public void setDownvoteCount(int downvoteCount) {
         this.downvoteCount = downvoteCount;
+    }
+
+    public boolean isEdited() {
+        return edited;
+    }
+
+    public void setEdited(boolean edited) {
+        this.edited = edited;
     }
 }

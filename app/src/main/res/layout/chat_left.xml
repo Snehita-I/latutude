@@ -150,7 +150,7 @@
             android:id="@+id/editFlag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Edited"
+            android:text="•Edited"
             android:textColor="#4A4A4A"
             android:textSize="10sp"
             android:visibility="gone"

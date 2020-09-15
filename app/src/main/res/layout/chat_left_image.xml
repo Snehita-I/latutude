@@ -160,7 +160,7 @@
             android:layout_marginStart="5dp"
             android:layout_marginBottom="5dp"
             android:gravity="start"
-            android:text="Edited"
+            android:text="•Edited"
             android:textColor="#4A4A4A"
             android:textSize="10sp"
             android:visibility="gone"

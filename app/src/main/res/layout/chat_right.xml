@@ -135,7 +135,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="7dp"
             android:gravity="start"
-            android:text="Edited"
+            android:text="•Edited"
             android:textColor="@color/white"
             android:textSize="10sp"
             android:visibility="gone"
