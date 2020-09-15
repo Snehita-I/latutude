@@ -18,6 +18,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.iku.databinding.ActivityHomeBinding;
 
@@ -127,6 +128,7 @@ public class HomeActivity extends AppCompatActivity {
             Map<String, Object> userInfo = new HashMap<>();
             userInfo.put("lastSeen", timestamp);
             userInfo.put("online", status);
+            userInfo.put("lastSeenTimeStamp", FieldValue.serverTimestamp());
 
             db.collection("users").document(mAuth.getUid())
                     .update(userInfo)
