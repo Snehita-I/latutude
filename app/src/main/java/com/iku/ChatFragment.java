@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +20,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -92,12 +90,11 @@ public class ChatFragment extends Fragment {
     private boolean isLiked;
 
     private boolean isDisliked;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     public ChatFragment() {
         // Required empty public constructor
     }
-
-    private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -250,7 +247,7 @@ public class ChatFragment extends Fragment {
                 ArrayList<String> emoji4Array = chatadapter.getItem(position).getEmoji4();
                 ArrayList<String> downvotersArray = chatadapter.getItem(position).getDownvoters();
                 String myUID = user.getUid();
-                if(downvotesCount >=0){
+                if (downvotesCount >= 0) {
                     for (String element : downvotersArray) {
                         if (element.contains(myUID)) {
                             isDisliked = true;
@@ -309,9 +306,9 @@ public class ChatFragment extends Fragment {
 
                 if (!isLiked) {
                     Map<String, Object> docData = new HashMap<>();
-                    if(isDisliked){
-                        docData.put("downvoteCount",  chatadapter.getItem(position).getDownvoteCount()- 1);
-                        docData.put("downvoters",FieldValue.arrayRemove(user.getUid()));
+                    if (isDisliked) {
+                        docData.put("downvoteCount", chatadapter.getItem(position).getDownvoteCount() - 1);
+                        docData.put("downvoters", FieldValue.arrayRemove(user.getUid()));
                     }
                     docData.put("upvoteCount", chatadapter.getItem(position).getUpvoteCount() + 1);
                     docData.put("upvoters", FieldValue.arrayUnion(user.getUid()));
@@ -339,10 +336,10 @@ public class ChatFragment extends Fragment {
                                                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                                                         final LeaderboardModel usersData = documentSnapshot.toObject(LeaderboardModel.class);
                                                         Map<String, Object> docData = new HashMap<>();
-                                                        if(isDisliked)
-                                                            docData.put("points",usersData.getPoints() + 2);
+                                                        if (isDisliked)
+                                                            docData.put("points", usersData.getPoints() + 2);
                                                         else
-                                                            docData.put("points",usersData.getPoints() + 1);
+                                                            docData.put("points", usersData.getPoints() + 1);
                                                         db.collection("users").document(chatadapter.getItem(position).getUID())
                                                                 .update(docData)
                                                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -484,42 +481,42 @@ public class ChatFragment extends Fragment {
                 ArrayList<String> HeartDownArray = (ArrayList) documentSnapshot.get("downvoters");
 
 
-                    for (String element : HeartUpArray) {
-                        if (element.contains(user.getUid())) {
-                            heartupLayout.setBackground(getResources().getDrawable(R.drawable.hearts_button_background_selected));
-                            break;
-                        }
+                for (String element : HeartUpArray) {
+                    if (element.contains(user.getUid())) {
+                        heartupLayout.setBackground(getResources().getDrawable(R.drawable.hearts_button_background_selected));
+                        break;
                     }
-                    for (String element : emoji1Array) {
-                        if (element.contains(user.getUid())) {
-                            emoji1Layout.setBackground(getResources().getDrawable(R.drawable.hearts_button_background_selected));
-                            break;
-                        }
+                }
+                for (String element : emoji1Array) {
+                    if (element.contains(user.getUid())) {
+                        emoji1Layout.setBackground(getResources().getDrawable(R.drawable.hearts_button_background_selected));
+                        break;
                     }
-                    for (String element : emoji2Array) {
-                        if (element.contains(user.getUid())) {
-                            emoji2Layout.setBackground(getResources().getDrawable(R.drawable.hearts_button_background_selected));
-                            break;
-                        }
+                }
+                for (String element : emoji2Array) {
+                    if (element.contains(user.getUid())) {
+                        emoji2Layout.setBackground(getResources().getDrawable(R.drawable.hearts_button_background_selected));
+                        break;
                     }
-                    for (String element : emoji3Array) {
-                        if (element.contains(user.getUid())) {
-                            emoji3Layout.setBackground(getResources().getDrawable(R.drawable.hearts_button_background_selected));
-                            break;
-                        }
+                }
+                for (String element : emoji3Array) {
+                    if (element.contains(user.getUid())) {
+                        emoji3Layout.setBackground(getResources().getDrawable(R.drawable.hearts_button_background_selected));
+                        break;
                     }
-                    for (String element : emoji4Array) {
-                        if (element.contains(user.getUid())) {
-                            emoji4Layout.setBackground(getResources().getDrawable(R.drawable.hearts_button_background_selected));
-                            break;
-                        }
+                }
+                for (String element : emoji4Array) {
+                    if (element.contains(user.getUid())) {
+                        emoji4Layout.setBackground(getResources().getDrawable(R.drawable.hearts_button_background_selected));
+                        break;
                     }
-                    for (String element : HeartDownArray) {
-                        if (element.contains(user.getUid())) {
-                            heartdownLayout.setBackground(getResources().getDrawable(R.drawable.hearts_button_background_selected));
-                            break;
-                        }
+                }
+                for (String element : HeartDownArray) {
+                    if (element.contains(user.getUid())) {
+                        heartdownLayout.setBackground(getResources().getDrawable(R.drawable.hearts_button_background_selected));
+                        break;
                     }
+                }
 
 
                 heartUpView.setOnClickListener(new View.OnClickListener() {
@@ -694,7 +691,6 @@ public class ChatFragment extends Fragment {
                                                                         params.putString("uid", user.getUid());
                                                                         mFirebaseAnalytics.logEvent("first_message", params);
 
-                                                                        //Toast.makeText(getActivity(), "Way to go!", Toast.LENGTH_SHORT).show();
 
                                                                     }
                                                                 })
@@ -707,10 +703,8 @@ public class ChatFragment extends Fragment {
 
                                                     }
                                                 } else {
-                                                    Log.d(TAG, "No such document");
                                                 }
                                             } else {
-                                                Log.d(TAG, "get failed with ", task.getException());
                                             }
                                         }
                                     });
@@ -735,9 +729,7 @@ public class ChatFragment extends Fragment {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
-                        Log.i(TAG, "DocumentSnapshot data: " + document.getData());
                         authorOfMessage = (String) document.get("uid");
-                        Log.i(TAG, "onComplete: " + authorOfMessage + " user " + user.getUid());
                         ArrayList<String> HeartUpArray = (ArrayList) document.get("upvoters");
                         ArrayList<String> emoji1Array = (ArrayList) document.get("emoji1");
                         ArrayList<String> emoji2Array = (ArrayList) document.get("emoji2");
@@ -866,14 +858,11 @@ public class ChatFragment extends Fragment {
                         } else if (disliked && emoji == "downvoters") {
                             changeLikesArray(messageDocumentID, emoji, "downvoters", upvotesCount, downvotesCount, authorOfMessage, position);
                         } else if (!HeartupLiked && !emoji1Liked && !emoji2Liked && !emoji3Liked && !emoji4Liked && !disliked) {
-                            Log.d(TAG, "newLikeorDislike function called");
                             newLikeorDislike(messageDocumentID, emoji, upvotesCount, downvotesCount, authorOfMessage, position);
                         }
                     } else {
-                        Log.d(TAG, "No such document");
                     }
                 } else {
-                    Log.d(TAG, "get failed with ", task.getException());
                 }
             }
         });

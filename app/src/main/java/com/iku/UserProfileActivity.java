@@ -2,7 +2,6 @@ package com.iku;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -79,7 +78,7 @@ public class UserProfileActivity extends AppCompatActivity {
                             if (document.exists()) {
                                 String firstLetter, secondLetter;
                                 String url = (String) document.get("imageUrl");
-                                Log.i(TAG, "onComplete: " + url);
+
                                 if (url != null) {
                                     Picasso.get()
                                             .load(url)
@@ -114,10 +113,9 @@ public class UserProfileActivity extends AppCompatActivity {
                                     profilePicture.setImageDrawable(drawable);
                                 }
                             } else {
-                                Log.d(TAG, "No such document");
+
                             }
                         } else {
-                            Log.d(TAG, "get failed with ", task.getException());
                         }
                     }
                 });
@@ -131,7 +129,6 @@ public class UserProfileActivity extends AppCompatActivity {
                         public void onEvent(@Nullable QuerySnapshot querySnapshot,
                                             @Nullable FirebaseFirestoreException e) {
                             if (e != null) {
-                                Log.w(TAG, "Listen error", e);
                                 return;
                             }
 

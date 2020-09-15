@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,21 +35,14 @@ import java.util.Map;
  */
 public class ProfileFragment extends Fragment {
 
-    private FirebaseAuth mAuth;
-
-    private FirebaseFirestore db;
-
-    private FirebaseUser user;
-
-    private FirebaseAnalytics mFirebaseAnalytics;
-
-    private String photoUrl;
-
-    private MaterialTextView userHeartsTextView;
-
-    private FragmentProfileBinding profileBinding;
-
     private static final String TAG = ProfileFragment.class.getSimpleName();
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
+    private FirebaseUser user;
+    private FirebaseAnalytics mFirebaseAnalytics;
+    private String photoUrl;
+    private MaterialTextView userHeartsTextView;
+    private FragmentProfileBinding profileBinding;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -164,7 +156,6 @@ public class ProfileFragment extends Fragment {
                         @Override
                         public void onSuccess(Void aVoid) {
 
-                            Log.i(TAG, "onSuccess: ");
                             //Log event
                             Bundle down_params = new Bundle();
                             down_params.putString("received_picture", "User has google or FB picture");

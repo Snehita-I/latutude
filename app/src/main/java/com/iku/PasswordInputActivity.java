@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -27,17 +26,12 @@ import java.util.Date;
 
 public class PasswordInputActivity extends AppCompatActivity {
 
-    private ActivityPasswordInputBinding binding;
-
-    private FirebaseAuth firebaseAuth;
-
-    private FirebaseUser user;
-
-    private FirebaseAnalytics mFirebaseAnalytics;
-
-    private ProgressDialog mProgress;
     private static final String TAG = PasswordInputActivity.class.getSimpleName();
-
+    private ActivityPasswordInputBinding binding;
+    private FirebaseAuth firebaseAuth;
+    private FirebaseUser user;
+    private FirebaseAnalytics mFirebaseAnalytics;
+    private ProgressDialog mProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,7 +96,6 @@ public class PasswordInputActivity extends AppCompatActivity {
                                             }
                                         } else {
                                             binding.signinButton.setEnabled(true);
-                                            Log.d(TAG, "Failed with: ", task.getException());
                                         }
                                     }
                                 });

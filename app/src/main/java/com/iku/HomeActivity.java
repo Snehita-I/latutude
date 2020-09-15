@@ -1,20 +1,12 @@
 package com.iku;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.app.NotificationManager;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.view.KeyCharacterMap;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewConfiguration;
-import android.view.ViewTreeObserver;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
@@ -26,18 +18,13 @@ import androidx.fragment.app.FragmentManager;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.iku.databinding.ActivityHomeBinding;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.net.InetAddress;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,19 +33,24 @@ import nl.joery.animatedbottombar.AnimatedBottomBar;
 
 public class HomeActivity extends AppCompatActivity {
 
-    private ActivityHomeBinding homeBinding;
-
-    private FragmentManager fragmentManager;
-
-    private FirebaseFirestore db;
-
-    private FirebaseAuth mAuth;
-
-    boolean doubleBackToExitPressedOnce = false;
-
     private static final String TAG = HomeActivity.class.getSimpleName();
-
+    boolean doubleBackToExitPressedOnce = false;
+    private ActivityHomeBinding homeBinding;
+    private FragmentManager fragmentManager;
+    private FirebaseFirestore db;
+    private FirebaseAuth mAuth;
     private FirebaseAnalytics mFirebaseAnalytics;
+
+    public static void hideKeyboard(Activity activity) {
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        //Find the currently focused view, so we can grab the correct window token from it.
+        View view = activity.getCurrentFocus();
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        if (view == null) {
+            view = new View(activity);
+        }
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,14 +127,12 @@ public class HomeActivity extends AppCompatActivity {
                     fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment)
                             .commit();
                 } else {
-                    Log.e(TAG, "Error in creating Fragment");
                 }
             }
         });
     }
 
-
-    private void setLastSeen(Boolean status){
+    private void setLastSeen(Boolean status) {
         Date d = new Date();
         long timestamp = d.getTime();
 
@@ -182,17 +172,6 @@ public class HomeActivity extends AppCompatActivity {
         setLastSeen(true);
         NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancelAll();
-    }
-
-    public static void hideKeyboard(Activity activity) {
-        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        //Find the currently focused view, so we can grab the correct window token from it.
-        View view = activity.getCurrentFocus();
-        //If no view currently has focus, create a new one, just so we can grab a window token from it
-        if (view == null) {
-            view = new View(activity);
-        }
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
     @Override

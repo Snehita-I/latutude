@@ -34,21 +34,17 @@ import java.util.Map;
 
 public class IkuFirebaseMessagingService extends FirebaseMessagingService {
 
+    private static final String TAG = IkuFirebaseMessagingService.class.getSimpleName();
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
     private FirebaseUser user;
-
     private long timeStamp;
-    private static final String TAG = IkuFirebaseMessagingService.class.getSimpleName();
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
 
-        Log.d(TAG, "onMessageReceived: new incoming message.");
         String title = remoteMessage.getData().get("title");
         String message = remoteMessage.getData().get("message");
-
-        Log.d(TAG, "onMessageReceived: i am running" + message + title);
 
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
@@ -63,7 +59,6 @@ public class IkuFirebaseMessagingService extends FirebaseMessagingService {
                         if (task.isSuccessful()) {
                             DocumentSnapshot document = task.getResult();
                             timeStamp = (long) document.get("lastSeen");
-                            Log.d(TAG, "onComplete: " + timeStamp);
 
                             db.collection("iku_earth_messages").whereGreaterThan("timestamp", timeStamp).orderBy("timestamp", Query.Direction.DESCENDING).limit(4)
                                     .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -74,10 +69,8 @@ public class IkuFirebaseMessagingService extends FirebaseMessagingService {
                                             titleList.add((String) document.get("userName"));
                                             messageList.add((String) document.get("message"));
                                         }
-                                        Log.i(TAG, "onComplete: " + titleList + "\nMESSAGES" + messageList);
                                         sendMessageNotification(title, message, titleList, messageList);
                                     } else {
-                                        Log.d(TAG, "Error getting documents: ", task.getException());
                                     }
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
@@ -88,7 +81,6 @@ public class IkuFirebaseMessagingService extends FirebaseMessagingService {
                             });
 
                         } else {
-                            Log.d(TAG, "Error getting documents: ", task.getException());
                         }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
@@ -111,10 +103,8 @@ public class IkuFirebaseMessagingService extends FirebaseMessagingService {
         Notification.InboxStyle notification = new Notification.InboxStyle();
         notification.setBigContentTitle("#IkuExperiment");
 
-        Log.i(TAG, "sendMessageNotification: " + titles.size());
         if (titles.size() > 0) {
             for (int i = titles.size() - 1; i >= 0; i--) {
-                Log.i(TAG, "sendMessageNotification: Inside" + i);
                 notification.addLine(titles.get(i) + ": " + messages.get(i));
             }
         }

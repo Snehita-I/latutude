@@ -9,7 +9,6 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -51,28 +50,18 @@ import java.util.Map;
 
 public class ChatImageActivity extends AppCompatActivity {
 
+    public static final String DATE_FORMAT = "yyyyMMdd_HHmmss";
     private StorageReference mStorageRef;
-
     private FirebaseAuth mAuth;
-
     private FirebaseUser user;
-
     private FirebaseFirestore db;
-
     private FirebaseAnalytics mFirebaseAnalytics;
-
     private SimpleDateFormat dateFormatter;
-
     private Uri mImageUri;
-
     private File file;
     private File sourceFile;
     private File destFile;
-
     private int PICK_IMAGE = 1;
-
-    public static final String DATE_FORMAT = "yyyyMMdd_HHmmss";
-
     private int STORAGE_PERMISSION_CODE = 10;
 
     private String[] appPermissions = {
@@ -83,6 +72,22 @@ public class ChatImageActivity extends AppCompatActivity {
     private ActivityChatImageBinding chatImageBinding;
 
     private String TAG = ChatImageActivity.class.getSimpleName();
+
+    public static void closeSilently(Closeable c) {
+        if (c == null)
+            return;
+        try {
+            c.close();
+        } catch (Throwable t) {
+            // Do nothing
+        }
+    }
+
+    private static String getTempFilename(Context context) throws IOException {
+        File outputDir = context.getCacheDir();
+        File outputFile = File.createTempFile("image", "tmp", outputDir);
+        return outputFile.getAbsolutePath();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,7 +145,6 @@ public class ChatImageActivity extends AppCompatActivity {
 
     private void uploadFile(String message) {
         Uri finalUri = Uri.fromFile(destFile);
-        Log.d(TAG, "uploadFile: " + finalUri);
         if (finalUri != null) {
             StorageReference imageRef = mStorageRef.child("IKU-img_"
                     + dateFormatter.format(new Date()) + ".png");
@@ -211,10 +215,8 @@ public class ChatImageActivity extends AppCompatActivity {
 
                                                             }
                                                         } else {
-                                                            Log.d(TAG, "No such document");
                                                         }
                                                     } else {
-                                                        Log.d(TAG, "get failed with ", task.getException());
                                                     }
                                                 }
                                             });
@@ -234,7 +236,6 @@ public class ChatImageActivity extends AppCompatActivity {
                             })
                             .addOnFailureListener(e -> {
                                 chatImageBinding.sendMessageButton.setClickable(true);
-                                Toast.makeText(ChatImageActivity.this, e.toString(), Toast.LENGTH_LONG).show();
                             });
                 });
             });
@@ -256,23 +257,19 @@ public class ChatImageActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE && resultCode == RESULT_OK && data != null) {
             mImageUri = data.getData();
-            Log.i(TAG, "onActivityResult: " + mImageUri);
-            Log.d(TAG + ".PICK_GALLERY_IMAGE", "Selected image uri path :" + mImageUri.toString());
-
 
             sourceFile = new File(getPathFromGooglePhotosUri(mImageUri));
 
             destFile = new File(file, "IKU-img_"
                     + dateFormatter.format(new Date()) + ".png");
 
-            Log.d(TAG, "Source File Path :" + sourceFile);
 
             try {
                 copyFile(sourceFile, destFile);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            Bitmap bitmap =decodeFile(destFile);
+            Bitmap bitmap = decodeFile(destFile);
             chatImageBinding.chosenImage.setImageBitmap(bitmap);
         } else
             onBackPressed();
@@ -329,13 +326,8 @@ public class ChatImageActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        Log.d(TAG, "Width :" + b.getWidth() + " Height :" + b.getHeight());
-
         destFile = new File(file, "IKU-img_"
                 + dateFormatter.format(new Date()) + ".png");
-
-        Log.d(TAG, "decodeFile: " + destFile);
-
 
         try {
             FileOutputStream out = new FileOutputStream(destFile);
@@ -376,22 +368,6 @@ public class ChatImageActivity extends AppCompatActivity {
             closeSilently(output);
         }
         return null;
-    }
-
-    public static void closeSilently(Closeable c) {
-        if (c == null)
-            return;
-        try {
-            c.close();
-        } catch (Throwable t) {
-            // Do nothing
-        }
-    }
-
-    private static String getTempFilename(Context context) throws IOException {
-        File outputDir = context.getCacheDir();
-        File outputFile = File.createTempFile("image", "tmp", outputDir);
-        return outputFile.getAbsolutePath();
     }
 
     private void copyFile(File sourceFile, File destFile) throws IOException {

@@ -48,7 +48,14 @@ import java.util.Map;
 
 public class ReportBugActivity extends AppCompatActivity {
 
-
+    ImageView d1, d2, d3;
+    EditText messageEntered;
+    Button upload;
+    String myArray[] = new String[3];
+    Uri UriArray[] = new Uri[3];
+    List<Uri> myList = new ArrayList<>();
+    List<String> finalUrl = new ArrayList<>();
+    Uri mainUri;
     private SimpleDateFormat formatter;
     private EditText feedbackText;
     private FirebaseAuth fAuth;
@@ -64,29 +71,36 @@ public class ReportBugActivity extends AppCompatActivity {
     private FirebaseUser user;
     private StorageReference mStorageRef;
     private FirebaseAnalytics mFirebaseAnalytics;
-
-
     private ProgressDialog mProgress;
-
-    ImageView d1, d2, d3;
-    EditText messageEntered;
-    Button upload;
     private FirebaseAuth mAuth;
-
     private FirebaseFirestore db;
     private ImageView img1, img2, img3, img4;
-    String myArray[] = new String[3];
-    Uri UriArray[] = new Uri[3];
-
     private int counter = 0;
-    List<Uri> myList = new ArrayList<>();
-    List<String> finalUrl = new ArrayList<>();
-
-    Uri mainUri;
-
     private Date d;
 
     private ActivityReportBugBinding reportBugBinding;
+
+    public static Bitmap decodeUri(Context c, Uri uri, final int requiredSize) throws
+            FileNotFoundException {
+        BitmapFactory.Options o = new BitmapFactory.Options();
+        o.inJustDecodeBounds = true;
+        BitmapFactory.decodeStream(c.getContentResolver().openInputStream(uri), null, o);
+
+        int width_tmp = o.outWidth, height_tmp = o.outHeight;
+        int scale = 1;
+
+        while (true) {
+            if (width_tmp / 2 < requiredSize || height_tmp / 2 < requiredSize)
+                break;
+            width_tmp /= 2;
+            height_tmp /= 2;
+            scale *= 2;
+        }
+
+        BitmapFactory.Options o2 = new BitmapFactory.Options();
+        o2.inSampleSize = scale;
+        return BitmapFactory.decodeStream(c.getContentResolver().openInputStream(uri), null, o2);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -322,35 +336,12 @@ public class ReportBugActivity extends AppCompatActivity {
             onBackPressed();
     }
 
-
     private String getFileExtension(Uri uri) {
         if (uri != null) {
             ContentResolver cR = getContentResolver();
             MimeTypeMap mime = MimeTypeMap.getSingleton();
             return mime.getExtensionFromMimeType(cR.getType(uri));
         } else return null;
-    }
-
-    public static Bitmap decodeUri(Context c, Uri uri, final int requiredSize) throws
-            FileNotFoundException {
-        BitmapFactory.Options o = new BitmapFactory.Options();
-        o.inJustDecodeBounds = true;
-        BitmapFactory.decodeStream(c.getContentResolver().openInputStream(uri), null, o);
-
-        int width_tmp = o.outWidth, height_tmp = o.outHeight;
-        int scale = 1;
-
-        while (true) {
-            if (width_tmp / 2 < requiredSize || height_tmp / 2 < requiredSize)
-                break;
-            width_tmp /= 2;
-            height_tmp /= 2;
-            scale *= 2;
-        }
-
-        BitmapFactory.Options o2 = new BitmapFactory.Options();
-        o2.inSampleSize = scale;
-        return BitmapFactory.decodeStream(c.getContentResolver().openInputStream(uri), null, o2);
     }
 
     public Uri getImageUri(Context inContext, Bitmap inImage) {
@@ -388,7 +379,6 @@ public class ReportBugActivity extends AppCompatActivity {
 
                                 finalUrl.add(uri.toString());
 
-                                //Toast.makeText(ReportBugActivity.this, "uri added", Toast.LENGTH_LONG).show();
                                 if (counter == myList.size()) {
                                     uploadToDB();
                                 }
@@ -406,7 +396,7 @@ public class ReportBugActivity extends AppCompatActivity {
 
     private void uploadToDB() {
 
-        if (messageEntered.getText().toString().trim().isEmpty()){
+        if (messageEntered.getText().toString().trim().isEmpty()) {
             Toast.makeText(this, "Err add some details!", Toast.LENGTH_SHORT).show();
             mProgress.dismiss();
         } else {

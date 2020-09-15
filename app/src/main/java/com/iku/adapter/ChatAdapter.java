@@ -33,18 +33,17 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
     public static final int MSG_TYPE_RIGHT = 1;
     public static final int MSG_TYPE_IMAGE_LEFT = 2;
     public static final int MSG_TYPE_IMAGE_RIGHT = 3;
-
+    private static final String TAG = ChatAdapter.class.getSimpleName();
     private ChatAdapter.OnItemClickListener listener;
-
     private ChatAdapter.onItemLongClickListener longClickListener;
-
     private Context mContext;
-
     private SimpleDateFormat sfd = new SimpleDateFormat("hh:mm a");
-
     private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-    private static final String TAG = ChatAdapter.class.getSimpleName();
+    public ChatAdapter(Context context, @NonNull FirestoreRecyclerOptions<ChatModel> options) {
+        super(options);
+        mContext = context;
+    }
 
     @Override
     protected void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i, @NonNull final ChatModel chatModel) {
@@ -60,12 +59,12 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
                 chatLeftViewHolder.messageTime3.setText(sfd.format(new Date(timeStampLeft)));
                 chatLeftViewHolder.senderName.setText(chatModel.getUserName());
                 //Change the visibilty according to the visibility of the sender's name.
-                if(chatLeftViewHolder.edited.getVisibility() == View.VISIBLE){
+                if (chatLeftViewHolder.edited.getVisibility() == View.VISIBLE) {
                     chatLeftViewHolder.messageTime3.setVisibility(View.VISIBLE);
                     chatLeftViewHolder.messageTime.setVisibility(View.GONE);
-                }else{
+                } else {
                     //Change the visibilities according to senderName's visibility
-                    if(chatLeftViewHolder.senderName.getVisibility() == View.VISIBLE) {
+                    if (chatLeftViewHolder.senderName.getVisibility() == View.VISIBLE) {
                         chatLeftViewHolder.messageTime.setVisibility(View.VISIBLE);
                         chatLeftViewHolder.messageTime2.setVisibility(View.GONE);
                         chatLeftViewHolder.messageTime3.setVisibility(View.GONE);
@@ -74,7 +73,7 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
                             chatLeftViewHolder.messageTime2.setVisibility(View.VISIBLE);
                             chatLeftViewHolder.messageTime.setVisibility(View.GONE);
                             chatLeftViewHolder.messageTime3.setVisibility(View.GONE);
-                        }else {
+                        } else {
                             chatLeftViewHolder.messageTime3.setVisibility(View.VISIBLE);
                             chatLeftViewHolder.messageTime.setVisibility(View.GONE);
                             chatLeftViewHolder.messageTime2.setVisibility(View.GONE);
@@ -152,13 +151,13 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
                 chatRightViewHolder.messageTime2.setText(sfd.format(new Date(timeStampRight)));
                 chatRightViewHolder.upvoteCount.setText(String.valueOf(chatModel.getUpvoteCount()));
 
-                if(chatRightViewHolder.edited.getVisibility() == View.VISIBLE){
+                if (chatRightViewHolder.edited.getVisibility() == View.VISIBLE) {
                     chatRightViewHolder.messageTime2.setVisibility(View.VISIBLE);
-                }else if(chatRightViewHolder.edited.getVisibility() == View.GONE){
-                    if(chatModel.getMessage().length() <= 25) {
+                } else if (chatRightViewHolder.edited.getVisibility() == View.GONE) {
+                    if (chatModel.getMessage().length() <= 25) {
                         chatRightViewHolder.messageTime.setVisibility(View.VISIBLE);
                         chatRightViewHolder.messageTime2.setVisibility(View.GONE);
-                    }else{
+                    } else {
                         chatRightViewHolder.messageTime2.setVisibility(View.VISIBLE);
                         chatRightViewHolder.messageTime.setVisibility(View.GONE);
 
@@ -177,17 +176,17 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
                 chatLeftImageViewHolder.messageTime3.setText(sfd.format(new Date(timeStampImageLeft)));
                 chatLeftImageViewHolder.senderName.setText(chatModel.getUserName());
 
-                if(chatLeftImageViewHolder.edited.getVisibility() == View.VISIBLE){
+                if (chatLeftImageViewHolder.edited.getVisibility() == View.VISIBLE) {
                     chatLeftImageViewHolder.messageTime3.setVisibility(View.VISIBLE);
                     chatLeftImageViewHolder.messageTime.setVisibility(View.GONE);
                     chatLeftImageViewHolder.messageTime2.setVisibility(View.GONE);
-                }else{
+                } else {
                     //Change the visibilities according to senderName's visibility
-                    if(chatLeftImageViewHolder.senderName.getVisibility() == View.VISIBLE) {
+                    if (chatLeftImageViewHolder.senderName.getVisibility() == View.VISIBLE) {
                         chatLeftImageViewHolder.messageTime.setVisibility(View.VISIBLE);
                         chatLeftImageViewHolder.messageTime2.setVisibility(View.GONE);
                         chatLeftImageViewHolder.messageTime3.setVisibility(View.GONE);
-                    }else {
+                    } else {
                         if (chatModel.getMessage().length() <= 25) {
                             chatLeftImageViewHolder.messageTime2.setVisibility(View.VISIBLE);
                             chatLeftImageViewHolder.messageTime.setVisibility(View.GONE);
@@ -257,13 +256,13 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
                 chatRightImageViewHolder.messageText.setText(chatModel.getMessage());
                 chatRightImageViewHolder.messageTime.setText(sfd.format(new Date(timeStampImageRight)));
                 chatRightImageViewHolder.messageTime2.setText(sfd.format(new Date(timeStampImageRight)));
-                if(chatRightImageViewHolder.edited.getVisibility() == View.VISIBLE)
+                if (chatRightImageViewHolder.edited.getVisibility() == View.VISIBLE)
                     chatRightImageViewHolder.messageTime2.setVisibility(View.VISIBLE);
-                else{
-                    if(chatModel.getMessage().length() <= 25) {
+                else {
+                    if (chatModel.getMessage().length() <= 25) {
                         chatRightImageViewHolder.messageTime.setVisibility(View.VISIBLE);
                         chatRightImageViewHolder.messageTime2.setVisibility(View.GONE);
-                    }else {
+                    } else {
                         chatRightImageViewHolder.messageTime2.setVisibility(View.VISIBLE);
                         chatRightImageViewHolder.messageTime.setVisibility(View.GONE);
 
@@ -323,9 +322,60 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
         }
     }
 
+    public void setOnItemClickListener(ChatAdapter.OnItemClickListener listener) {
+        this.listener = listener;
+    }
+
+    public void setOnItemLongClickListener(ChatAdapter.onItemLongClickListener listener) {
+        this.longClickListener = listener;
+    }
+
+    @NonNull
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view;
+
+        if (viewType == MSG_TYPE_RIGHT) {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_right, parent, false);
+            return new ChatRightViewHolder(view);
+        } else if (viewType == MSG_TYPE_LEFT) {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_left, parent, false);
+            return new ChatLeftViewHolder(view);
+        } else if (viewType == MSG_TYPE_IMAGE_LEFT) {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_left_image, parent, false);
+            return new ChatLeftImageViewHolder(view);
+        } else if (viewType == MSG_TYPE_IMAGE_RIGHT) {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_right_image, parent, false);
+            return new ChatRightImageViewHolder(view);
+        } else
+            return null;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (getItem(position).getUID().equals(user.getUid()) && getItem(position).getType().equals("text")) {
+            return MSG_TYPE_RIGHT;
+        } else if (!getItem(position).getUID().equals(user.getUid()) && getItem(position).getType().equals("text")) {
+            return MSG_TYPE_LEFT;
+        } else if (!getItem(position).getUID().equals(user.getUid()) && getItem(position).getType().equals("image")) {
+            return MSG_TYPE_IMAGE_LEFT;
+        } else if (getItem(position).getType().equals("image") && getItem(position).getimageUrl() != null && getItem(position).getUID().equals(user.getUid()))
+            return MSG_TYPE_IMAGE_RIGHT;
+        else
+            return 0;
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(DocumentSnapshot documentSnapshot, int position);
+    }
+
+    public interface onItemLongClickListener {
+        void onItemLongClick(DocumentSnapshot documentSnapshot, int position);
+    }
+
     public class ChatLeftViewHolder extends RecyclerView.ViewHolder {
 
-        private MaterialTextView messageText, messageTime, messageTime2, messageTime3,  senderName, upvoteCount, edited;
+        private MaterialTextView messageText, messageTime, messageTime2, messageTime3, senderName, upvoteCount, edited;
 
         public ChatLeftViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -476,61 +526,5 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
             });
 
         }
-    }
-
-    public interface OnItemClickListener {
-        void onItemClick(DocumentSnapshot documentSnapshot, int position);
-    }
-
-    public void setOnItemClickListener(ChatAdapter.OnItemClickListener listener) {
-        this.listener = listener;
-    }
-
-    public interface onItemLongClickListener {
-        void onItemLongClick(DocumentSnapshot documentSnapshot, int position);
-    }
-
-    public void setOnItemLongClickListener(ChatAdapter.onItemLongClickListener listener) {
-        this.longClickListener = listener;
-    }
-
-    public ChatAdapter(Context context, @NonNull FirestoreRecyclerOptions<ChatModel> options) {
-        super(options);
-        mContext = context;
-    }
-
-    @NonNull
-    @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view;
-
-        if (viewType == MSG_TYPE_RIGHT) {
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_right, parent, false);
-            return new ChatRightViewHolder(view);
-        } else if (viewType == MSG_TYPE_LEFT) {
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_left, parent, false);
-            return new ChatLeftViewHolder(view);
-        } else if (viewType == MSG_TYPE_IMAGE_LEFT) {
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_left_image, parent, false);
-            return new ChatLeftImageViewHolder(view);
-        } else if (viewType == MSG_TYPE_IMAGE_RIGHT) {
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_right_image, parent, false);
-            return new ChatRightImageViewHolder(view);
-        } else
-            return null;
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        if (getItem(position).getUID().equals(user.getUid()) && getItem(position).getType().equals("text")) {
-            return MSG_TYPE_RIGHT;
-        } else if (!getItem(position).getUID().equals(user.getUid()) && getItem(position).getType().equals("text")) {
-            return MSG_TYPE_LEFT;
-        } else if (!getItem(position).getUID().equals(user.getUid()) && getItem(position).getType().equals("image")) {
-            return MSG_TYPE_IMAGE_LEFT;
-        } else if (getItem(position).getType().equals("image") && getItem(position).getimageUrl() != null && getItem(position).getUID().equals(user.getUid()))
-            return MSG_TYPE_IMAGE_RIGHT;
-        else
-            return 0;
     }
 }

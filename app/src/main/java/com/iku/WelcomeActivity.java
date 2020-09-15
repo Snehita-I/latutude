@@ -37,7 +37,6 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.iku.databinding.ActivityWelcomeBinding;
@@ -48,21 +47,13 @@ import java.util.Map;
 
 public class WelcomeActivity extends AppCompatActivity {
 
-    private CallbackManager mCallbackManager;
-
-    private ActivityWelcomeBinding binding;
-
-    private GoogleSignInClient mGoogleSignInClient;
-
-    private FirebaseAuth mAuth;
-
-    private ProgressDialog mProgress;
-
-
-    private FirebaseFirestore db;
-
     public static final String TAG = WelcomeActivity.class.getSimpleName();
-
+    private CallbackManager mCallbackManager;
+    private ActivityWelcomeBinding binding;
+    private GoogleSignInClient mGoogleSignInClient;
+    private FirebaseAuth mAuth;
+    private ProgressDialog mProgress;
+    private FirebaseFirestore db;
     private int RC_SIGN_IN = 121;
 
     private FirebaseAnalytics mFirebaseAnalytics;
@@ -90,7 +81,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
     }
 
-    private void initItems(){
+    private void initItems() {
         db = FirebaseFirestore.getInstance();
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         mAuth = FirebaseAuth.getInstance();

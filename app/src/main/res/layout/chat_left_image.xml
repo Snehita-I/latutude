@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginTop="4dp"
@@ -13,8 +12,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/chat_receiver_bubble"
-        android:minWidth="160dp"
         android:elevation="1dp"
+        android:minWidth="160dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -48,17 +47,17 @@
             app:layout_constraintBottom_toBottomOf="@+id/sender_name"
             app:layout_constraintEnd_toEndOf="@id/constraintLayout"
             app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintVertical_bias="1.0"
             app:layout_constraintStart_toEndOf="@+id/sender_name"
-            app:layout_constraintTop_toTopOf="@+id/sender_name" />
+            app:layout_constraintTop_toTopOf="@+id/sender_name"
+            app:layout_constraintVertical_bias="1.0" />
 
         <!--Received image is shown here-->
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/receivedImage"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:minWidth="250dp"
             android:layout_marginTop="5dp"
+            android:minWidth="250dp"
             android:scaleType="centerCrop"
             app:layout_constraintDimensionRatio="1"
             app:layout_constraintEnd_toEndOf="@id/constraintLayout"
@@ -68,21 +67,21 @@
         <!--View post button-->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/viewPostButton"
-            android:layout_height="35dp"
+            style="@style/AppTheme"
             android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:background="#60ffffff"
+            android:gravity="center|bottom"
             android:text="View"
             android:textAllCaps="false"
-            style="@style/AppTheme"
-            android:gravity="center|bottom"
+            app:backgroundTint="@android:color/black"
             app:icon="@drawable/ic_next_36"
+            app:iconGravity="textEnd"
             app:iconPadding="10dp"
             app:iconSize="15dp"
-            app:iconGravity="textEnd"
-            android:background="#60ffffff"
-            app:backgroundTint="@android:color/black"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/receivedImage"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="@id/receivedImage"/>
+            app:layout_constraintStart_toStartOf="parent" />
 
         <!--Message container-->
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -109,11 +108,11 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="#4A4A4A"
                 android:textSize="14sp"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintEnd_toStartOf="@id/message_time2"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/message_time2"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@id/constraintLayout2"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <!--Secondary view for timestamp-->
             <TextView
@@ -126,11 +125,11 @@
                 android:textColor="#4A4A4A"
                 android:textSize="12sp"
                 android:visibility="gone"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintVertical_bias="1.0"
                 app:layout_constraintBottom_toBottomOf="@id/message"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/message"/>
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintTop_toTopOf="@id/message"
+                app:layout_constraintVertical_bias="1.0" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -168,9 +167,9 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintVertical_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/constraintLayout2"/>
+            app:layout_constraintTop_toBottomOf="@id/constraintLayout2"
+            app:layout_constraintVertical_bias="1.0" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

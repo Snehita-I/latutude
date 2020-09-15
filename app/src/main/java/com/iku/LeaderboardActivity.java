@@ -3,7 +3,6 @@ package com.iku;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -89,7 +88,6 @@ public class LeaderboardActivity extends AppCompatActivity {
                             heartscount.setText(Integer.toString(totalHearts));
                             playerscount.setText(Integer.toString(totalPlayers));
                         } else {
-                            Log.d("Query", "Error getting documents: ", task.getException());
                         }
                     }
                 });
@@ -169,17 +167,6 @@ public class LeaderboardActivity extends AppCompatActivity {
 
     }
 
-    private class LeaderboardViewHolder extends RecyclerView.ViewHolder {
-
-        private MaterialTextView firstNameTextView, pointsTextView;
-
-        public LeaderboardViewHolder(@NonNull View itemView) {
-            super(itemView);
-            firstNameTextView = itemView.findViewById(R.id.firstname);
-            pointsTextView = itemView.findViewById(R.id.pointsText);
-        }
-    }
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -190,5 +177,16 @@ public class LeaderboardActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         adapter.startListening();
+    }
+
+    private class LeaderboardViewHolder extends RecyclerView.ViewHolder {
+
+        private MaterialTextView firstNameTextView, pointsTextView;
+
+        public LeaderboardViewHolder(@NonNull View itemView) {
+            super(itemView);
+            firstNameTextView = itemView.findViewById(R.id.firstname);
+            pointsTextView = itemView.findViewById(R.id.pointsText);
+        }
     }
 }

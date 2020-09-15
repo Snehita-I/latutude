@@ -21,12 +21,12 @@ public class FeedbackImageModel {
         return subject;
     }
 
-    public String getHtml() {
-        return html;
-    }
-
     public void setSubject(String subject) {
         this.subject = subject;
+    }
+
+    public String getHtml() {
+        return html;
     }
 
     public void setHtml(String html) {

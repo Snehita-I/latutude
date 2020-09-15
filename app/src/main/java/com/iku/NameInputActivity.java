@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -31,18 +30,12 @@ import java.util.Map;
 
 public class NameInputActivity extends AppCompatActivity {
 
-    private ActivityNameInputBinding binding;
-
-    private String email;
-
-    private FirebaseFirestore db;
-
-    private FirebaseAuth fAuth;
-
-    private FirebaseUser user;
-
     public static final String TAG = NameInputActivity.class.getSimpleName();
-
+    private ActivityNameInputBinding binding;
+    private String email;
+    private FirebaseFirestore db;
+    private FirebaseAuth fAuth;
+    private FirebaseUser user;
     private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
@@ -151,7 +144,8 @@ public class NameInputActivity extends AppCompatActivity {
                         else
                             newUserSignUp(firstName, lastName, email);
                     }
-                }}
+                }
+            }
         });
     }
 
@@ -171,7 +165,6 @@ public class NameInputActivity extends AppCompatActivity {
         FirebaseInstanceId.getInstance().getInstanceId()
                 .addOnCompleteListener(task -> {
                     if (!task.isSuccessful()) {
-                        Log.w(TAG, "getInstanceId failed", task.getException());
                         return;
                     }
 
@@ -217,7 +210,6 @@ public class NameInputActivity extends AppCompatActivity {
                                     }
                                 })
                                 .addOnFailureListener(e -> {
-                                    Log.w(TAG, "Error writing document", e);
                                     /*Log event*/
                                     Bundle failed_bundle = new Bundle();
                                     failed_bundle.putString(FirebaseAnalytics.Param.METHOD, "Email");

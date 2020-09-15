@@ -52,40 +52,55 @@ import java.util.Map;
 public class SettingsActivity extends AppCompatActivity {
 
 
-    private StorageReference mStorageRef;
-
-    private SimpleDateFormat formatter;
-
-    private CardView goToReportABugActivity;
-
-    private ProgressDialog mProgress;
-
     ImageView d1, d2, d3;
     EditText messageEntered;
     Button upload;
     int PICK_IMAGE = 1;
     int stars = 0;
+    String myArray[] = new String[3];
+    Uri UriArray[] = new Uri[3];
+    ImageView s[] = new ImageView[5];
+    List<Uri> myList = new ArrayList<>();
+    List<String> finalUrl = new ArrayList<>();
+    String text;
+    Uri mainUri;
+    private StorageReference mStorageRef;
+    private SimpleDateFormat formatter;
+    private CardView goToReportABugActivity;
+    private ProgressDialog mProgress;
     private FirebaseAuth mAuth;
     private FirebaseUser user;
     private FirebaseFirestore db;
     private FirebaseAnalytics mFirebaseAnalytics;
-
     private int STORAGE_PERMISSION_CODE = 10;
     private ImageView img1, img2, img3, img4;
-    String myArray[] = new String[3];
-    Uri UriArray[] = new Uri[3];
-    ImageView s[] = new ImageView[5];
     private int counter = 0;
-    List<Uri> myList = new ArrayList<>();
-    List<String> finalUrl = new ArrayList<>();
-    String text;
     private String html;
     private String subject;
     private String images;
     private String imageSrc;
-    Uri mainUri;
-
     private ActivitySettingsBinding settingsBinding;
+
+    public static Bitmap decodeUri(Context c, Uri uri, final int requiredSize) throws FileNotFoundException {
+        BitmapFactory.Options o = new BitmapFactory.Options();
+        o.inJustDecodeBounds = true;
+        BitmapFactory.decodeStream(c.getContentResolver().openInputStream(uri), null, o);
+
+        int width_tmp = o.outWidth, height_tmp = o.outHeight;
+        int scale = 1;
+
+        while (true) {
+            if (width_tmp / 2 < requiredSize || height_tmp / 2 < requiredSize)
+                break;
+            width_tmp /= 2;
+            height_tmp /= 2;
+            scale *= 2;
+        }
+
+        BitmapFactory.Options o2 = new BitmapFactory.Options();
+        o2.inSampleSize = scale;
+        return BitmapFactory.decodeStream(c.getContentResolver().openInputStream(uri), null, o2);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -383,34 +398,12 @@ public class SettingsActivity extends AppCompatActivity {
             onBackPressed();
     }
 
-
     private String getFileExtension(Uri uri) {
         if (uri != null) {
             ContentResolver cR = getContentResolver();
             MimeTypeMap mime = MimeTypeMap.getSingleton();
             return mime.getExtensionFromMimeType(cR.getType(uri));
         } else return null;
-    }
-
-    public static Bitmap decodeUri(Context c, Uri uri, final int requiredSize) throws FileNotFoundException {
-        BitmapFactory.Options o = new BitmapFactory.Options();
-        o.inJustDecodeBounds = true;
-        BitmapFactory.decodeStream(c.getContentResolver().openInputStream(uri), null, o);
-
-        int width_tmp = o.outWidth, height_tmp = o.outHeight;
-        int scale = 1;
-
-        while (true) {
-            if (width_tmp / 2 < requiredSize || height_tmp / 2 < requiredSize)
-                break;
-            width_tmp /= 2;
-            height_tmp /= 2;
-            scale *= 2;
-        }
-
-        BitmapFactory.Options o2 = new BitmapFactory.Options();
-        o2.inSampleSize = scale;
-        return BitmapFactory.decodeStream(c.getContentResolver().openInputStream(uri), null, o2);
     }
 
     public Uri getImageUri(Context inContext, Bitmap inImage) {
@@ -448,7 +441,6 @@ public class SettingsActivity extends AppCompatActivity {
 
                                 finalUrl.add(uri.toString());
 
-                                //Toast.makeText(SettingsActivity.this, "uri added", Toast.LENGTH_LONG).show();
                                 if (counter == myList.size()) {
                                     uploadToDB();
                                 }
@@ -538,7 +530,6 @@ public class SettingsActivity extends AppCompatActivity {
                         mFirebaseAnalytics.logEvent("feedback", failed_bundle);
 
                         Toast.makeText(SettingsActivity.this, "err.. can you try that again?", Toast.LENGTH_LONG).show();
-                        //Toast.makeText(SettingsActivity.this, e.toString(), Toast.LENGTH_LONG).show();
                     }
                 });
 
