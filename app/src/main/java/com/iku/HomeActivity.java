@@ -153,6 +153,9 @@ public class HomeActivity extends AppCompatActivity {
             userDevInfo.put("Android", Build.VERSION.SDK_INT);
             userDevInfo.put("Release", Build.VERSION.RELEASE);
             userDevInfo.put("Kernel", System.getProperty("os.version"));
+            userDevInfo.put("Version Name",BuildConfig.VERSION_NAME);
+            userDevInfo.put("Version Code",BuildConfig.VERSION_CODE);
+            userDevInfo.put("infoTime", FieldValue.serverTimestamp());
             db.collection("usersVerifiedInfo").document(mAuth.getUid())
                     .set(userDevInfo)
                     .addOnSuccessListener(aVoid -> {
