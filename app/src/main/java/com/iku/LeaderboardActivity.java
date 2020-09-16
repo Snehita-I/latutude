@@ -1,5 +1,6 @@
 package com.iku;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.ImageView;
@@ -102,7 +103,7 @@ public class LeaderboardActivity extends AppCompatActivity {
 
         backButton.setOnClickListener(view -> onBackPressed());
 
-        leaderboardadapter.setOnItemClickListener(() -> {
+        leaderboardadapter.setOnItemClickOfSameUidListener(() -> {
             final KonfettiView viewConfetti = findViewById(R.id.viewConfetti);
 
             Toast.makeText(LeaderboardActivity.this, "- drum roll -", Toast.LENGTH_SHORT).show();
@@ -116,6 +117,15 @@ public class LeaderboardActivity extends AppCompatActivity {
                     .addSizes(new Size(10, 10f))
                     .setPosition(-50f, viewConfetti.getWidth() + 50f, -50f, -50f)
                     .streamFor(300, 5000L);
+
+        });
+
+        leaderboardadapter.setOnItemClickOfDiffUidListener((String uid, String name) -> {
+            Intent userProfileIntent = new Intent(this, UserProfileActivity.class);
+
+            userProfileIntent.putExtra("EXTRA_PERSON_NAME", name);
+            userProfileIntent.putExtra("EXTRA_PERSON_UID", uid);
+            startActivity(userProfileIntent);
 
         });
     }

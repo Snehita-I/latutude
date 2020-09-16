@@ -2,7 +2,6 @@ package com.iku.adapter;
 
 import android.graphics.Color;
 import android.os.CountDownTimer;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +20,8 @@ import com.iku.models.LeaderboardModel;
 public class LeaderBoardAdapter extends FirestorePagingAdapter<LeaderboardModel, RecyclerView.ViewHolder> {
 
     private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    private LeaderBoardAdapter.OnItemClickListener listener;
+    private LeaderBoardAdapter.OnItemClickOfSameUidListener listener;
+    private LeaderBoardAdapter.OnItemClickOfDiffUidListener listenerDiff;
 
     public LeaderBoardAdapter(@NonNull FirestorePagingOptions<LeaderboardModel> options) {
         super(options);
@@ -56,27 +56,36 @@ public class LeaderBoardAdapter extends FirestorePagingAdapter<LeaderboardModel,
             itemView.setOnClickListener(view -> {
                 LeaderboardModel leaderboardModel = getItem(getAdapterPosition()).toObject(LeaderboardModel.class);
                 if (leaderboardModel.getUid().equals(user.getUid())) {
-                    Log.i("TEST", "onClick => Current user : " + leaderboardModel.getUid());
-                    listener.onItemClick();
+                    listener.onItemOfSameUidClick();
                     new CountDownTimer(10000, 1000) {
                         public void onTick(long millisUntilFinished) {
                             itemView.setEnabled(false);
                         }
+
                         public void onFinish() {
                             itemView.setEnabled(true);
                         }
                     }.start();
-                }
+                } else
+                    listenerDiff.onItemOfDiffUidClick(leaderboardModel.getUid(), leaderboardModel.getFirstName() + " " + leaderboardModel.getLastName());
             });
         }
     }
 
-    public void setOnItemClickListener(LeaderBoardAdapter.OnItemClickListener listener) {
+    public void setOnItemClickOfSameUidListener(LeaderBoardAdapter.OnItemClickOfSameUidListener listener) {
         this.listener = listener;
     }
 
-    public interface OnItemClickListener {
-        void onItemClick();
+    public void setOnItemClickOfDiffUidListener(LeaderBoardAdapter.OnItemClickOfDiffUidListener listenerDiff) {
+        this.listenerDiff = listenerDiff;
+    }
+
+    public interface OnItemClickOfSameUidListener {
+        void onItemOfSameUidClick();
+    }
+
+    public interface OnItemClickOfDiffUidListener {
+        void onItemOfDiffUidClick(String Uid, String name);
     }
 }
 
