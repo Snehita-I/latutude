@@ -1,6 +1,7 @@
 package com.iku.service;
 
 
+import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -8,19 +9,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.iku.HomeActivity;
@@ -30,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class IkuFirebaseMessagingService extends FirebaseMessagingService {
@@ -53,42 +48,29 @@ public class IkuFirebaseMessagingService extends FirebaseMessagingService {
         ArrayList<String> messageList = new ArrayList<>();
 
         db.collection("users").document(mAuth.getUid()).get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            timeStamp = (long) document.get("lastSeen");
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        timeStamp = (long) document.get("lastSeen");
 
-                            db.collection("iku_earth_messages").whereGreaterThan("timestamp", timeStamp).orderBy("timestamp", Query.Direction.DESCENDING).limit(4)
-                                    .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        for (QueryDocumentSnapshot document : task.getResult()) {
-                                            titleList.add((String) document.get("userName"));
-                                            messageList.add((String) document.get("message"));
-                                        }
-                                        sendMessageNotification(title, message, titleList, messageList);
-                                    } else {
-                                    }
+                        db.collection("iku_earth_messages").whereGreaterThan("timestamp", timeStamp).orderBy("timestamp", Query.Direction.DESCENDING).limit(4)
+                                .get().addOnCompleteListener(task1 -> {
+                            if (task1.isSuccessful()) {
+                                for (QueryDocumentSnapshot document1 : task1.getResult()) {
+                                    titleList.add((String) document1.get("userName"));
+                                    messageList.add((String) document1.get("message"));
                                 }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.e(TAG, "onFailure: ", e);
+                                if (isForeground(getApplicationContext())) {
+                                    Log.i(TAG, "onComplete: App is in foreground");
+                                } else {
+                                    //if in background then perform notification operation
+                                    sendMessageNotification(title, message, titleList, messageList);
+                                    Log.i(TAG, "onComplete: App is in background");
                                 }
-                            });
-
-                        } else {
-                        }
+                            }
+                        }).addOnFailureListener(e -> Log.e(TAG, "onFailure: ", e));
                     }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.e(TAG, "onFailure: ", e);
-            }
-        });
+                }).addOnFailureListener(e -> Log.e(TAG, "onFailure: ", e));
     }
 
     private void sendMessageNotification(String title, String message, ArrayList titles, ArrayList messages) {
@@ -133,17 +115,22 @@ public class IkuFirebaseMessagingService extends FirebaseMessagingService {
             userRegistrationTokenInfo.put("uid", user.getUid());
             db.collection("registrationTokens").document(user.getUid())
                     .set(userRegistrationTokenInfo)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                        }
+                    .addOnSuccessListener(aVoid -> {
                     })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-
-                        }
+                    .addOnFailureListener(e -> {
                     });
         }
+    }
+
+    private static boolean isForeground(Context context) {
+        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningAppProcessInfo> tasks = am.getRunningAppProcesses();
+        final String packageName = context.getPackageName();
+        for (ActivityManager.RunningAppProcessInfo appProcess : tasks) {
+            if (ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND == appProcess.importance && packageName.equals(appProcess.processName)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
