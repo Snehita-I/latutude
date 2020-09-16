@@ -14,7 +14,6 @@
         android:background="@drawable/chat_receiver_bubble"
         android:elevation="1dp"
         android:minWidth="160dp"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -48,8 +47,7 @@
             app:layout_constraintEnd_toEndOf="@id/constraintLayout"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@+id/sender_name"
-            app:layout_constraintTop_toTopOf="@+id/sender_name"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintTop_toTopOf="@+id/sender_name" />
 
         <!--Received image is shown here-->
         <com.google.android.material.imageview.ShapeableImageView
@@ -57,7 +55,7 @@
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_marginTop="5dp"
-            android:minWidth="250dp"
+            app:layout_constraintWidth_min="260dp"
             android:scaleType="centerCrop"
             app:layout_constraintDimensionRatio="1"
             app:layout_constraintEnd_toEndOf="@id/constraintLayout"
@@ -83,6 +81,92 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
+        <!--Link preview container-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/linkPreview"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/url_preview_background"
+            app:layout_constraintWidth_min="250dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:padding="5dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@id/constraintLayout2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/receivedImage"
+            app:layout_constraintVertical_bias="0.0">
+
+            <!--Link image-->
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/linkPreviewImage"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintWidth_min="40dp"
+                app:layout_constraintWidth_max="70dp"
+                android:visibility="visible"
+                android:src="@drawable/iku"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <!--Link title-->
+            <TextView
+                android:id="@+id/linkTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Title of page"
+                android:layout_marginStart="5dp"
+                android:padding="1dp"
+                android:maxLines="1"
+                android:textColor="#90000000"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:visibility="visible"
+                app:layout_constraintBottom_toTopOf="@id/linkPreviewDescription"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/linkPreviewImage"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <!--Link description-->
+            <TextView
+                android:id="@+id/linkPreviewDescription"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:padding="1dp"
+                android:text="This is some description provided by page on the web"
+                android:textColor="#80000000"
+                android:textSize="12sp"
+                android:maxLines="2"
+                android:visibility="visible"
+                app:layout_constraintBottom_toTopOf="@id/linkSourceDomain"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/linkPreviewImage"
+                app:layout_constraintTop_toBottomOf="@id/linkTitle" />
+
+            <!--Link source domain-->
+            <TextView
+                android:id="@+id/linkSourceDomain"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="youtube.com/"
+                android:layout_marginStart="5dp"
+                android:padding="1dp"
+                android:maxLines="1"
+                android:textColor="#80000000"
+                android:textSize="12sp"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/linkPreviewImage"
+                app:layout_constraintTop_toBottomOf="@id/linkPreviewDescription" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
         <!--Message container-->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout2"
@@ -91,12 +175,12 @@
             android:layout_marginEnd="5dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/receivedImage">
+            app:layout_constraintTop_toBottomOf="@id/linkPreview">
 
             <!--Message body-->
             <TextView
                 android:id="@+id/message"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="5dp"
@@ -104,7 +188,7 @@
                 android:autoLink="web"
                 android:background="#DCDCDC"
                 android:gravity="start"
-                android:text="This is the body of the message."
+                android:text="This is the loooooooooooooong body of the message."
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="#4A4A4A"
                 android:textSize="14sp"
@@ -160,7 +244,7 @@
             android:layout_marginStart="5dp"
             android:layout_marginBottom="5dp"
             android:gravity="start"
-            android:text="•Edited"
+            android:text="• Edited"
             android:textColor="#4A4A4A"
             android:textSize="10sp"
             android:visibility="gone"

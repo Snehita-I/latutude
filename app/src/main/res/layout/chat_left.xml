@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginTop="4dp"
     android:layout_marginEnd="50dp">
 
+    <!--Message container-->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
         android:layout_width="wrap_content"
@@ -18,58 +19,93 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <!--Link preview container-->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/linkPreview"
             android:layout_width="0dp"
-            android:layout_height="85dp"
-            android:background="#CFCFCF"
-            android:minWidth="300dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/url_preview_background"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingEnd="5dp"
+            android:paddingStart="5dp"
             android:visibility="gone"
+            app:layout_constraintWidth_min="250dp"
             app:layout_constraintBottom_toTopOf="@id/message"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/sender_name"
             app:layout_constraintVertical_bias="0.0">
 
+            <!--Link image-->
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/linkPreviewImage"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
+                app:layout_constraintWidth_min="40dp"
+                app:layout_constraintWidth_max="70dp"
+                android:visibility="visible"
+                android:src="@drawable/iku"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="1"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <!--Link title-->
             <TextView
                 android:id="@+id/linkTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:text="Title of page"
                 android:layout_marginStart="5dp"
                 android:padding="1dp"
-                android:singleLine="true"
-                android:textColor="@android:color/black"
-                android:textSize="14sp"
+                android:maxLines="1"
+                android:textColor="#90000000"
+                android:textSize="12sp"
                 android:textStyle="bold"
+                android:visibility="visible"
                 app:layout_constraintBottom_toTopOf="@id/linkPreviewDescription"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/linkPreviewImage"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <!--Link description-->
             <TextView
                 android:id="@+id/linkPreviewDescription"
                 android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:padding="1dp"
-                android:textColor="@android:color/black"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:text="This is some description provided by page on the web is for testing."
+                android:textColor="#80000000"
+                android:textSize="12sp"
+                android:maxLines="2"
+                android:visibility="visible"
+                app:layout_constraintBottom_toTopOf="@id/linkSourceDomain"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/linkPreviewImage"
                 app:layout_constraintTop_toBottomOf="@id/linkTitle" />
 
+            <!--Link source domain-->
+            <TextView
+                android:id="@+id/linkSourceDomain"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="youtube.com/"
+                android:layout_marginStart="5dp"
+                android:padding="1dp"
+                android:maxLines="1"
+                android:textColor="#80000000"
+                android:textSize="12sp"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/linkPreviewImage"
+                app:layout_constraintTop_toBottomOf="@id/linkPreviewDescription" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <!--Sender name-->
         <TextView
             android:id="@+id/sender_name"
             android:layout_width="wrap_content"
@@ -78,24 +114,28 @@
             android:text="Abhishake"
             android:textColor="#009E9E"
             android:visibility="visible"
+            app:layout_constraintBottom_toTopOf="@id/linkPreview"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <!--Message body-->
         <TextView
             android:id="@+id/message"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:autoLink="web"
-            android:text="This is the fffffffff ffffffff fffffffffffff fffbody of the message."
+            android:text="This is the fffffff rrrr rrrr rrrfffbody of the message."
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#4A4A4A"
             android:textSize="14sp"
             app:layout_constraintBottom_toTopOf="@id/message_time"
             app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/linkPreview"
             app:layout_constraintVertical_bias="0.0" />
 
+        <!--Primary view for message timestamp-->
         <TextView
             android:id="@+id/message_time"
             android:layout_width="wrap_content"
@@ -105,14 +145,14 @@
             android:text="12:34 PM"
             android:textColor="#4A4A4A"
             android:textSize="12sp"
-            android:visibility="gone"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@+id/sender_name"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@+id/sender_name"
-            app:layout_constraintTop_toTopOf="@+id/sender_name"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintTop_toTopOf="@+id/sender_name" />
 
+        <!--Secondary view for message timestamp-->
         <TextView
             android:id="@+id/message_time2"
             android:layout_width="wrap_content"
@@ -130,6 +170,7 @@
             app:layout_constraintTop_toTopOf="@id/message"
             app:layout_constraintVertical_bias="1.0" />
 
+        <!--Tertiary view for message timestamp-->
         <TextView
             android:id="@+id/message_time3"
             android:layout_width="wrap_content"
@@ -150,7 +191,7 @@
             android:id="@+id/editFlag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="•Edited"
+            android:text="• Edited"
             android:textColor="#4A4A4A"
             android:textSize="10sp"
             android:visibility="gone"
@@ -163,6 +204,7 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <!--Hearts container-->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -171,6 +213,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
 
+        <!--Container-->
         <LinearLayout
             android:id="@+id/upvotesLayout"
             android:layout_width="match_parent"
@@ -187,6 +230,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
+            <!--Heart-->
             <ImageView
                 android:id="@+id/heartImage"
                 android:layout_width="20dp"
@@ -195,6 +239,7 @@
                 android:padding="3dp"
                 android:src="@drawable/ic_heart" />
 
+            <!--First emoji-->
             <TextView
                 android:id="@+id/emoji1"
                 android:layout_width="wrap_content"
@@ -206,6 +251,7 @@
                 android:textSize="14sp"
                 android:visibility="gone" />
 
+            <!--Second emoji-->
             <TextView
                 android:id="@+id/emoji2"
                 android:layout_width="wrap_content"
@@ -216,6 +262,7 @@
                 android:textSize="14sp"
                 android:visibility="gone" />
 
+            <!--Third emoji-->
             <TextView
                 android:id="@+id/emoji3"
                 android:layout_width="wrap_content"
@@ -226,6 +273,7 @@
                 android:textSize="14sp"
                 android:visibility="gone" />
 
+            <!--Fourth emoji-->
             <TextView
                 android:id="@+id/emoji4"
                 android:layout_width="wrap_content"
@@ -236,6 +284,7 @@
                 android:textSize="14sp"
                 android:visibility="gone" />
 
+            <!--Heart count-->
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/upvoteCount"
                 android:layout_width="wrap_content"
