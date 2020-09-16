@@ -33,7 +33,7 @@
             android:layout_toEndOf="@id/badge"
             android:layout_toStartOf="@+id/pointsText"
             android:maxLines="1"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@android:color/black"
             android:textSize="16dp" />
 
         <com.google.android.material.textview.MaterialTextView
@@ -43,7 +43,7 @@
             android:layout_centerVertical="true"
             android:layout_toStartOf="@id/viewProfile"
             android:textAlignment="textEnd"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@android:color/black"
             android:textSize="16dp" />
 
         <ImageView
@@ -54,7 +54,6 @@
             android:src="@drawable/ic_next_36"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:visibility="invisible"
             app:tint="#30000000" />
     </RelativeLayout>
 </com.google.android.material.card.MaterialCardView>
