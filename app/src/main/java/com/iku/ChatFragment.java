@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -92,6 +93,9 @@ public class ChatFragment extends Fragment {
     private boolean isDisliked;
     private FirebaseAnalytics mFirebaseAnalytics;
 
+    // 0 means normal send, 1 means update an old message
+    private int editTextStatus = 0;
+
     public ChatFragment() {
         // Required empty public constructor
     }
@@ -162,14 +166,6 @@ public class ChatFragment extends Fragment {
             mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW, leaderboard_bundle);
         });
 
-        binding.sendMessageButton.setOnClickListener(view -> {
-            final String message = binding.messageTextField.getText().toString().trim();
-            if (!message.isEmpty()) {
-                sendTheMessage(message);
-                binding.messageTextField.setText("");
-                binding.messageTextField.requestFocus();
-            }
-        });
 
         binding.choose.setOnClickListener(view -> {
             if (ContextCompat.checkSelfPermission(getActivity(),
@@ -183,7 +179,22 @@ public class ChatFragment extends Fragment {
                 startActivity(goToImageSend);
             }
         });
+
+        initSendButton();
+
     }
+
+    private void initSendButton() {
+        binding.sendMessageButton.setOnClickListener(view -> {
+            final String message = binding.messageTextField.getText().toString().trim();
+            if (!message.isEmpty()) {
+                sendTheMessage(message);
+                binding.messageTextField.setText("");
+                binding.messageTextField.requestFocus();
+            }
+        });
+    }
+
 
     private void initRecyclerView() {
 
@@ -571,16 +582,24 @@ public class ChatFragment extends Fragment {
                     updateMessageView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
+                            Log.i(TAG, "CLICKED EDIT " + chatModel.getType());
                             if (chatModel.getType() == "text") {
+                                Log.i(TAG, "onClick: REACHED");
                                 binding.messageTextField.setText(chatModel.getMessage());
+                                binding.messageTextField.setSelection(binding.messageTextField.getText().length());
                                 bottomSheetDialog.dismiss();
-                                binding.sendMessageButton.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        updateMessage(documentSnapshot.getId(), position, binding.messageTextField.getText().toString());
-
-                                    }
-                                });
+                                editTextStatus = 1;
+                                if (editTextStatus == 1) {
+                                    binding.sendMessageButton.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            editTextStatus = 0;
+                                            updateMessage(documentSnapshot.getId(), position, binding.messageTextField.getText().toString().trim());
+                                            binding.messageTextField.setText("");
+                                            binding.messageTextField.requestFocus();
+                                        }
+                                    });
+                                }
                             } else if (chatModel.getType() == "image") {
                                 Intent goToImageSend = new Intent(getActivity(), ChatImageActivity.class);
                                 goToImageSend.putExtra("documentId", documentSnapshot.getId());
@@ -632,6 +651,7 @@ public class ChatFragment extends Fragment {
     private void updateMessage(String messageDocumentID, int position, String message) {
 
         Map<String, Object> map = new HashMap<>();
+        Log.i(TAG, "updateMessage: " + message);
         map.put("message", message);
         map.put("edited", true);
         db.collection("iku_earth_messages").document(messageDocumentID)
@@ -643,11 +663,15 @@ public class ChatFragment extends Fragment {
                         chatadapter.notifyItemChanged(position);
                         binding.messageTextField.setText("");
                         binding.messageTextField.requestFocus();
+                        editTextStatus = 0;
+                        initSendButton();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+                        editTextStatus = 0;
+                        initSendButton();
                     }
                 });
     }
@@ -722,7 +746,7 @@ public class ChatFragment extends Fragment {
                                                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                                     @Override
                                                                     public void onSuccess(Void aVoid) {
-
+                                                                        editTextStatus = 0;
                                                                         binding.viewConfetti.build()
                                                                                 .addColors(Color.BLUE, Color.LTGRAY, getResources().getColor(R.color.colorPrimary), getResources().getColor(R.color.colorAccent))
                                                                                 .setDirection(0.0, 359.0)
@@ -746,7 +770,7 @@ public class ChatFragment extends Fragment {
                                                                 .addOnFailureListener(new OnFailureListener() {
                                                                     @Override
                                                                     public void onFailure(@NonNull Exception e) {
-
+                                                                        editTextStatus = 0;
                                                                     }
                                                                 });
 
