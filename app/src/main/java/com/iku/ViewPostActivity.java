@@ -492,7 +492,6 @@ public class ViewPostActivity extends AppCompatActivity {
 
     private void newLikeorDislike(String messageDocumentID, String emoji, long UpvotesCount, long DownvotesCount, String authorOfMessage) {
         if (emoji == "downvoters") {
-            viewPostBinding.heartDown.setBackgroundTintList(ContextCompat.getColorStateList(ViewPostActivity.this, R.color.white));
             if (!authorOfMessage.equals(user.getUid())) {
                 db.collection("users").document(authorOfMessage).get()
                         .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -516,6 +515,7 @@ public class ViewPostActivity extends AppCompatActivity {
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
+                            viewPostBinding.heartDown.setBackground(getDrawable(R.drawable.hearts_button_background_selected_viewpost_activity));
                             disableEmojiButtons(true);
                         }
                     }).addOnFailureListener(new OnFailureListener() {
@@ -548,6 +548,9 @@ public class ViewPostActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(Void aVoid) {
                             switch (emoji) {
+                                case "upvoters":
+                                    viewPostBinding.heartUp.setBackground(getDrawable(R.drawable.hearts_button_background_selected_viewpost_activity));
+                                    break;
                                 case "emoji1":
                                     viewPostBinding.emoji1.setBackground(getDrawable(R.drawable.hearts_button_background_selected_viewpost_activity));
                                     break;
