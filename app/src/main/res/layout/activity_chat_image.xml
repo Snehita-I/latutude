@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -36,9 +36,9 @@
                 android:id="@+id/backbutton"
                 android:layout_width="56dp"
                 android:layout_height="56dp"
-                android:padding="16dp"
                 android:background="?android:selectableItemBackground"
                 android:contentDescription="@string/back_button_content_desc"
+                android:padding="16dp"
                 android:src="@drawable/ic_arrow_back_24"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -51,13 +51,12 @@
     <com.github.chrisbanes.photoview.PhotoView
         android:id="@+id/chosenImage"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
         android:adjustViewBounds="true"
-        android:scaleType="centerCrop"
         android:isScrollContainer="false"
-        android:transitionName="openStoreImageActivity"
-        app:layout_constraintBottom_toTopOf="@id/messageArea"
-        app:layout_constraintTop_toBottomOf="@id/topBar" />
+        android:layout_below="@id/topBar"
+        android:layout_above="@id/messageArea"
+        android:scaleType="centerCrop" />
 
     <!--Message area-->
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -77,32 +76,38 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginEnd="6dp"
-            android:background="@drawable/ic_chatbox"
             android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/sendMessageButton"
             app:layout_constraintStart_toStartOf="parent">
 
-            <EditText
-                android:id="@+id/messageTextField"
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                app:boxBackgroundMode="none"
                 android:layout_gravity="center"
                 android:layout_marginTop="1dp"
                 android:layout_marginBottom="1dp"
-                android:layout_weight="1"
-                android:background="@color/fui_transparent"
-                android:hint="Add a caption"
-                android:inputType="textCapSentences|textMultiLine"
-                android:maxLines="3"
-                android:minHeight="45dp"
-                android:padding="4dp"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp"
+                android:background="@drawable/ic_chatbox"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/messageTextField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:maxLines="3"
+                    android:inputType="textCapSentences|textMultiLine"
+                    android:minHeight="45dp"
+                    android:padding="4dp"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -119,4 +124,4 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>
