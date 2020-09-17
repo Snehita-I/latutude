@@ -21,6 +21,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -494,37 +495,37 @@ public class ChatFragment extends Fragment {
 
                 for (String element : HeartUpArray) {
                     if (element.contains(user.getUid())) {
-                        heartupLayout.setBackground(getResources().getDrawable(R.drawable.hearts_button_background_selected));
+                        heartupLayout.setBackground(ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.hearts_button_background_selected, getContext().getTheme()));
                         break;
                     }
                 }
                 for (String element : emoji1Array) {
                     if (element.contains(user.getUid())) {
-                        emoji1Layout.setBackground(getResources().getDrawable(R.drawable.hearts_button_background_selected));
+                        emoji1Layout.setBackground(ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.hearts_button_background_selected, getContext().getTheme()));
                         break;
                     }
                 }
                 for (String element : emoji2Array) {
                     if (element.contains(user.getUid())) {
-                        emoji2Layout.setBackground(getResources().getDrawable(R.drawable.hearts_button_background_selected));
+                        emoji2Layout.setBackground(ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.hearts_button_background_selected, getContext().getTheme()));
                         break;
                     }
                 }
                 for (String element : emoji3Array) {
                     if (element.contains(user.getUid())) {
-                        emoji3Layout.setBackground(getResources().getDrawable(R.drawable.hearts_button_background_selected));
+                        emoji3Layout.setBackground(ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.hearts_button_background_selected, getContext().getTheme()));
                         break;
                     }
                 }
                 for (String element : emoji4Array) {
                     if (element.contains(user.getUid())) {
-                        emoji4Layout.setBackground(getResources().getDrawable(R.drawable.hearts_button_background_selected));
+                        emoji4Layout.setBackground(ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.hearts_button_background_selected, getContext().getTheme()));
                         break;
                     }
                 }
                 for (String element : HeartDownArray) {
                     if (element.contains(user.getUid())) {
-                        heartdownLayout.setBackground(getResources().getDrawable(R.drawable.hearts_button_background_selected));
+                        heartdownLayout.setBackground(ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.hearts_button_background_selected, getContext().getTheme()));
                         break;
                     }
                 }
@@ -580,7 +581,7 @@ public class ChatFragment extends Fragment {
                     updateMessageView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            if (chatModel.getType() == "text") {
+                            if (chatModel.getType().equals("text")) {
                                 binding.messageTextField.setText(chatModel.getMessage());
                                 binding.messageTextField.setSelection(binding.messageTextField.getText().length());
                                 bottomSheetDialog.dismiss();
@@ -596,7 +597,7 @@ public class ChatFragment extends Fragment {
                                         }
                                     });
                                 }
-                            } else if (chatModel.getType() == "image") {
+                            } else if (chatModel.getType().equals("image")) {
                                 Intent goToImageSend = new Intent(getActivity(), ChatImageActivity.class);
                                 goToImageSend.putExtra("documentId", documentSnapshot.getId());
                                 goToImageSend.putExtra("message", chatModel.getMessage());
@@ -769,9 +770,7 @@ public class ChatFragment extends Fragment {
                                                                 });
 
                                                     }
-                                                } else {
                                                 }
-                                            } else {
                                             }
                                         }
                                     });
@@ -784,7 +783,6 @@ public class ChatFragment extends Fragment {
 
                         }
                     });
-        } else {
         }
     }
 
@@ -805,12 +803,12 @@ public class ChatFragment extends Fragment {
                         ArrayList<String> HeartDownArray = (ArrayList) document.get("downvoters");
                         upvotesCount = (long) document.get("upvoteCount");
                         downvotesCount = (long) document.get("downvoteCount");
-                        Boolean HeartupLiked = false;
-                        Boolean emoji1Liked = false;
-                        Boolean emoji2Liked = false;
-                        Boolean emoji3Liked = false;
-                        Boolean emoji4Liked = false;
-                        Boolean disliked = false;
+                        boolean HeartupLiked = false;
+                        boolean emoji1Liked = false;
+                        boolean emoji2Liked = false;
+                        boolean emoji3Liked = false;
+                        boolean emoji4Liked = false;
+                        boolean disliked = false;
 
                         if (upvotesCount >= 0) {
                             for (String element : HeartUpArray) {
@@ -870,17 +868,15 @@ public class ChatFragment extends Fragment {
                                 changeLikesArray(messageDocumentID, emoji, "downvoters", upvotesCount, downvotesCount, authorOfMessage, position);
                             }
                         }
-                    } else {
                     }
-                } else {
                 }
             }
         });
     }
 
     private void changeLikesArray(String messageDocumentID, String currentEmoji, String previousEmoji, long upvotesCount, long downvotesCount, String authorOfMessage, int position) {
-        if (currentEmoji == previousEmoji) {
-            if (currentEmoji == "upvoters" || currentEmoji == "emoji1" || currentEmoji == "emoji2" || currentEmoji == "emoji3" || currentEmoji == "emoji4") {
+        if (currentEmoji.equals(previousEmoji)) {
+            if (currentEmoji.equals("upvoters") || currentEmoji.equals("emoji1") || currentEmoji.equals("emoji2") || currentEmoji.equals("emoji3") || currentEmoji.equals("emoji4")) {
                 if (!authorOfMessage.equals(user.getUid())) {
                     db.collection("users").document(authorOfMessage)
                             .get()
@@ -906,7 +902,7 @@ public class ChatFragment extends Fragment {
                             public void onSuccess(Void aVoid) {
                             }
                         });
-            } else if (currentEmoji == "downvoters") {
+            } else if (currentEmoji.equals("downvoters")) {
                 if (!authorOfMessage.equals(user.getUid())) {
                     db.collection("users").document(authorOfMessage).get()
                             .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -933,7 +929,7 @@ public class ChatFragment extends Fragment {
                         });
             }
 
-        } else if ((currentEmoji != previousEmoji) && (currentEmoji == "downvoters")) {
+        } else if ((currentEmoji != previousEmoji) && (currentEmoji.equals("downvoters"))) {
             if (!authorOfMessage.equals(user.getUid())) {
                 db.collection("users").document(authorOfMessage).get()
                         .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -962,7 +958,7 @@ public class ChatFragment extends Fragment {
                         }
                     });
 
-        } else if ((previousEmoji == "downvoters") && (currentEmoji != previousEmoji)) {
+        } else if ((previousEmoji.equals("downvoters")) && (currentEmoji != previousEmoji)) {
             if (!authorOfMessage.equals(user.getUid())) {
                 db.collection("users").document(authorOfMessage).get()
                         .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -1005,7 +1001,7 @@ public class ChatFragment extends Fragment {
     }
 
     private void newLikeorDislike(String messageDocumentID, String emoji, long UpvotesCount, long DownvotesCount, String authorOfMessage, int position) {
-        if (emoji == "downvoters") {
+        if (emoji.equals("downvoters")) {
 
             if (!authorOfMessage.equals(user.getUid())) {
                 db.collection("users").document(authorOfMessage).get()
