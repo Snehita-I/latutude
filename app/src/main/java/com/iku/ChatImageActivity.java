@@ -128,9 +128,7 @@ public class ChatImageActivity extends AppCompatActivity {
         }
         Bundle extras = getIntent().getExtras();
         docId = extras.getString("documentId");
-        Toast.makeText(getApplicationContext(), docId, Toast.LENGTH_LONG).show();
         if (docId.equals("default")) {
-            Toast.makeText(getApplicationContext(), "enterd1", Toast.LENGTH_LONG).show();
             openFileChooser();
         } else if (!docId.equals("default")) {
             message = extras.getString("message");
@@ -307,7 +305,6 @@ public class ChatImageActivity extends AppCompatActivity {
                             })
                             .addOnFailureListener(e -> {
                                 sendImageChatbtn.setClickable(true);
-                                Toast.makeText(ChatImageActivity.this, e.toString(), Toast.LENGTH_LONG).show();
                             });
                 });
             });
@@ -473,7 +470,6 @@ public class ChatImageActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(Void aVoid) {
                         messageEntered.setText("");
-                        Toast.makeText(ChatImageActivity.this, "Message edited", Toast.LENGTH_LONG).show();
                         messageEntered.requestFocus();
                         ChatImageActivity.super.onBackPressed();
                     }

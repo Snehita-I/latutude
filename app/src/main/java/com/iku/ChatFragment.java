@@ -127,8 +127,6 @@ public class ChatFragment extends Fragment {
                         delete_bundle.putString("UID", user.getUid());
                         delete_bundle.putString("Name", user.getDisplayName());
                         mFirebaseAnalytics.logEvent("deleted_message", delete_bundle);
-
-                        Toast.makeText(getActivity(), "Message deleted!", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -582,9 +580,7 @@ public class ChatFragment extends Fragment {
                     updateMessageView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            Log.i(TAG, "CLICKED EDIT " + chatModel.getType());
                             if (chatModel.getType() == "text") {
-                                Log.i(TAG, "onClick: REACHED");
                                 binding.messageTextField.setText(chatModel.getMessage());
                                 binding.messageTextField.setSelection(binding.messageTextField.getText().length());
                                 bottomSheetDialog.dismiss();
@@ -651,7 +647,6 @@ public class ChatFragment extends Fragment {
     private void updateMessage(String messageDocumentID, int position, String message) {
 
         Map<String, Object> map = new HashMap<>();
-        Log.i(TAG, "updateMessage: " + message);
         map.put("message", message);
         map.put("edited", true);
         db.collection("iku_earth_messages").document(messageDocumentID)
@@ -659,7 +654,6 @@ public class ChatFragment extends Fragment {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Toast.makeText(getActivity(), "Message updated!", Toast.LENGTH_SHORT).show();
                         chatadapter.notifyItemChanged(position);
                         binding.messageTextField.setText("");
                         binding.messageTextField.requestFocus();

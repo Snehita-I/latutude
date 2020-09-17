@@ -61,16 +61,14 @@ public class IkuFirebaseMessagingService extends FirebaseMessagingService {
                                     messageList.add((String) document1.get("message"));
                                 }
                                 if (isForeground(getApplicationContext())) {
-                                    Log.i(TAG, "onComplete: App is in foreground");
                                 } else {
                                     //if in background then perform notification operation
                                     sendMessageNotification(title, message, titleList, messageList);
-                                    Log.i(TAG, "onComplete: App is in background");
                                 }
                             }
-                        }).addOnFailureListener(e -> Log.e(TAG, "onFailure: ", e));
+                        });
                     }
-                }).addOnFailureListener(e -> Log.e(TAG, "onFailure: ", e));
+                });
     }
 
     private void sendMessageNotification(String title, String message, ArrayList titles, ArrayList messages) {
