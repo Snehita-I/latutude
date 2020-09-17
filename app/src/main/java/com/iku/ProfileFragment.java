@@ -8,20 +8,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.amulyakhare.textdrawable.TextDrawable;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.MetadataChanges;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.iku.databinding.FragmentProfileBinding;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
@@ -166,18 +166,22 @@ public class ProfileFragment extends Fragment {
 
     private void getUserHearts() {
         if (user != null) {
-            db.collection("users").document(user.getUid()).get()
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            long hearts = (long) document.get("points");
-                            if (hearts == 0)
-                                userHeartsTextView.setText("Yet to win some hearts!");
-                            else
-                                userHeartsTextView.setText("Hearts won: " + hearts);
+            db.collection("users").whereEqualTo("uid", user.getUid())
+                    .addSnapshotListener(MetadataChanges.INCLUDE, (querySnapshot, e) -> {
+                        if (e != null) {
+                            return;
                         }
-                    })
-                    .addOnFailureListener(e -> e.printStackTrace());
+
+                        for (DocumentChange change : querySnapshot.getDocumentChanges()) {
+                            if (change.getType() == DocumentChange.Type.ADDED) {
+                                long points = (long) change.getDocument().get("points");
+                                if (points == 0)
+                                    userHeartsTextView.setText("Yet to win some hearts!");
+                                else
+                                    userHeartsTextView.setText("Hearts Won: " + change.getDocument().get("points"));
+                            }
+                        }
+                    });
         }
     }
 

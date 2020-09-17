@@ -122,28 +122,21 @@ public class UserProfileActivity extends AppCompatActivity {
     }
 
     private void getUserHearts(String uid) {
-        {
-            db.collection("users").whereEqualTo("uid", uid)
-                    .addSnapshotListener(MetadataChanges.INCLUDE, new EventListener<QuerySnapshot>() {
-                        @Override
-                        public void onEvent(@Nullable QuerySnapshot querySnapshot,
-                                            @Nullable FirebaseFirestoreException e) {
-                            if (e != null) {
-                                return;
-                            }
+        db.collection("users").whereEqualTo("uid", uid)
+                .addSnapshotListener(MetadataChanges.INCLUDE, (querySnapshot, e) -> {
+                    if (e != null) {
+                        return;
+                    }
 
-                            for (DocumentChange change : querySnapshot.getDocumentChanges()) {
-                                if (change.getType() == DocumentChange.Type.ADDED) {
-                                    userHeartsTextView.setText("Hearts Won: " + change.getDocument().get("points"));
-                                }
-
-                                String source = querySnapshot.getMetadata().isFromCache() ?
-                                        "local cache" : "server";
-                            }
-
+                    for (DocumentChange change : querySnapshot.getDocumentChanges()) {
+                        if (change.getType() == DocumentChange.Type.ADDED) {
+                            long points = (long) change.getDocument().get("points");
+                            if (points == 0)
+                                userHeartsTextView.setText("Yet to win some hearts!");
+                            else
+                                userHeartsTextView.setText("Hearts Won: " + change.getDocument().get("points"));
                         }
-                    });
-        }
+                    }
+                });
     }
-
 }
