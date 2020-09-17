@@ -249,14 +249,10 @@ public class WelcomeActivity extends AppCompatActivity {
                         userInfo.put("firstImage", false);
 
 
-                        Map<String, Object> userRegistrationTokenInfo = new HashMap<>();
-                        userRegistrationTokenInfo.put("registrationToken", token);
-                        userRegistrationTokenInfo.put("uid", mAuth.getUid());
-
-
                         final String userID = mAuth.getUid();
 
                         if (userID != null) {
+                            sendRegistrationToken(token, userID);
 
                             DocumentReference docRef = db.collection("users").document(mAuth.getUid());
                             docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -301,21 +297,6 @@ public class WelcomeActivity extends AppCompatActivity {
                                     }
                                 }
                             });
-
-                            db.collection("registrationTokens").document(mAuth.getUid())
-                                    .set(userRegistrationTokenInfo)
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                        }
-                                    })
-                                    .addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-
-                                        }
-                                    });
-
                         }
                     }
                 });
@@ -327,5 +308,24 @@ public class WelcomeActivity extends AppCompatActivity {
         mProgress.setMessage("");
         mProgress.setCancelable(false);
         mProgress.setIndeterminate(true);
+    }
+
+    private void sendRegistrationToken(String token, String uid) {
+        Map<String, Object> userRegistrationTokenInfo = new HashMap<>();
+        userRegistrationTokenInfo.put("registrationToken", token);
+        userRegistrationTokenInfo.put("uid", uid);
+        db.collection("registrationTokens").document(uid)
+                .set(userRegistrationTokenInfo)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
     }
 }
