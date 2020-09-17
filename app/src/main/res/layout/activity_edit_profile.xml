@@ -51,25 +51,23 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="Profile"
+                    android:text="Edit Profile"
                     android:textSize="18sp"
                     tools:layout_editor_absoluteX="152dp"
                     tools:layout_editor_absoluteY="16dp" />
             </LinearLayout>
 
-            <!--Settings button-->
+            <!--Back button-->
             <ImageView
-                android:id="@+id/settingsButton"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="6dp"
-                android:layout_marginBottom="5dp"
-                android:padding="6dp"
-                android:src="@drawable/ic_baseline_settings_24"
-                app:layout_constraintBottom_toBottomOf="@+id/topAppBar"
-                app:layout_constraintEnd_toEndOf="@+id/topAppBar"
-                app:layout_constraintTop_toTopOf="@+id/topAppBar" />
+                android:id="@+id/back_button"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:contentDescription="@string/back_button_content_desc"
+                android:padding="16dp"
+                android:src="@drawable/ic_arrow_back_24"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -139,7 +137,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="5dp"
-            android:text="You can this only once. Choose wisely."
+            android:text="You can use this only once. Choose wisely."
             android:textSize="10sp"
             app:layout_constraintEnd_toEndOf="@id/editUserNameField"
             app:layout_constraintTop_toBottomOf="@id/editUserNameField" />
@@ -174,6 +172,7 @@
 
     <!--Character counter-->
     <TextView
+        android:id="@+id/characterCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="5dp"
@@ -201,8 +200,8 @@
         android:textAlignment="center"
         android:layout_marginHorizontal="40dp"
         android:layout_marginTop="20dp"
-        android:hint="Optional link"
-        android:maxLines="1"
+        android:hint="Optional Link"
+        android:inputType="textWebEditText"
         android:padding="20dp"
         android:textSize="13sp"
         app:layout_constraintTop_toBottomOf="@id/userBio" />

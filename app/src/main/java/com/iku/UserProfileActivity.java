@@ -2,6 +2,7 @@ package com.iku;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -28,7 +29,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
 
     private ImageView profilePicture;
-    private MaterialTextView nameTextView, userHeartsTextView;
+    private MaterialTextView nameTextView, userHeartsTextView, userLinkTextView, linkHeaderTextView,bioHeaderTextView,bioTextView;
     private FirebaseFirestore db;
 
     private String userName;
@@ -52,14 +53,17 @@ public class UserProfileActivity extends AppCompatActivity {
         userUID = extras.getString("EXTRA_PERSON_UID");
 
         initButtons();
-        getUserHearts(userUID);
-        getPicture(userUID);
 
         nameTextView = findViewById(R.id.userName);
         nameTextView.setText(userName);
         profilePicture = findViewById(R.id.profileImage);
         userHeartsTextView = findViewById(R.id.userHearts);
-
+        userLinkTextView = findViewById(R.id.linkInBio);
+        linkHeaderTextView = findViewById(R.id.linkHeader);
+        bioTextView=findViewById(R.id.userBio);
+        bioHeaderTextView=findViewById(R.id.userBioHeader);
+        getUserDetails(userUID);
+        getPicture(userUID);
     }
 
     private void initButtons() {
@@ -121,7 +125,7 @@ public class UserProfileActivity extends AppCompatActivity {
                 });
     }
 
-    private void getUserHearts(String uid) {
+    private void getUserDetails(String uid) {
         db.collection("users").whereEqualTo("uid", uid)
                 .addSnapshotListener(MetadataChanges.INCLUDE, (querySnapshot, e) -> {
                     if (e != null) {
@@ -131,6 +135,19 @@ public class UserProfileActivity extends AppCompatActivity {
                     for (DocumentChange change : querySnapshot.getDocumentChanges()) {
                         if (change.getType() == DocumentChange.Type.ADDED) {
                             long points = (long) change.getDocument().get("points");
+                            String link = (String) change.getDocument().get("userBioLink");
+                            String bio = (String) change.getDocument().get("userBio");
+                            if (link == null) {
+                                linkHeaderTextView.setVisibility(View.GONE);
+                                userLinkTextView.setVisibility(View.GONE);
+                            } else
+                                userLinkTextView.setText((String) change.getDocument().get("userBioLink"));
+                            if (bio == null) {
+                                bioHeaderTextView.setVisibility(View.GONE);
+                                bioTextView.setVisibility(View.GONE);
+                            } else
+                                bioTextView.setText((String) change.getDocument().get("userBio"));
+
                             if (points == 0)
                                 userHeartsTextView.setText("Yet to win some hearts!");
                             else

@@ -12,11 +12,13 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.amulyakhare.textdrawable.TextDrawable;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -41,7 +43,7 @@ public class ProfileFragment extends Fragment {
     private FirebaseUser user;
     private FirebaseAnalytics mFirebaseAnalytics;
     private String photoUrl;
-    private MaterialTextView userHeartsTextView;
+    private MaterialTextView userHeartsTextView, userBioTextView, userLinkTextView;
     private FragmentProfileBinding profileBinding;
 
     public ProfileFragment() {
@@ -62,30 +64,28 @@ public class ProfileFragment extends Fragment {
         user = mAuth.getCurrentUser();
 
         userHeartsTextView = view.findViewById(R.id.userHearts);
+        userBioTextView = view.findViewById(R.id.userBio);
+        userLinkTextView = view.findViewById(R.id.linkInBio);
 
         initButtons();
-        getUserHearts();
+        getUserDetails();
         getProfileDetails();
 
         return view;
     }
 
     private void initButtons() {
-        profileBinding.logoutButton.setOnClickListener(view -> {
-            //log event
-            //Remove UID if this event is erroring out in Analytics
-            Bundle logout_bundle = new Bundle();
-            logout_bundle.putString("uid", user.getUid());
-            mFirebaseAnalytics.logEvent("logout", logout_bundle);
-            mAuth.signOut();
-            Intent intent = new Intent(getActivity(), SplashActivity.class);
-            startActivity(intent);
-        });
 
         profileBinding.settingsButton.setOnClickListener(view -> {
             Intent goToSettingsPage = new Intent(getActivity(), SettingsActivity.class);
             startActivity(goToSettingsPage);
         });
+
+        profileBinding.editProfileButton.setOnClickListener(view -> {
+            Intent goToEditPage = new Intent(getActivity(), EditProfileActivity.class);
+            startActivity(goToEditPage);
+        });
+
     }
 
     private void getProfileDetails() {
@@ -164,17 +164,18 @@ public class ProfileFragment extends Fragment {
         }
     }
 
-    private void getUserHearts() {
+    private void getUserDetails() {
         if (user != null) {
             db.collection("users").whereEqualTo("uid", user.getUid())
                     .addSnapshotListener(MetadataChanges.INCLUDE, (querySnapshot, e) -> {
                         if (e != null) {
                             return;
                         }
-
                         for (DocumentChange change : querySnapshot.getDocumentChanges()) {
                             if (change.getType() == DocumentChange.Type.ADDED) {
                                 long points = (long) change.getDocument().get("points");
+                                userBioTextView.setText((String) change.getDocument().get("userBio"));
+                                userLinkTextView.setText((String) change.getDocument().get("userBioLink"));
                                 if (points == 0)
                                     userHeartsTextView.setText("Yet to win some hearts!");
                                 else
