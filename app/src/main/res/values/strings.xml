@@ -12,6 +12,7 @@
     <string name="back_button_content_desc">back</string>
     <string name="submit">Submit</string>
     <string name="cancel">Cancel</string>
+    <string name="name_changed_warning">Name changed once.</string>
 
 
 </resources>
