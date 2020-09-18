@@ -7,7 +7,9 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
+
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -37,7 +39,15 @@ public class IkuFirebaseMessagingService extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-
+        if (remoteMessage.getNotification() != null) {
+            String notificationBody = remoteMessage.getNotification().getBody();
+            String notificationTitle = remoteMessage.getNotification().getTitle();
+            if (isForeground(getApplicationContext())) {
+            } else {
+                //if in background then perform notification operation
+                sendUpvotesNotification(notificationTitle, notificationBody);
+            }
+        }
         String title = remoteMessage.getData().get("title");
         String message = remoteMessage.getData().get("message");
 
@@ -69,6 +79,26 @@ public class IkuFirebaseMessagingService extends FirebaseMessagingService {
                         });
                     }
                 });
+    }
+
+    private void sendUpvotesNotification(String title, String message) {
+        Intent intent = new Intent(this, HomeActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "iku_hearts")
+                .setSmallIcon(R.drawable.ic_iku)
+                .setContentTitle(title)
+                .setContentText(message)
+                .setPriority(Notification.PRIORITY_DEFAULT)
+                .setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText(title))
+                // Set the intent that will fire when the user taps the notification
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true);
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        notificationManager.notify(999, builder.build());
+
     }
 
     private void sendMessageNotification(String title, String message, ArrayList titles, ArrayList messages) {
