@@ -6,10 +6,11 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -39,15 +40,9 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
-import java.io.Closeable;
-import java.io.File;
-import java.io.FileDescriptor;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -65,7 +60,7 @@ public class ChatImageActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private FirebaseAnalytics mFirebaseAnalytics;
     private SimpleDateFormat dateFormatter;
-    private Uri mImageUri,finalUri;
+    private Uri mImageUri, finalUri;
     private int PICK_IMAGE = 1;
     private String docId, message, imageUrl;
 
@@ -260,8 +255,10 @@ public class ChatImageActivity extends AppCompatActivity {
             mImageUri = data.getData();
             try {
                 Bitmap bitmap = getThumbnail(mImageUri);
+                Log.i(TAG, "onActivityResult: " + bitmap.getWidth() + "\n" + bitmap.getHeight());
+                bitmap = getResizedBitmap(bitmap, bitmap.getWidth()/2, bitmap.getHeight()/2);
                 chosenImage.setImageBitmap(bitmap);
-                finalUri = getImageUri(getApplicationContext(),bitmap);
+                finalUri = getImageUri(getApplicationContext(), bitmap);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -308,13 +305,13 @@ public class ChatImageActivity extends AppCompatActivity {
                 });
     }
 
-    public Bitmap getThumbnail(Uri uri) throws FileNotFoundException, IOException{
+    public Bitmap getThumbnail(Uri uri) throws FileNotFoundException, IOException {
         InputStream input = getApplicationContext().getContentResolver().openInputStream(uri);
 
         BitmapFactory.Options onlyBoundsOptions = new BitmapFactory.Options();
         onlyBoundsOptions.inJustDecodeBounds = true;
-        onlyBoundsOptions.inDither=true;//optional
-        onlyBoundsOptions.inPreferredConfig=Bitmap.Config.ARGB_8888;//optional
+        onlyBoundsOptions.inDither = true;//optional
+        onlyBoundsOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;//optional
         BitmapFactory.decodeStream(input, null, onlyBoundsOptions);
         input.close();
 
@@ -329,18 +326,19 @@ public class ChatImageActivity extends AppCompatActivity {
         BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
         bitmapOptions.inSampleSize = getPowerOfTwoForSampleRatio(ratio);
         bitmapOptions.inDither = true; //optional
-        bitmapOptions.inPreferredConfig=Bitmap.Config.ARGB_8888;//
+        bitmapOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;//
         input = this.getContentResolver().openInputStream(uri);
         Bitmap bitmap = BitmapFactory.decodeStream(input, null, bitmapOptions);
         input.close();
         return bitmap;
     }
 
-    private static int getPowerOfTwoForSampleRatio(double ratio){
-        int k = Integer.highestOneBit((int)Math.floor(ratio));
-        if(k==0) return 1;
+    private static int getPowerOfTwoForSampleRatio(double ratio) {
+        int k = Integer.highestOneBit((int) Math.floor(ratio));
+        if (k == 0) return 1;
         else return k;
     }
+
     private Uri getImageUri(Context context, Bitmap inImage) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
@@ -348,4 +346,20 @@ public class ChatImageActivity extends AppCompatActivity {
         return Uri.parse(path);
     }
 
+    public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
+        int width = bm.getWidth();
+        int height = bm.getHeight();
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeight) / height;
+        // CREATE A MATRIX FOR THE MANIPULATION
+        Matrix matrix = new Matrix();
+        // RESIZE THE BIT MAP
+        matrix.postScale(scaleWidth, scaleHeight);
+
+        // "RECREATE" THE NEW BITMAP
+        Bitmap resizedBitmap = Bitmap.createBitmap(
+                bm, 0, 0, width, height, matrix, false);
+        bm.recycle();
+        return resizedBitmap;
+    }
 }
