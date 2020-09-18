@@ -60,7 +60,6 @@ public class HomeActivity extends AppCompatActivity {
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         mAuth = FirebaseAuth.getInstance();
 
-        setLastSeen(true);
         verifyUser();
 
         final Handler handler = new Handler();
@@ -120,14 +119,14 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
-    private void setLastSeen(Boolean status) {
+    private void setLastSeen() {
         if (mAuth.getUid() != null) {
             Date d = new Date();
             long timestamp = d.getTime();
 
             Map<String, Object> userInfo = new HashMap<>();
             userInfo.put("lastSeen", timestamp);
-            userInfo.put("online", status);
+            userInfo.put("online", false);
             userInfo.put("lastSeenTimeStamp", FieldValue.serverTimestamp());
 
             db.collection("users").document(mAuth.getUid())
@@ -171,13 +170,12 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        setLastSeen(false);
+        setLastSeen();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        setLastSeen(true);
         NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancelAll();
     }
