@@ -1,12 +1,15 @@
 package com.iku
 
+import android.content.DialogInterface
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.amulyakhare.textdrawable.TextDrawable
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.analytics.ktx.logEvent
@@ -90,52 +93,65 @@ class EditProfileActivity : AppCompatActivity() {
         back_button.setOnClickListener { onBackPressed() }
         save_button.setOnClickListener {
             val name = editUserNameField.text.toString().trim().capitalize(Locale.ROOT)
-            val bio = userBio.text.toString().trim()
-            val optionalLink = linkInBio.text.toString().trim()
             if (name.isNotEmpty() && user != null) {
-                saveUserDetails(bio, optionalLink, user, name)
+                saveUserDetails(user, name)
             }
         }
     }
 
-    private fun saveUserDetails(bio: String, link: String, user: FirebaseUser, name: String) {
-
+    private fun saveUserDetails(user: FirebaseUser, name: String) {
+        val bio = userBio.text.toString().trim()
+        val optionalLink = linkInBio.text.toString().trim()
         val parts = name.split(" ").toMutableList()
         val firstName = parts.firstOrNull()?.capitalize(Locale.ROOT)
         parts.removeAt(0)
         val lastName = parts.joinToString(" ").capitalize(Locale.ROOT)
-        val profileUpdates = userProfileChangeRequest {
-            displayName = name
-        }
-
-        db.collection("users").document(user.uid).get().addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                val document = task.result
-                if (document.exists()) {
-                    val nameCheck = document.get("nameEdited") as Boolean?
-                    if (nameCheck != true) {
-                        val nameData = mapOf(
-                                "firstName" to firstName,
-                                "lastName" to lastName,
-                                "nameEdited" to true,
-                                "nameUpdatedTime" to FieldValue.serverTimestamp()
-                        )
-                        user.updateProfile(profileUpdates).addOnCompleteListener {
-                            db.collection("users").document(user.uid)
-                                    .update(nameData).addOnSuccessListener { }
-                        }
+        if (name == user.displayName) {
+            updateBio(bio, optionalLink, user.uid)
+        } else {
+            MaterialAlertDialogBuilder(this)
+                    .setTitle("Confirm")
+                    .setMessage("Are you sure you want to change your name?\nThis cannot be undone")
+                    .setNegativeButton("Cancel") { dialog, which ->
+                        // Respond to negative button press
                     }
-                }
-            }
+                    .setPositiveButton("Obviously") { dialog, which ->
+                        val profileUpdates = userProfileChangeRequest {
+                            displayName = name
+                        }
+
+                        db.collection("users").document(user.uid).get().addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                val document = task.result
+                                if (document.exists()) {
+                                    val nameCheck = document.get("nameEdited") as Boolean?
+                                    if (nameCheck != true) {
+                                        val nameData = mapOf(
+                                                "firstName" to firstName,
+                                                "lastName" to lastName,
+                                                "nameEdited" to true,
+                                                "nameUpdatedTime" to FieldValue.serverTimestamp()
+                                        )
+                                        user.updateProfile(profileUpdates).addOnCompleteListener {
+                                            db.collection("users").document(user.uid)
+                                                    .update(nameData).addOnSuccessListener { }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        updateBio(bio, optionalLink, user.uid)
+                    }
+                    .show()
         }
+    }
 
-
+    private fun updateBio(bio: String, link: String, uid: String) {
         val data = mapOf(
                 "userBio" to bio,
                 "userBioLink" to link
         )
-
-        db.collection("users").document(user.uid)
+        db.collection("users").document(uid)
                 .update(data).addOnSuccessListener { onBackPressed() }.addOnFailureListener {
                     firebaseAnalytics.logEvent("profile_update") {
                         param(FirebaseAnalytics.Param.METHOD, "User tried updating Info")
@@ -154,9 +170,9 @@ class EditProfileActivity : AppCompatActivity() {
                         if (nameCheck == true) {
                             editUserName.visibility = View.GONE
                             userName.visibility = View.VISIBLE
-                            userName.text =user.displayName
+                            userName.text = user.displayName
                         } else
-                            editUserName.visibility =View.VISIBLE
+                            editUserName.visibility = View.VISIBLE
                     }
                 }
             }
