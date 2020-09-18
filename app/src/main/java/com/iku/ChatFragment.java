@@ -581,6 +581,12 @@ public class ChatFragment extends Fragment {
                     updateMessageView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
+                            binding.editWarning.setVisibility(View.VISIBLE);
+                            binding.cancelEdit.setOnClickListener(view1 -> {
+                                editTextStatus = 0;
+                                initSendButton();
+                                binding.editWarning.setVisibility(View.GONE);
+                            });
                             if (chatModel.getType().equals("text")) {
                                 binding.messageTextField.setText(chatModel.getMessage());
                                 binding.messageTextField.setSelection(binding.messageTextField.getText().length());
