@@ -83,6 +83,8 @@ public class ProfileFragment extends Fragment {
 
         profileBinding.editProfileButton.setOnClickListener(view -> {
             Intent goToEditPage = new Intent(getActivity(), EditProfileActivity.class);
+            goToEditPage.putExtra("EXTRA_PROFILE_URL", photoUrl);
+            goToEditPage.putExtra("EXTRA_PROFILE_NAME", user.getDisplayName());
             startActivity(goToEditPage);
         });
 
@@ -184,6 +186,12 @@ public class ProfileFragment extends Fragment {
                         }
                     });
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getUserDetails();
     }
 
     @Override

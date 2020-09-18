@@ -132,6 +132,16 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
+        settingsBinding.logoutButton.setOnClickListener(view -> {
+            //log event
+            //Remove UID if this event is erroring out in Analytics
+            Bundle logout_bundle = new Bundle();
+            logout_bundle.putString("uid", user.getUid());
+            mFirebaseAnalytics.logEvent("logout", logout_bundle);
+            mAuth.signOut();
+            Intent intent = new Intent(this, SplashActivity.class);
+            startActivity(intent);
+        });
         initProgressDialog();
 
         messageEntered = (EditText) findViewById(R.id.feedbackText);
