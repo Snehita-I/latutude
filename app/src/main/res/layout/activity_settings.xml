@@ -316,13 +316,12 @@
                         android:text="Report a bug" />
 
                     <ImageButton
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:layout_marginRight="24dp"
-                        android:background="@android:color/white"
-                        android:src="@drawable/ic_next_36" />
+                        android:background="@drawable/ic_next_36" />
 
                 </RelativeLayout>
 
@@ -362,13 +361,12 @@
                         android:text="Logout" />
 
                     <ImageButton
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:layout_marginRight="24dp"
-                        android:background="@android:color/white"
-                        android:src="@drawable/ic_next_36" />
+                        android:background="@drawable/ic_next_36" />
 
                 </RelativeLayout>
 
