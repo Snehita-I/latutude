@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.amulyakhare.textdrawable.TextDrawable
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -151,9 +152,11 @@ class EditProfileActivity : AppCompatActivity() {
                     if (document.exists()) {
                         val nameCheck = document.get("nameEdited") as Boolean?
                         if (nameCheck == true) {
-                            editUserNameField.isFocusable = false
-                            editUserNameWarning.text = getString(R.string.name_changed_warning)
-                        }
+                            editUserName.visibility = View.GONE
+                            userName.visibility = View.VISIBLE
+                            userName.text =user.displayName
+                        } else
+                            editUserName.visibility =View.VISIBLE
                     }
                 }
             }

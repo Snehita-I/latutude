@@ -102,8 +102,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/editUserName"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:visibility="gone"
+        android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/userName">
 
         <ImageView
