@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
+import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.fragment.app.Fragment;
 
 import com.amulyakhare.textdrawable.TextDrawable;
@@ -86,6 +87,12 @@ public class ProfileFragment extends Fragment {
             goToEditPage.putExtra("EXTRA_PROFILE_URL", photoUrl);
             goToEditPage.putExtra("EXTRA_PROFILE_NAME", user.getDisplayName());
             startActivity(goToEditPage);
+        });
+
+        profileBinding.linkInBio.setOnClickListener(view -> {
+            CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+            CustomTabsIntent customTabsIntent = builder.build();
+            customTabsIntent.launchUrl(getActivity(), Uri.parse(profileBinding.linkInBio.getText().toString().trim()));
         });
 
     }

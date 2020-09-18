@@ -155,12 +155,11 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="30dp"
         android:hint="Optional link"
+        android:textColorLink="@color/colorAccent"
         android:minLines="1"
         android:padding="10dp"
         android:textAlignment="center"
         android:textSize="13sp"
-        android:autoLink="all"
-        android:textColorLink="@color/colorTextSecondary"
         app:layout_constraintTop_toBottomOf="@id/linkHeader" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

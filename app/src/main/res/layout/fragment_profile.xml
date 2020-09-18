@@ -171,8 +171,7 @@
                 android:paddingHorizontal="60dp"
                 android:textAlignment="center"
                 android:textSize="13sp"
-                android:autoLink="all"
-                android:textColorLink="@color/colorTextSecondary"
+                android:textColorLink="@color/colorAccent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/userBio" />

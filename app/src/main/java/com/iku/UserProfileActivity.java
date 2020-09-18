@@ -1,6 +1,7 @@
 package com.iku;
 
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -8,6 +9,7 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.browser.customtabs.CustomTabsIntent;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -69,6 +71,11 @@ public class UserProfileActivity extends AppCompatActivity {
     private void initButtons() {
         userPofileBinding.backButton.setOnClickListener(view -> {
             onBackPressed();
+        });
+        userPofileBinding.linkInBio.setOnClickListener(view -> {
+            CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+            CustomTabsIntent customTabsIntent = builder.build();
+            customTabsIntent.launchUrl(this, Uri.parse(userPofileBinding.linkInBio.getText().toString().trim()));
         });
     }
 
