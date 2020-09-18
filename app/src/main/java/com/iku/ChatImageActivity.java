@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -37,12 +38,15 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -61,10 +65,7 @@ public class ChatImageActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private FirebaseAnalytics mFirebaseAnalytics;
     private SimpleDateFormat dateFormatter;
-    private Uri mImageUri;
-    private File file;
-    private File sourceFile;
-    private File destFile;
+    private Uri mImageUri,finalUri;
     private int PICK_IMAGE = 1;
     private String docId, message, imageUrl;
 
@@ -75,25 +76,7 @@ public class ChatImageActivity extends AppCompatActivity {
             Manifest.permission.READ_EXTERNAL_STORAGE
     };
 
-    //private ActivityChatImageBinding chatImageBinding;
-
     private String TAG = ChatImageActivity.class.getSimpleName();
-
-    public static void closeSilently(Closeable c) {
-        if (c == null)
-            return;
-        try {
-            c.close();
-        } catch (Throwable t) {
-            // Do nothing
-        }
-    }
-
-    private static String getTempFilename(Context context) throws IOException {
-        File outputDir = context.getCacheDir();
-        File outputFile = File.createTempFile("image", "tmp", outputDir);
-        return outputFile.getAbsolutePath();
-    }
 
     private ImageButton sendImageChatbtn;
 
@@ -106,9 +89,7 @@ public class ChatImageActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //chatImageBinding = ActivityChatImageBinding.inflate(getLayoutInflater());
         setContentView(R.layout.activity_chat_image);
-//        setContentView(chatImageBinding.getRoot());
 
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
@@ -122,10 +103,7 @@ public class ChatImageActivity extends AppCompatActivity {
         dateFormatter = new SimpleDateFormat(
                 DATE_FORMAT, Locale.US);
 
-        file = new File(String.valueOf(getCacheDir()));
-        if (!file.exists()) {
-            file.mkdirs();
-        }
+
         Bundle extras = getIntent().getExtras();
         docId = extras.getString("documentId");
         if (docId.equals("default")) {
@@ -136,6 +114,7 @@ public class ChatImageActivity extends AppCompatActivity {
             imageUrl = extras.getString("imageUrl");
             Picasso.get().load(imageUrl).into(chosenImage);
         }
+
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -164,56 +143,9 @@ public class ChatImageActivity extends AppCompatActivity {
             }
         });
 
-//        initItems();
-//        initButtons();
-//
-//        openFileChooser();
     }
-
-    private void initItems() {
-        mAuth = FirebaseAuth.getInstance();
-        user = mAuth.getCurrentUser();
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-        mStorageRef = FirebaseStorage.getInstance().getReference(user.getUid());
-        db = FirebaseFirestore.getInstance();
-
-        dateFormatter = new SimpleDateFormat(
-                DATE_FORMAT, Locale.US);
-
-        file = new File(String.valueOf(getCacheDir()));
-        if (!file.exists()) {
-            file.mkdirs();
-        }
-
-    }
-
-//    private void initButtons() {
-//
-//        chatImageBinding.backbutton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                onBackPressed();
-//            }
-//        });
-//
-//        chatImageBinding.sendMessageButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                if (!chatImageBinding.messageTextField.getText().toString().isEmpty()) {
-//
-//                    uploadFile(chatImageBinding.messageTextField.getText().toString());
-//
-//                    chatImageBinding.sendMessageButton.setClickable(false);
-//
-//                } else
-//                    Toast.makeText(ChatImageActivity.this, "Caption such empty..much wow!", Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//
-//    }
 
     private void uploadFile(String message) {
-        Uri finalUri = Uri.fromFile(destFile);
         if (finalUri != null) {
             StorageReference imageRef = mStorageRef.child("IKU-img_"
                     + dateFormatter.format(new Date()) + ".png");
@@ -326,20 +258,13 @@ public class ChatImageActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE && resultCode == RESULT_OK && data != null) {
             mImageUri = data.getData();
-
-            sourceFile = new File(getPathFromGooglePhotosUri(mImageUri));
-
-            destFile = new File(file, "IKU-img_"
-                    + dateFormatter.format(new Date()) + ".png");
-
-
             try {
-                copyFile(sourceFile, destFile);
+                Bitmap bitmap = getThumbnail(mImageUri);
+                chosenImage.setImageBitmap(bitmap);
+                finalUri = getImageUri(getApplicationContext(),bitmap);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            Bitmap bitmap = decodeFile(destFile);
-            chosenImage.setImageBitmap(bitmap);
         } else
             onBackPressed();
     }
@@ -359,104 +284,6 @@ public class ChatImageActivity extends AppCompatActivity {
             return false;
         }
         return true;
-    }
-
-    private Bitmap decodeFile(File f) {
-        Bitmap b = null;
-
-        //Decode image size
-        BitmapFactory.Options o = new BitmapFactory.Options();
-        o.inJustDecodeBounds = true;
-
-        FileInputStream fis = null;
-        try {
-            fis = new FileInputStream(f);
-            BitmapFactory.decodeStream(fis, null, o);
-            fis.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        int IMAGE_MAX_SIZE = 1024;
-        int scale = 1;
-        if (o.outHeight > IMAGE_MAX_SIZE || o.outWidth > IMAGE_MAX_SIZE) {
-            scale = (int) Math.pow(2, (int) Math.ceil(Math.log(IMAGE_MAX_SIZE /
-                    (double) Math.max(o.outHeight, o.outWidth)) / Math.log(0.5)));
-        }
-
-        //Decode with inSampleSize
-        BitmapFactory.Options o2 = new BitmapFactory.Options();
-        o2.inSampleSize = scale;
-        try {
-            fis = new FileInputStream(f);
-            b = BitmapFactory.decodeStream(fis, null, o2);
-            fis.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        destFile = new File(file, "IKU-img_"
-                + dateFormatter.format(new Date()) + ".png");
-
-        try {
-            FileOutputStream out = new FileOutputStream(destFile);
-            b.compress(Bitmap.CompressFormat.PNG, 90, out);
-            out.flush();
-            out.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return b;
-    }
-
-    public String getPathFromGooglePhotosUri(Uri uriPhoto) {
-        if (uriPhoto == null)
-            return null;
-
-        FileInputStream input = null;
-        FileOutputStream output = null;
-        try {
-            ParcelFileDescriptor pfd = getContentResolver().openFileDescriptor(uriPhoto, "r");
-            FileDescriptor fd = pfd.getFileDescriptor();
-            input = new FileInputStream(fd);
-
-            String tempFilename = getTempFilename(this);
-            output = new FileOutputStream(tempFilename);
-
-            int read;
-            byte[] bytes = new byte[4096];
-            while ((read = input.read(bytes)) != -1) {
-                output.write(bytes, 0, read);
-            }
-            return tempFilename;
-        } catch (IOException ignored) {
-            // Nothing we can do
-        } finally {
-            closeSilently(input);
-            closeSilently(output);
-        }
-        return null;
-    }
-
-    private void copyFile(File sourceFile, File destFile) throws IOException {
-        if (!sourceFile.exists()) {
-            return;
-        }
-
-        FileChannel source = null;
-        FileChannel destination = null;
-        source = new FileInputStream(sourceFile).getChannel();
-        destination = new FileOutputStream(destFile).getChannel();
-        if (destination != null && source != null) {
-            destination.transferFrom(source, 0, source.size());
-        }
-        if (source != null) {
-            source.close();
-        }
-        if (destination != null) {
-            destination.close();
-        }
     }
 
     private void updateMessage(String messageDocumentID, String message) {
@@ -479,6 +306,46 @@ public class ChatImageActivity extends AppCompatActivity {
                     public void onFailure(@NonNull Exception e) {
                     }
                 });
+    }
+
+    public Bitmap getThumbnail(Uri uri) throws FileNotFoundException, IOException{
+        InputStream input = getApplicationContext().getContentResolver().openInputStream(uri);
+
+        BitmapFactory.Options onlyBoundsOptions = new BitmapFactory.Options();
+        onlyBoundsOptions.inJustDecodeBounds = true;
+        onlyBoundsOptions.inDither=true;//optional
+        onlyBoundsOptions.inPreferredConfig=Bitmap.Config.ARGB_8888;//optional
+        BitmapFactory.decodeStream(input, null, onlyBoundsOptions);
+        input.close();
+
+        if ((onlyBoundsOptions.outWidth == -1) || (onlyBoundsOptions.outHeight == -1)) {
+            return null;
+        }
+
+        int originalSize = Math.max(onlyBoundsOptions.outHeight, onlyBoundsOptions.outWidth);
+
+        double ratio = (originalSize > 921600) ? (originalSize / 921600) : 1.0;
+
+        BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
+        bitmapOptions.inSampleSize = getPowerOfTwoForSampleRatio(ratio);
+        bitmapOptions.inDither = true; //optional
+        bitmapOptions.inPreferredConfig=Bitmap.Config.ARGB_8888;//
+        input = this.getContentResolver().openInputStream(uri);
+        Bitmap bitmap = BitmapFactory.decodeStream(input, null, bitmapOptions);
+        input.close();
+        return bitmap;
+    }
+
+    private static int getPowerOfTwoForSampleRatio(double ratio){
+        int k = Integer.highestOneBit((int)Math.floor(ratio));
+        if(k==0) return 1;
+        else return k;
+    }
+    private Uri getImageUri(Context context, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
     }
 
 }
