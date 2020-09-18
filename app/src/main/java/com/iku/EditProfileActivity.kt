@@ -1,12 +1,10 @@
 package com.iku
 
-import android.content.DialogInterface
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.amulyakhare.textdrawable.TextDrawable
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -39,57 +37,20 @@ class EditProfileActivity : AppCompatActivity() {
         db = FirebaseFirestore.getInstance()
         firebaseAnalytics = Firebase.analytics
         val user = mAuth.currentUser
-        initButtons(user)
+        initItems(user)
         getDetails(user)
-        setPicture()
-        checkNameEdit(user)
+    }
+
+    private fun initItems(user: FirebaseUser?) {
         userBio.addTextChangedListener(object : TextWatcher {
-
             override fun afterTextChanged(s: Editable) {}
-
-            override fun beforeTextChanged(s: CharSequence, start: Int,
-                                           count: Int, after: Int) {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
             }
 
-            override fun onTextChanged(s: CharSequence, start: Int,
-                                       before: Int, count: Int) {
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 characterCount.text = (140 - s.toString().length).toString()
             }
         })
-    }
-
-    private fun setPicture() {
-        val profileUrl = intent.extras?.get("EXTRA_PROFILE_URL")
-        if (profileUrl != null) {
-            Picasso.get().load(profileUrl.toString())
-                    .noFade()
-                    .networkPolicy(NetworkPolicy.OFFLINE)
-                    .into(profileImage, object : Callback {
-                        override fun onSuccess() {}
-                        override fun onError(e: Exception) {
-                            Picasso.get()
-                                    .load(profileUrl.toString())
-                                    .noFade()
-                                    .into(profileImage)
-                        }
-                    })
-
-        } else {
-            val profileName: String = intent.extras?.get("EXTRA_PROFILE_NAME") as String
-            val firstLetter = profileName[0].toString()
-            val secondLetter: String = profileName.substring(profileName.indexOf(' ') + 1, profileName.indexOf(' ') + 2).trim { it <= ' ' }
-            val drawable = TextDrawable.builder()
-                    .beginConfig()
-                    .width(200)
-                    .height(200)
-                    .endConfig()
-                    .buildRect(firstLetter + secondLetter, Color.DKGRAY)
-
-            profileImage.setImageDrawable(drawable)
-        }
-    }
-
-    private fun initButtons(user: FirebaseUser?) {
         back_button.setOnClickListener { onBackPressed() }
         save_button.setOnClickListener {
             val name = editUserNameField.text.toString().trim().capitalize(Locale.ROOT)
@@ -112,10 +73,10 @@ class EditProfileActivity : AppCompatActivity() {
             MaterialAlertDialogBuilder(this)
                     .setTitle("Confirm")
                     .setMessage("Are you sure you want to change your name?\nThis cannot be undone")
-                    .setNegativeButton("Cancel") { dialog, which ->
+                    .setNegativeButton("Cancel") { _, _ ->
                         // Respond to negative button press
                     }
-                    .setPositiveButton("Obviously") { dialog, which ->
+                    .setPositiveButton("Obviously") { _, _ ->
                         val profileUpdates = userProfileChangeRequest {
                             displayName = name
                         }
@@ -160,8 +121,10 @@ class EditProfileActivity : AppCompatActivity() {
                 }
     }
 
-    private fun checkNameEdit(user: FirebaseUser?) {
+    private fun getDetails(user: FirebaseUser?) {
         if (user != null) {
+            editUserNameField.setText(user.displayName)
+            userName.text = user.displayName
             db.collection("users").document(user.uid).get().addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val document = task.result
@@ -170,18 +133,13 @@ class EditProfileActivity : AppCompatActivity() {
                         if (nameCheck == true) {
                             editUserName.visibility = View.GONE
                             userName.visibility = View.VISIBLE
-                            userName.text = user.displayName
-                        } else
+                        } else {
+                            userName.visibility = View.GONE
                             editUserName.visibility = View.VISIBLE
+                        }
                     }
                 }
             }
-        }
-    }
-
-    private fun getDetails(user: FirebaseUser?) {
-        if (user != null) {
-            editUserNameField.setText(user.displayName)
             db.collection("users").document(user.uid).get().addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val document = task.result
@@ -190,6 +148,34 @@ class EditProfileActivity : AppCompatActivity() {
                         linkInBio.setText(document.get("userBioLink") as String?)
                     }
                 }
+            }
+            val profileUrl = intent.extras?.get("EXTRA_PROFILE_URL")
+            if (profileUrl != null) {
+                Picasso.get().load(profileUrl.toString())
+                        .noFade()
+                        .networkPolicy(NetworkPolicy.OFFLINE)
+                        .into(profileImage, object : Callback {
+                            override fun onSuccess() {}
+                            override fun onError(e: Exception) {
+                                Picasso.get()
+                                        .load(profileUrl.toString())
+                                        .noFade()
+                                        .into(profileImage)
+                            }
+                        })
+
+            } else {
+                val profileName: String = intent.extras?.get("EXTRA_PROFILE_NAME") as String
+                val firstLetter = profileName[0].toString()
+                val secondLetter: String = profileName.substring(profileName.indexOf(' ') + 1, profileName.indexOf(' ') + 2).trim { it <= ' ' }
+                val drawable = TextDrawable.builder()
+                        .beginConfig()
+                        .width(200)
+                        .height(200)
+                        .endConfig()
+                        .buildRect(firstLetter + secondLetter, Color.DKGRAY)
+
+                profileImage.setImageDrawable(drawable)
             }
         }
     }

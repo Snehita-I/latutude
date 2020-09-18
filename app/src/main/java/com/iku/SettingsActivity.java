@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -28,6 +29,7 @@ import androidx.core.content.ContextCompat;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.Timestamp;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
@@ -133,14 +135,21 @@ public class SettingsActivity extends AppCompatActivity {
         });
 
         settingsBinding.logoutButton.setOnClickListener(view -> {
-            //log event
-            //Remove UID if this event is erroring out in Analytics
-            Bundle logout_bundle = new Bundle();
-            logout_bundle.putString("uid", user.getUid());
-            mFirebaseAnalytics.logEvent("logout", logout_bundle);
-            mAuth.signOut();
-            Intent intent = new Intent(this, SplashActivity.class);
-            startActivity(intent);
+            MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(this);
+            materialAlertDialogBuilder.setTitle("Logout");
+            materialAlertDialogBuilder.setMessage("Are you sure?");
+            materialAlertDialogBuilder.setPositiveButton("Logout", (dialogInterface, i) -> {
+                //log event
+                //Remove UID if this event is errors out in Analytics
+                Bundle logout_bundle = new Bundle();
+                logout_bundle.putString("uid", user.getUid());
+                mFirebaseAnalytics.logEvent("logout", logout_bundle);
+                mAuth.signOut();
+                Intent intent = new Intent(SettingsActivity.this, SplashActivity.class);
+                startActivity(intent);
+            }).setNegativeButton("Cancel", (dialogInterface, i) -> {
+
+            }).show();
         });
         initProgressDialog();
 
