@@ -9,7 +9,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -40,7 +39,6 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
@@ -60,10 +58,10 @@ public class ChatImageActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private FirebaseAnalytics mFirebaseAnalytics;
     private SimpleDateFormat dateFormatter;
-    private Uri mImageUri, finalUri;
+    private Uri mImageUri;
     private int PICK_IMAGE = 1;
     private String docId, message, imageUrl;
-
+    byte[] dataSave;
     private int STORAGE_PERMISSION_CODE = 10;
 
     private String[] appPermissions = {
@@ -141,10 +139,10 @@ public class ChatImageActivity extends AppCompatActivity {
     }
 
     private void uploadFile(String message) {
-        if (finalUri != null) {
+        if (dataSave != null) {
             StorageReference imageRef = mStorageRef.child("IKU-img_"
                     + dateFormatter.format(new Date()) + ".png");
-            UploadTask uploadTask = imageRef.putFile(finalUri);
+            UploadTask uploadTask = imageRef.putBytes(dataSave);
             uploadTask.addOnSuccessListener(taskSnapshot -> {
                 Task<Uri> downloadUrl = imageRef.getDownloadUrl();
                 downloadUrl.addOnSuccessListener(uri -> {
@@ -253,15 +251,20 @@ public class ChatImageActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE && resultCode == RESULT_OK && data != null) {
             mImageUri = data.getData();
+            Bitmap bitmap = null;
             try {
-                Bitmap bitmap = getThumbnail(mImageUri);
+                bitmap = decodeUriToBitmap(getApplicationContext(), mImageUri);
                 Log.i(TAG, "onActivityResult: " + bitmap.getWidth() + "\n" + bitmap.getHeight());
-                bitmap = getResizedBitmap(bitmap, bitmap.getWidth()/2, bitmap.getHeight()/2);
+                bitmap = getResizedBitmap(bitmap, bitmap.getWidth() / 2, bitmap.getHeight() / 2);
                 chosenImage.setImageBitmap(bitmap);
-                finalUri = getImageUri(getApplicationContext(), bitmap);
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 20, baos);
+                dataSave = baos.toByteArray();
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+
         } else
             onBackPressed();
     }
@@ -305,46 +308,18 @@ public class ChatImageActivity extends AppCompatActivity {
                 });
     }
 
-    public Bitmap getThumbnail(Uri uri) throws FileNotFoundException, IOException {
-        InputStream input = getApplicationContext().getContentResolver().openInputStream(uri);
+    public static Bitmap decodeUriToBitmap(Context mContext, Uri sendUri) throws IOException {
+        Bitmap getBitmap = null;
 
-        BitmapFactory.Options onlyBoundsOptions = new BitmapFactory.Options();
-        onlyBoundsOptions.inJustDecodeBounds = true;
-        onlyBoundsOptions.inDither = true;//optional
-        onlyBoundsOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;//optional
-        BitmapFactory.decodeStream(input, null, onlyBoundsOptions);
-        input.close();
+        InputStream image_stream;
 
-        if ((onlyBoundsOptions.outWidth == -1) || (onlyBoundsOptions.outHeight == -1)) {
-            return null;
-        }
+        image_stream = mContext.getContentResolver().openInputStream(sendUri);
+        getBitmap = BitmapFactory.decodeStream(image_stream);
+        image_stream.close();
 
-        int originalSize = Math.max(onlyBoundsOptions.outHeight, onlyBoundsOptions.outWidth);
-
-        double ratio = (originalSize > 921600) ? (originalSize / 921600) : 1.0;
-
-        BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
-        bitmapOptions.inSampleSize = getPowerOfTwoForSampleRatio(ratio);
-        bitmapOptions.inDither = true; //optional
-        bitmapOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;//
-        input = this.getContentResolver().openInputStream(uri);
-        Bitmap bitmap = BitmapFactory.decodeStream(input, null, bitmapOptions);
-        input.close();
-        return bitmap;
+        return getBitmap;
     }
 
-    private static int getPowerOfTwoForSampleRatio(double ratio) {
-        int k = Integer.highestOneBit((int) Math.floor(ratio));
-        if (k == 0) return 1;
-        else return k;
-    }
-
-    private Uri getImageUri(Context context, Bitmap inImage) {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), inImage, "Title", null);
-        return Uri.parse(path);
-    }
 
     public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
         int width = bm.getWidth();
