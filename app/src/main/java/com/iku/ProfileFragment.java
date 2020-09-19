@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 import androidx.browser.customtabs.CustomTabsIntent;
@@ -44,6 +45,7 @@ public class ProfileFragment extends Fragment {
     private FirebaseUser user;
     private FirebaseAnalytics mFirebaseAnalytics;
     private String photoUrl;
+    private ImageView userBioIcon,userLinkIcon;
     private MaterialTextView userHeartsTextView, userBioTextView, userLinkTextView;
     private FragmentProfileBinding profileBinding;
 
@@ -67,6 +69,8 @@ public class ProfileFragment extends Fragment {
         userHeartsTextView = view.findViewById(R.id.userHearts);
         userBioTextView = view.findViewById(R.id.userBio);
         userLinkTextView = view.findViewById(R.id.linkInBio);
+        userBioIcon=view.findViewById(R.id.userBioIcon);
+        userLinkIcon=view.findViewById(R.id.linkInBioIcon);
 
         initButtons();
         getUserDetails();
@@ -183,10 +187,20 @@ public class ProfileFragment extends Fragment {
                         for (DocumentChange change : querySnapshot.getDocumentChanges()) {
                             if (change.getType() == DocumentChange.Type.ADDED) {
                                 long points = (long) change.getDocument().get("points");
-                                userBioTextView.setText((String) change.getDocument().get("userBio"));
-                                userLinkTextView.setText((String) change.getDocument().get("userBioLink"));
+                                String bio = (String) change.getDocument().get("userBio");
+                                String link = (String) change.getDocument().get("userBioLink");
+                                if (bio!=null&& !bio.equals("")){
+                                    userBioIcon.setVisibility(View.VISIBLE);
+                                    userBioTextView.setVisibility(View.VISIBLE);
+                                    userBioTextView.setText(bio);
+                                }
+                                if (link!=null&& !link.equals("")){
+                                    userLinkIcon.setVisibility(View.VISIBLE);
+                                    userLinkTextView.setVisibility(View.VISIBLE);
+                                    userLinkTextView.setText(link);
+                                }
                                 if (points == 0)
-                                    userHeartsTextView.setText("Yet to win some hearts!");
+                                    userHeartsTextView.setText(R.string.yet_to_win_hearts);
                                 else
                                     userHeartsTextView.setText("Hearts Won: " + change.getDocument().get("points"));
                             }

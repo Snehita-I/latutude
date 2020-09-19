@@ -144,19 +144,19 @@ public class UserProfileActivity extends AppCompatActivity {
                             long points = (long) change.getDocument().get("points");
                             String link = (String) change.getDocument().get("userBioLink");
                             String bio = (String) change.getDocument().get("userBio");
-                            if (link == null) {
-                                linkHeaderTextView.setVisibility(View.GONE);
-                                userLinkTextView.setVisibility(View.GONE);
-                            } else
-                                userLinkTextView.setText((String) change.getDocument().get("userBioLink"));
-                            if (bio == null) {
-                                bioHeaderTextView.setVisibility(View.GONE);
-                                bioTextView.setVisibility(View.GONE);
-                            } else
-                                bioTextView.setText((String) change.getDocument().get("userBio"));
+                            if (bio!=null&& !bio.equals("")){
+                                userPofileBinding.userBioHeader.setVisibility(View.VISIBLE);
+                                userPofileBinding.userBio.setVisibility(View.VISIBLE);
+                                userPofileBinding.userBio.setText(bio);
+                            }
+                            if (link!=null&& !link.equals("")){
+                                userPofileBinding.linkHeader.setVisibility(View.VISIBLE);
+                                userPofileBinding.linkInBio.setVisibility(View.VISIBLE);
+                                userPofileBinding.linkInBio.setText(link);
+                            }
 
                             if (points == 0)
-                                userHeartsTextView.setText("Yet to win some hearts!");
+                                userHeartsTextView.setText(R.string.yet_to_win_hearts);
                             else
                                 userHeartsTextView.setText("Hearts Won: " + change.getDocument().get("points"));
                         }
