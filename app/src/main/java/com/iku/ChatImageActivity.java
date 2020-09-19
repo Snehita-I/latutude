@@ -254,7 +254,6 @@ public class ChatImageActivity extends AppCompatActivity {
             Bitmap bitmap = null;
             try {
                 bitmap = decodeUriToBitmap(getApplicationContext(), mImageUri);
-                Log.i(TAG, "onActivityResult: " + bitmap.getWidth() + "\n" + bitmap.getHeight());
                 bitmap = getResizedBitmap(bitmap, bitmap.getWidth() / 2, bitmap.getHeight() / 2);
                 chosenImage.setImageBitmap(bitmap);
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();

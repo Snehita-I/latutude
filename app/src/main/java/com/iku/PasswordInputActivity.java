@@ -78,7 +78,6 @@ public class PasswordInputActivity extends AppCompatActivity {
                                         @Override
                                         public void onComplete(@NonNull Task<InstanceIdResult> task) {
                                             if (!task.isSuccessful()) {
-                                                Log.w(TAG, "getInstanceId failed", task.getException());
                                                 return;
                                             }
 
