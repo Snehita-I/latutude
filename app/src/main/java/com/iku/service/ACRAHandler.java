@@ -1,7 +1,10 @@
-package com.iku;
+package com.iku.service;
 
 import android.app.Application;
 import android.content.Context;
+
+import com.iku.BuildConfig;
+import com.iku.R;
 
 import org.acra.ACRA;
 import org.acra.ReportField;
