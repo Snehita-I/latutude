@@ -23,9 +23,6 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.iku.adapter.LeaderBoardAdapter;
 import com.iku.models.LeaderboardModel;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import nl.dionsegijn.konfetti.KonfettiView;
 import nl.dionsegijn.konfetti.models.Shape;
 import nl.dionsegijn.konfetti.models.Size;
@@ -125,20 +122,12 @@ public class LeaderboardActivity extends AppCompatActivity {
 
         leaderboardadapter.setOnItemClickOfDiffUidListener((String uid, String name) -> {
             Intent userProfileIntent = new Intent(this, UserProfileActivity.class);
-            /*Log event*/
-            Bundle curiousBundlle = new Bundle();
-            curiousBundlle.putString(FirebaseAnalytics.Param.METHOD, "Clicked");
-            curiousBundlle.putString("Reason", "Wanted to know about his opponent");
-            mFirebaseAnalytics.logEvent("viewed_someone", curiousBundlle);
-            if (!uid.isEmpty() && !name.isEmpty() && user != null) {
-                Map<String, Object> adapterClick = new HashMap<>();
-                adapterClick.put("Viewer", user.getUid());
-                adapterClick.put("Viewer Name", user.getDisplayName());
-                adapterClick.put("Viewed", uid);
-                adapterClick.put("Viewed Name", name);
-                db.collection("viewers").document().set(adapterClick).addOnSuccessListener(aVoid -> {
-                }).addOnFailureListener(e -> {
-                });
+            if (user != null && name != null) {
+                /*Log event*/
+                Bundle curiousBundlle = new Bundle();
+                curiousBundlle.putString(FirebaseAnalytics.Param.METHOD, "Clicked");
+                curiousBundlle.putString("Reason", user.getDisplayName() + " Wanted to know about his opponent " + name);
+                mFirebaseAnalytics.logEvent("viewed_someone", curiousBundlle);
             }
             userProfileIntent.putExtra("EXTRA_PERSON_NAME", name);
             userProfileIntent.putExtra("EXTRA_PERSON_UID", uid);
