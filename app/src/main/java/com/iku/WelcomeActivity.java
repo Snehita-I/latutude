@@ -247,7 +247,7 @@ public class WelcomeActivity extends AppCompatActivity {
                         userInfo.put("points", 0);
                         userInfo.put("firstMessage", false);
                         userInfo.put("firstImage", false);
-
+                        userInfo.put("signUpTime",FieldValue.serverTimestamp());
 
                         final String userID = mAuth.getUid();
 
