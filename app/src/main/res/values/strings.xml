@@ -14,6 +14,7 @@
     <string name="cancel">Cancel</string>
     <string name="name_changed_warning">Name changed once.</string>
     <string name="yet_to_win_hearts">Yet to win some hearts!</string>
+    <string name="acra_toast_text">Sorry, the application crashed. An email will be sent to developers.</string>
 
 
 </resources>
