@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -126,6 +125,13 @@ public class SettingsActivity extends AppCompatActivity {
                     s[4] = findViewById(R.id.star5);
             }
         }
+
+        settingsBinding.featurebtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(SettingsActivity.this, FeatureUpvoteActivity.class));
+            }
+        });
 
         settingsBinding.backButton.setOnClickListener(new View.OnClickListener() {
             @Override

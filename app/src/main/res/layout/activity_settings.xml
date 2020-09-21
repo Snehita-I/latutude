@@ -327,6 +327,17 @@
 
             </androidx.cardview.widget.CardView>
 
+            <Button
+                android:id="@+id/featurebtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="222dp"
+                android:text="CLIC ME"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/report_a_bug_button"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <!--Logout-->
             <androidx.cardview.widget.CardView
                 android:id="@+id/logout_button"
