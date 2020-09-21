@@ -6,6 +6,44 @@
     android:layout_height="match_parent"
     tools:context=".HomeActivity">
 
+    <HorizontalScrollView
+        android:id="@+id/categories"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="57dp"
+        android:overScrollMode="never"
+        android:translationZ="1dp"
+        android:scrollbars="none">
+
+        <com.google.android.material.chip.ChipGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/allFilter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="All"
+                android:textColor="@android:color/black" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/educationalFilter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Educational"
+                android:textColor="@android:color/black" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/questionsFilter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Questions"
+                android:textColor="@android:color/black" />
+
+        </com.google.android.material.chip.ChipGroup>
+    </HorizontalScrollView>
+
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"

@@ -6,15 +6,7 @@
     android:animateLayoutChanges="true"
     android:background="#EBEBEB">
 
-    <!--Confetti-->
-    <nl.dionsegijn.konfetti.KonfettiView
-        android:id="@+id/viewConfetti"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:translationZ="13dp" />
-
-    <!--App Bar Layout-->
-    <com.google.android.material.appbar.AppBarLayout
+    <!--App Bar Layout-->    <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBar"
         android:layout_width="match_parent"
         android:layout_height="57dp"
