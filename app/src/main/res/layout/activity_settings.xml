@@ -327,16 +327,50 @@
 
             </androidx.cardview.widget.CardView>
 
-            <Button
+            <!--Feature Upvote-->
+            <androidx.cardview.widget.CardView
                 android:id="@+id/featurebtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="222dp"
-                android:text="CLIC ME"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/report_a_bug_button"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                app:cardElevation="0dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@id/report_a_bug_button">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical">
+
+                    <ImageView
+                        android:id="@+id/feature_upvote_icon"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="24dp"
+                        android:src="@drawable/ic_baseline_vote_24" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        style="@style/FirebaseUI.Text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="12dp"
+                        android:layout_toRightOf="@id/feature_upvote_icon"
+                        android:text="Feature Upvote" />
+
+                    <ImageButton
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="24dp"
+                        android:background="@drawable/ic_next_36" />
+
+                </RelativeLayout>
+
+            </androidx.cardview.widget.CardView>
 
             <!--Logout-->
             <androidx.cardview.widget.CardView
@@ -347,7 +381,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/report_a_bug_button">
+                app:layout_constraintTop_toBottomOf="@id/featurebtn">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
