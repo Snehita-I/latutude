@@ -54,7 +54,10 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
             case MSG_TYPE_LEFT:
                 ChatLeftViewHolder chatLeftViewHolder = (ChatLeftViewHolder) viewHolder;
                 long timeStampLeft = chatModel.getTimestamp();
-                chatLeftViewHolder.messageText.setText(chatModel.getMessage());
+                if(chatModel.isSpam())
+                    chatLeftViewHolder.messageText.setText("Message deleted");
+                else
+                    chatLeftViewHolder.messageText.setText(chatModel.getMessage());
                 chatLeftViewHolder.messageTime.setText(sfd.format(new Date(timeStampLeft)));
                 chatLeftViewHolder.messageTime2.setText(sfd.format(new Date(timeStampLeft)));
                 chatLeftViewHolder.messageTime3.setText(sfd.format(new Date(timeStampLeft)));
@@ -158,7 +161,10 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
                 } else
                     chatRightViewHolder.itemView.findViewById(R.id.upvotesLayout).setVisibility(View.GONE);
 
-                chatRightViewHolder.messageText.setText(chatModel.getMessage());
+                if(chatModel.isSpam())
+                    chatRightViewHolder.messageText.setText("Message deleted");
+                else
+                    chatRightViewHolder.messageText.setText(chatModel.getMessage());
                 chatRightViewHolder.messageTime.setText(sfd.format(new Date(timeStampRight)));
                 chatRightViewHolder.messageTime2.setText(sfd.format(new Date(timeStampRight)));
                 chatRightViewHolder.upvoteCount.setText(String.valueOf(chatModel.getUpvoteCount()));
@@ -189,7 +195,10 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
                 final ChatLeftImageViewHolder chatLeftImageViewHolder = (ChatLeftImageViewHolder) viewHolder;
                 long timeStampImageLeft = chatModel.getTimestamp();
 
-                chatLeftImageViewHolder.messageText.setText(chatModel.getMessage());
+                if(chatModel.isSpam())
+                    chatLeftImageViewHolder.messageText.setText("Message deleted");
+                else
+                    chatLeftImageViewHolder.messageText.setText(chatModel.getMessage());
                 chatLeftImageViewHolder.messageTime.setText(sfd.format(new Date(timeStampImageLeft)));
                 chatLeftImageViewHolder.messageTime2.setText(sfd.format(new Date(timeStampImageLeft)));
                 chatLeftImageViewHolder.messageTime3.setText(sfd.format(new Date(timeStampImageLeft)));
@@ -198,11 +207,6 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
                     chatLeftImageViewHolder.reportLayout.setVisibility(View.VISIBLE);
                     chatLeftImageViewHolder.spamCount.setText(String.valueOf(chatModel.getSpamCount()));
                 }
-
-                if (chatModel.isEdited() == true)
-                    chatLeftImageViewHolder.edited.setVisibility(View.VISIBLE);
-                else
-                    chatLeftImageViewHolder.edited.setVisibility(View.GONE);
 
                 if (chatLeftImageViewHolder.senderName.getVisibility() == View.VISIBLE) {
                     chatLeftImageViewHolder.messageTime.setVisibility(View.VISIBLE);
@@ -256,31 +260,40 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
                 } else
                     chatLeftImageViewHolder.itemView.findViewById(R.id.upvotesLayout).setVisibility(View.GONE);
 
-                Picasso.get()
-                        .load(chatModel.getimageUrl())
-                        .noFade()
-                        .networkPolicy(NetworkPolicy.OFFLINE)
-                        .into(chatLeftImageViewHolder.receiverImage, new Callback() {
-                            @Override
-                            public void onSuccess() {
+                if(chatModel.isSpam()) {
+                    chatLeftImageViewHolder.messageText.setText("Message deleted");
+                    chatLeftImageViewHolder.receiverImage.setVisibility(View.GONE);
+                    chatLeftImageViewHolder.viewPostBtn.setVisibility(View.GONE);
+                } else {
+                    chatLeftImageViewHolder.messageText.setText(chatModel.getMessage());
+                    chatLeftImageViewHolder.receiverImage.setVisibility(View.VISIBLE);
+                    chatLeftImageViewHolder.viewPostBtn.setVisibility(View.VISIBLE);
 
-                            }
+                    Picasso.get()
+                            .load(chatModel.getimageUrl())
+                            .noFade()
+                            .networkPolicy(NetworkPolicy.OFFLINE)
+                            .into(chatLeftImageViewHolder.receiverImage, new Callback() {
+                                @Override
+                                public void onSuccess() {
 
-                            @Override
-                            public void onError(Exception e) {
-                                Picasso.get()
-                                        .load(chatModel.getimageUrl())
-                                        .noFade()
-                                        .into(chatLeftImageViewHolder.receiverImage);
-                            }
-                        });
+                                }
+
+                                @Override
+                                public void onError(Exception e) {
+                                    Picasso.get()
+                                            .load(chatModel.getimageUrl())
+                                            .noFade()
+                                            .into(chatLeftImageViewHolder.receiverImage);
+                                }
+                            });
+                }
                 break;
 
             case MSG_TYPE_IMAGE_RIGHT:
                 final ChatRightImageViewHolder chatRightImageViewHolder = (ChatRightImageViewHolder) viewHolder;
                 long timeStampImageRight = chatModel.getTimestamp();
 
-                chatRightImageViewHolder.messageText.setText(chatModel.getMessage());
                 chatRightImageViewHolder.messageTime.setText(sfd.format(new Date(timeStampImageRight)));
                 chatRightImageViewHolder.messageTime2.setText(sfd.format(new Date(timeStampImageRight)));
 
@@ -334,24 +347,31 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
                 } else
                     chatRightImageViewHolder.itemView.findViewById(R.id.upvotesLayout).setVisibility(View.GONE);
 
-                Picasso.get()
-                        .load(chatModel.getimageUrl())
-                        .noFade()
-                        .networkPolicy(NetworkPolicy.OFFLINE)
-                        .into(chatRightImageViewHolder.sentImage, new Callback() {
-                            @Override
-                            public void onSuccess() {
+                if(chatModel.isSpam()) {
+                    chatRightImageViewHolder.messageText.setText("Message deleted");
+                    chatRightImageViewHolder.sentImage.setVisibility(View.GONE);
+                } else {
+                    chatRightImageViewHolder.messageText.setText(chatModel.getMessage());
+                    chatRightImageViewHolder.sentImage.setVisibility(View.VISIBLE);
+                    Picasso.get()
+                            .load(chatModel.getimageUrl())
+                            .noFade()
+                            .networkPolicy(NetworkPolicy.OFFLINE)
+                            .into(chatRightImageViewHolder.sentImage, new Callback() {
+                                @Override
+                                public void onSuccess() {
 
-                            }
+                                }
 
-                            @Override
-                            public void onError(Exception e) {
-                                Picasso.get()
-                                        .load(chatModel.getimageUrl())
-                                        .noFade()
-                                        .into(chatRightImageViewHolder.sentImage);
-                            }
-                        });
+                                @Override
+                                public void onError(Exception e) {
+                                    Picasso.get()
+                                            .load(chatModel.getimageUrl())
+                                            .noFade()
+                                            .into(chatRightImageViewHolder.sentImage);
+                                }
+                            });
+                }
                 break;
 
         }
@@ -388,13 +408,13 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
 
     @Override
     public int getItemViewType(int position) {
-            if (getItem(position).getUID().equals(user.getUid()) && getItem(position).getType().equals("text") && !getItem(position).isSpam()) {
+            if (getItem(position).getUID().equals(user.getUid()) && getItem(position).getType().equals("text")) {
                 return MSG_TYPE_RIGHT;
-            } else if (!getItem(position).getUID().equals(user.getUid()) && getItem(position).getType().equals("text") && !getItem(position).isSpam()) {
+            } else if (!getItem(position).getUID().equals(user.getUid()) && getItem(position).getType().equals("text")) {
                 return MSG_TYPE_LEFT;
-            } else if (!getItem(position).getUID().equals(user.getUid()) && getItem(position).getType().equals("image") && !getItem(position).isSpam()) {
+            } else if (!getItem(position).getUID().equals(user.getUid()) && getItem(position).getType().equals("image")) {
                 return MSG_TYPE_IMAGE_LEFT;
-            } else if (getItem(position).getType().equals("image") && getItem(position).getimageUrl() != null && getItem(position).getUID().equals(user.getUid()) && !getItem(position).isSpam())
+            } else if (getItem(position).getType().equals("image") && getItem(position).getimageUrl() != null && getItem(position).getUID().equals(user.getUid()))
                 return MSG_TYPE_IMAGE_RIGHT;
             else
                 return 0;
