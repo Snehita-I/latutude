@@ -25,41 +25,41 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="@drawable/url_preview_background"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:paddingEnd="5dp"
             android:paddingStart="5dp"
+            android:paddingTop="10dp"
+            android:paddingEnd="5dp"
+            android:paddingBottom="10dp"
             android:visibility="gone"
-            app:layout_constraintWidth_min="250dp"
             app:layout_constraintBottom_toTopOf="@id/message"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/sender_name"
-            app:layout_constraintVertical_bias="0.0">
+            app:layout_constraintVertical_bias="0.0"
+            app:layout_constraintWidth_min="250dp">
 
             <!--Link image-->
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/linkPreviewImage"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                app:layout_constraintWidth_min="40dp"
-                app:layout_constraintWidth_max="70dp"
-                android:visibility="gone"
                 android:src="@drawable/iku"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="1"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_max="70dp"
+                app:layout_constraintWidth_min="40dp" />
 
             <!--Link title-->
             <TextView
                 android:id="@+id/linkTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Title of page"
                 android:layout_marginStart="5dp"
-                android:padding="1dp"
                 android:maxLines="1"
+                android:padding="1dp"
+                android:text="Title of page"
                 android:textColor="#90000000"
                 android:textSize="12sp"
                 android:textStyle="bold"
@@ -75,11 +75,11 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
+                android:maxLines="2"
                 android:padding="1dp"
                 android:text="This is some description provided by page on the web is for testing."
                 android:textColor="#80000000"
                 android:textSize="12sp"
-                android:maxLines="2"
                 android:visibility="gone"
                 app:layout_constraintBottom_toTopOf="@id/linkSourceDomain"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -91,10 +91,10 @@
                 android:id="@+id/linkSourceDomain"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="youtube.com/"
                 android:layout_marginStart="5dp"
-                android:padding="1dp"
                 android:maxLines="1"
+                android:padding="1dp"
+                android:text="youtube.com/"
                 android:textColor="#80000000"
                 android:textSize="12sp"
                 android:visibility="gone"
@@ -129,8 +129,8 @@
             android:textColor="#4A4A4A"
             android:textSize="14sp"
             app:layout_constraintBottom_toTopOf="@id/message_time"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintEnd_toStartOf="@id/message_time2"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/linkPreview"
             app:layout_constraintVertical_bias="0.0" />
@@ -295,6 +295,37 @@
 
         </LinearLayout>
 
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!--Reported admin view-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:elevation="-2dp"
+        app:layout_constraintStart_toEndOf="@id/constraintLayout"
+        app:layout_constraintTop_toTopOf="@id/constraintLayout">
+
+        <!--Container-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:paddingStart="2dp"
+            android:paddingEnd="5dp"
+            android:background="@drawable/chat_left_report_bubble"
+            android:paddingVertical="2dp">
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:src="@drawable/ic_baseline_flag_24" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="25" />
+        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
