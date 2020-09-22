@@ -471,6 +471,7 @@ public class ChatFragment extends Fragment {
                 RelativeLayout profileView = parentView.findViewById(R.id.profile_layout);
                 RelativeLayout updateMessageView = parentView.findViewById(R.id.edit_option_layout);
                 RelativeLayout deleteMessageView = parentView.findViewById(R.id.delete_layout);
+                MaterialButton spamView = parentView.findViewById(R.id.spamButton);
 
                 ImageButton heartUpView = parentView.findViewById(R.id.chooseHeart);
                 MaterialButton emoji1View = parentView.findViewById(R.id.choose1);
@@ -577,6 +578,7 @@ public class ChatFragment extends Fragment {
                 String UID = chatModel.getUID();
                 if (UID.equals(user.getUid())) {
                     profileView.setVisibility(View.GONE);
+                    spamView.setVisibility(View.GONE);
                     updateMessageView.setVisibility(View.VISIBLE);
                     updateMessageView.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -625,31 +627,68 @@ public class ChatFragment extends Fragment {
                     bottomSheetDialog.show();
                 } else {
                     profileView.setVisibility(View.VISIBLE);
+                    spamView.setVisibility(View.VISIBLE);
                     bottomSheetDialog.setContentView(parentView);
                     bottomSheetDialog.show();
 
-                    profileView.setOnClickListener(new View.OnClickListener() {
+                    spamView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            Intent userProfileIntent = new Intent(ChatFragment.this.getContext(), UserProfileActivity.class);
+                            DocumentReference docRef = db.collection("iku_earth_messages").document(documentSnapshot.getId());
+                            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        DocumentSnapshot document = task.getResult();
+                                        if (document.exists()) {
+                                            ArrayList<String> spamReportedArray = (ArrayList) document.get("spamReportedBy");
+                                            long spamCount = (long) document.get("spamCount");
+                                            boolean spam = (boolean) document.get("spam");
+                                            if (!spamReportedArray.contains(user.getUid())) {
+                                                Map<String, Object> map = new HashMap<>();
+                                                map.put("spamReportedBy", FieldValue.arrayUnion(user.getUid()));
+                                                map.put("spamCount", spamCount + 1);
+                                                if (spamCount >= 4)
+                                                    map.put("spam", true);
+                                                db.collection("iku_earth_messages").document(documentSnapshot.getId())
+                                                    .update(map)
+                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void aVoid) {
 
-                            String name = chatModel.getUserName();
-                            String userUID = chatModel.getUID();
-                            if (name != null) {
-                                userProfileIntent.putExtra("EXTRA_PERSON_NAME", name);
-                                userProfileIntent.putExtra("EXTRA_PERSON_UID", userUID);
-                                ChatFragment.this.startActivity(userProfileIntent);
-                            } else
-                                return;
+                                                        }
+                                                    });
+                                            }
+                                        }
+                                    }
+                                }
+                            });
                             bottomSheetDialog.dismiss();
-                        }
-                    });
+                    }
+                });
 
-                }
+                profileView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent userProfileIntent = new Intent(ChatFragment.this.getContext(), UserProfileActivity.class);
+
+                        String name = chatModel.getUserName();
+                        String userUID = chatModel.getUID();
+                        if (name != null) {
+                            userProfileIntent.putExtra("EXTRA_PERSON_NAME", name);
+                            userProfileIntent.putExtra("EXTRA_PERSON_UID", userUID);
+                            ChatFragment.this.startActivity(userProfileIntent);
+                        } else
+                            return;
+                        bottomSheetDialog.dismiss();
+                    }
+                });
+
             }
-        });
+        }
+    });
 
-    }
+}
 
     private void updateMessage(String messageDocumentID, int position, String message) {
 
@@ -725,6 +764,11 @@ public class ChatFragment extends Fragment {
             docData.put("downvoters", dounvotersArray);
             docData.put("downvoteCount", 0);
             docData.put("edited", false);
+            ArrayList<Object> spamArray = new ArrayList<>();
+            docData.put("spamReportedBy", spamArray);
+            docData.put("spamCount", 0);
+            docData.put("spam", false);
+
             Map<String, Object> normalMessage = new HashMap<>();
             normalMessage.put("firstMessage", true);
 
