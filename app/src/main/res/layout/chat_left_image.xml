@@ -370,7 +370,8 @@
             android:gravity="center"
             android:background="@drawable/chat_left_report_bubble"
             android:paddingVertical="2dp"
-            android:paddingHorizontal="5dp">
+            android:paddingStart="2dp"
+            android:paddingEnd="5dp">
 
             <ImageView
                 android:layout_width="18dp"
