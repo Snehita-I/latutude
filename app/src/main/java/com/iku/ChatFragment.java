@@ -471,7 +471,7 @@ public class ChatFragment extends Fragment {
                 RelativeLayout profileView = parentView.findViewById(R.id.profile_layout);
                 RelativeLayout updateMessageView = parentView.findViewById(R.id.edit_option_layout);
                 RelativeLayout deleteMessageView = parentView.findViewById(R.id.delete_layout);
-                MaterialButton spamView = parentView.findViewById(R.id.spamButton);
+                RelativeLayout reportView = parentView.findViewById(R.id.report_layout);
 
                 ImageButton heartUpView = parentView.findViewById(R.id.chooseHeart);
                 MaterialButton emoji1View = parentView.findViewById(R.id.choose1);
@@ -578,7 +578,7 @@ public class ChatFragment extends Fragment {
                 String UID = chatModel.getUID();
                 if (UID.equals(user.getUid())) {
                     profileView.setVisibility(View.GONE);
-                    spamView.setVisibility(View.GONE);
+                    reportView.setVisibility(View.GONE);
                     updateMessageView.setVisibility(View.VISIBLE);
                     updateMessageView.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -627,11 +627,11 @@ public class ChatFragment extends Fragment {
                     bottomSheetDialog.show();
                 } else {
                     profileView.setVisibility(View.VISIBLE);
-                    spamView.setVisibility(View.VISIBLE);
+                    reportView.setVisibility(View.VISIBLE);
                     bottomSheetDialog.setContentView(parentView);
                     bottomSheetDialog.show();
 
-                    spamView.setOnClickListener(new View.OnClickListener() {
+                    reportView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             DocumentReference docRef = db.collection("iku_earth_messages").document(documentSnapshot.getId());
