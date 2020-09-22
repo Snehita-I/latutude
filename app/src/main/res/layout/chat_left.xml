@@ -308,13 +308,15 @@
 
         <!--Container-->
         <LinearLayout
+            android:id="@+id/flag_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@drawable/chat_left_report_bubble"
             android:gravity="center"
+            android:paddingVertical="2dp"
             android:paddingStart="2dp"
             android:paddingEnd="5dp"
-            android:background="@drawable/chat_left_report_bubble"
-            android:paddingVertical="2dp">
+            android:visibility="gone">
 
             <ImageView
                 android:layout_width="18dp"

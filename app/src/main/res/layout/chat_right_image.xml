@@ -27,12 +27,12 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginTop="10dp"
-            app:layout_constraintWidth_min="260dp"
             android:scaleType="centerCrop"
             app:layout_constraintDimensionRatio="1"
             app:layout_constraintEnd_toEndOf="@id/constraintLayout"
             app:layout_constraintStart_toStartOf="@id/constraintLayout"
-            app:layout_constraintTop_toTopOf="@id/constraintLayout" />
+            app:layout_constraintTop_toTopOf="@id/constraintLayout"
+            app:layout_constraintWidth_min="260dp" />
 
         <!--View post button-->
         <com.google.android.material.button.MaterialButton
@@ -58,41 +58,41 @@
             android:id="@+id/linkPreview"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_margin="5dp"
             android:background="@drawable/url_preview_background"
             android:backgroundTint="#11a4a4"
-            app:layout_constraintWidth_min="250dp"
-            android:layout_margin="5dp"
             android:padding="5dp"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@id/constraintLayout2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/sentImage"
-            app:layout_constraintVertical_bias="0.0">
+            app:layout_constraintVertical_bias="0.0"
+            app:layout_constraintWidth_min="250dp">
 
             <!--Link image-->
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/linkPreviewImage"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                app:layout_constraintWidth_min="40dp"
-                app:layout_constraintWidth_max="70dp"
-                android:visibility="gone"
                 android:src="@drawable/iku"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="1"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_max="70dp"
+                app:layout_constraintWidth_min="40dp" />
 
             <!--Link title-->
             <TextView
                 android:id="@+id/linkTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Title of page"
                 android:layout_marginStart="5dp"
-                android:padding="1dp"
                 android:maxLines="1"
+                android:padding="1dp"
+                android:text="Title of page"
                 android:textColor="@android:color/white"
                 android:textSize="12sp"
                 android:textStyle="bold"
@@ -108,11 +108,11 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
+                android:maxLines="2"
                 android:padding="1dp"
                 android:text="This is some description provided by page hosted on the web for testing purpose."
                 android:textColor="@android:color/white"
                 android:textSize="12sp"
-                android:maxLines="2"
                 android:visibility="gone"
                 app:layout_constraintBottom_toTopOf="@id/linkSourceDomain"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -124,10 +124,10 @@
                 android:id="@+id/linkSourceDomain"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="youtube.com/"
                 android:layout_marginStart="5dp"
-                android:padding="1dp"
                 android:maxLines="1"
+                android:padding="1dp"
+                android:text="youtube.com/"
                 android:textColor="@android:color/white"
                 android:textSize="12sp"
                 android:visibility="gone"
@@ -331,13 +331,15 @@
 
         <!--Container-->
         <LinearLayout
+            android:id="@+id/flag_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center"
             android:background="@drawable/chat_right_report_bubble"
+            android:gravity="center"
             android:paddingVertical="2dp"
             android:paddingStart="5dp"
-            android:paddingEnd="2dp">
+            android:paddingEnd="2dp"
+            android:visibility="gone">
 
             <ImageView
                 android:layout_width="18dp"
