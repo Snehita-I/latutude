@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -47,18 +48,21 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
 
     @Override
     protected void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i, @NonNull final ChatModel chatModel) {
+
         switch (viewHolder.getItemViewType()) {
 
             case MSG_TYPE_LEFT:
                 ChatLeftViewHolder chatLeftViewHolder = (ChatLeftViewHolder) viewHolder;
                 long timeStampLeft = chatModel.getTimestamp();
-
                 chatLeftViewHolder.messageText.setText(chatModel.getMessage());
                 chatLeftViewHolder.messageTime.setText(sfd.format(new Date(timeStampLeft)));
                 chatLeftViewHolder.messageTime2.setText(sfd.format(new Date(timeStampLeft)));
                 chatLeftViewHolder.messageTime3.setText(sfd.format(new Date(timeStampLeft)));
                 chatLeftViewHolder.senderName.setText(chatModel.getUserName());
-
+                if(chatModel.getSpamCount() > 0){
+                    chatLeftViewHolder.reportLayout.setVisibility(View.VISIBLE);
+                    chatLeftViewHolder.spamCount.setText(String.valueOf(chatModel.getSpamCount()));
+                }
                 if (chatModel.isEdited() == true)
                     chatLeftViewHolder.edited.setVisibility(View.VISIBLE);
                 else
@@ -159,6 +163,10 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
                 chatRightViewHolder.messageTime2.setText(sfd.format(new Date(timeStampRight)));
                 chatRightViewHolder.upvoteCount.setText(String.valueOf(chatModel.getUpvoteCount()));
 
+                if(chatModel.getSpamCount() > 0){
+                    chatRightViewHolder.reportLayout.setVisibility(View.VISIBLE);
+                    chatRightViewHolder.spamCount.setText(String.valueOf(chatModel.getSpamCount()));
+                }
                 if (chatModel.isEdited() == true) {
                     chatRightViewHolder.edited.setVisibility(View.VISIBLE);
                     chatRightViewHolder.messageTime2.setVisibility(View.VISIBLE);
@@ -186,7 +194,10 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
                 chatLeftImageViewHolder.messageTime2.setText(sfd.format(new Date(timeStampImageLeft)));
                 chatLeftImageViewHolder.messageTime3.setText(sfd.format(new Date(timeStampImageLeft)));
                 chatLeftImageViewHolder.senderName.setText(chatModel.getUserName());
-
+                if(chatModel.getSpamCount() > 0){
+                    chatLeftImageViewHolder.reportLayout.setVisibility(View.VISIBLE);
+                    chatLeftImageViewHolder.spamCount.setText(String.valueOf(chatModel.getSpamCount()));
+                }
 
                 if (chatModel.isEdited() == true)
                     chatLeftImageViewHolder.edited.setVisibility(View.VISIBLE);
@@ -273,6 +284,10 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
                 chatRightImageViewHolder.messageTime.setText(sfd.format(new Date(timeStampImageRight)));
                 chatRightImageViewHolder.messageTime2.setText(sfd.format(new Date(timeStampImageRight)));
 
+                if(chatModel.getSpamCount() > 0){
+                    chatRightImageViewHolder.reportLayout.setVisibility(View.VISIBLE);
+                    chatRightImageViewHolder.spamCount.setText(String.valueOf(chatModel.getSpamCount()));
+                }
 
                 if (chatModel.isEdited() == true) {
                     chatRightImageViewHolder.edited.setVisibility(View.VISIBLE);
@@ -373,16 +388,16 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
 
     @Override
     public int getItemViewType(int position) {
-        if (getItem(position).getUID().equals(user.getUid()) && getItem(position).getType().equals("text")) {
-            return MSG_TYPE_RIGHT;
-        } else if (!getItem(position).getUID().equals(user.getUid()) && getItem(position).getType().equals("text")) {
-            return MSG_TYPE_LEFT;
-        } else if (!getItem(position).getUID().equals(user.getUid()) && getItem(position).getType().equals("image")) {
-            return MSG_TYPE_IMAGE_LEFT;
-        } else if (getItem(position).getType().equals("image") && getItem(position).getimageUrl() != null && getItem(position).getUID().equals(user.getUid()))
-            return MSG_TYPE_IMAGE_RIGHT;
-        else
-            return 0;
+            if (getItem(position).getUID().equals(user.getUid()) && getItem(position).getType().equals("text") && !getItem(position).isSpam()) {
+                return MSG_TYPE_RIGHT;
+            } else if (!getItem(position).getUID().equals(user.getUid()) && getItem(position).getType().equals("text") && !getItem(position).isSpam()) {
+                return MSG_TYPE_LEFT;
+            } else if (!getItem(position).getUID().equals(user.getUid()) && getItem(position).getType().equals("image") && !getItem(position).isSpam()) {
+                return MSG_TYPE_IMAGE_LEFT;
+            } else if (getItem(position).getType().equals("image") && getItem(position).getimageUrl() != null && getItem(position).getUID().equals(user.getUid()) && !getItem(position).isSpam())
+                return MSG_TYPE_IMAGE_RIGHT;
+            else
+                return 0;
     }
 
     public interface OnItemClickListener {
@@ -395,8 +410,8 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
 
     public class ChatLeftViewHolder extends RecyclerView.ViewHolder {
 
-        private MaterialTextView messageText, messageTime, messageTime2, messageTime3, senderName, upvoteCount, edited;
-
+        private MaterialTextView messageText, messageTime, messageTime2, messageTime3, senderName, upvoteCount, edited, spamCount;
+        private LinearLayout reportLayout;
         public ChatLeftViewHolder(@NonNull View itemView) {
             super(itemView);
 
@@ -407,6 +422,8 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
             senderName = itemView.findViewById(R.id.sender_name);
             upvoteCount = itemView.findViewById(R.id.upvoteCount);
             edited = itemView.findViewById(R.id.editFlag);
+            reportLayout = itemView.findViewById(R.id.flag_layout);
+            spamCount = itemView.findViewById(R.id.spamCount_textView);
             messageText.setLinkTextColor(Color.parseColor("#1111b7"));
             Linkify.addLinks(messageText, Linkify.WEB_URLS);
 
@@ -427,9 +444,10 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
 
     public class ChatLeftImageViewHolder extends RecyclerView.ViewHolder {
 
-        private MaterialTextView messageText, messageTime, messageTime2, messageTime3, senderName, upvoteCount, edited;
+        private MaterialTextView messageText, messageTime, messageTime2, messageTime3, senderName, upvoteCount, edited, spamCount;
         private ImageView receiverImage;
         private MaterialButton viewPostBtn;
+        private LinearLayout reportLayout;
 
         public ChatLeftImageViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -443,6 +461,9 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
             upvoteCount = itemView.findViewById(R.id.upvoteCount);
             edited = itemView.findViewById(R.id.editFlag);
             viewPostBtn = itemView.findViewById(R.id.viewPostButton);
+            reportLayout = itemView.findViewById(R.id.flag_layout);
+            spamCount = itemView.findViewById(R.id.spamCount_textView);
+
 
             messageText.setLinkTextColor(Color.parseColor("#1111b7"));
             Linkify.addLinks(messageText, Linkify.WEB_URLS);
@@ -474,9 +495,10 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
 
     public class ChatRightImageViewHolder extends RecyclerView.ViewHolder {
 
-        private MaterialTextView messageText, messageTime, messageTime2, messageTime3, upvoteCount, edited;
+        private MaterialTextView messageText, messageTime, messageTime2, messageTime3, upvoteCount, edited, spamCount;
         private ImageView sentImage;
         private MaterialButton viewPostBtn;
+        private LinearLayout reportLayout;
 
         public ChatRightImageViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -489,6 +511,8 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
             upvoteCount = itemView.findViewById(R.id.upvoteCount);
             edited = itemView.findViewById(R.id.editFlag);
             viewPostBtn = itemView.findViewById(R.id.viewPostButton);
+            spamCount = itemView.findViewById(R.id.spamCount_textView);
+            reportLayout = itemView.findViewById(R.id.flag_layout);
 
             messageText.setLinkTextColor(Color.parseColor("#1111b7"));
             Linkify.addLinks(messageText, Linkify.WEB_URLS);
@@ -520,7 +544,8 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
 
     public class ChatRightViewHolder extends RecyclerView.ViewHolder {
 
-        private MaterialTextView messageText, messageTime, messageTime2, upvoteCount, edited;
+        private MaterialTextView messageText, messageTime, messageTime2, upvoteCount, edited, spamCount;
+        private LinearLayout reportLayout;
 
         public ChatRightViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -530,6 +555,8 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
             messageTime2 = itemView.findViewById(R.id.message_time2);
             upvoteCount = itemView.findViewById(R.id.upvoteCount);
             edited = itemView.findViewById(R.id.editFlag);
+            reportLayout = itemView.findViewById(R.id.flag_layout);
+            spamCount = itemView.findViewById(R.id.spamCount_textView);
 
             messageText.setLinkTextColor(Color.parseColor("#1111b7"));
             Linkify.addLinks(messageText, Linkify.WEB_URLS);

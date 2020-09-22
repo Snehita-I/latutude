@@ -38,12 +38,16 @@ public class ChatModel {
     private int downvoteCount;
     @PropertyName("edited")
     private boolean edited;
+    @PropertyName("spam")
+    private boolean spam;
+    @PropertyName("spamCount")
+    private int spamCount;
 
     private ChatModel() {
     }
 
     private ChatModel(String message, long timestamp, String UID, String userName, String type, int upvoteCount, String imageUrl, ArrayList<String> upvoters,
-                      ArrayList<String> emoji1, ArrayList<String> emoji2, ArrayList<String> emoji3, ArrayList<String> emoji4, ArrayList<String> downvoters, int downvoteCount, boolean edited) {
+                      ArrayList<String> emoji1, ArrayList<String> emoji2, ArrayList<String> emoji3, ArrayList<String> emoji4, ArrayList<String> downvoters, int downvoteCount, boolean edited, boolean spam, int spamCount) {
         this.message = message;
         this.UID = UID;
         this.timestamp = timestamp;
@@ -59,6 +63,8 @@ public class ChatModel {
         this.downvoters = downvoters;
         this.downvoteCount = downvoteCount;
         this.edited = edited;
+        this.spam = spam;
+        this.spamCount = spamCount;
     }
 
     public String getMessage() {
@@ -182,4 +188,21 @@ public class ChatModel {
     public void setEdited(boolean edited) {
         this.edited = edited;
     }
+
+    public boolean isSpam() {
+        return spam;
+    }
+
+    public void setSpam(boolean spam) {
+        this.spam = spam;
+    }
+
+    public int getSpamCount() {
+        return spamCount;
+    }
+
+    public void setSpamCount(int spamCount) {
+        this.spamCount = spamCount;
+    }
+
 }
