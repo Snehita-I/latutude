@@ -138,6 +138,8 @@ class EditProfileActivity : AppCompatActivity() {
                             editUserName.visibility = View.VISIBLE
                         }
                     }
+                    info_layout.visibility = View.VISIBLE
+                    progress_circular.visibility = View.GONE
                 }
             }
             db.collection("users").document(user.uid).get().addOnCompleteListener { task ->
