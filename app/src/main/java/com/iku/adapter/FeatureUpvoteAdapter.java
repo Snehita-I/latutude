@@ -12,11 +12,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.iku.R;
 import com.iku.models.FeatureUpvoteModel;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 public class FeatureUpvoteAdapter extends FirestoreRecyclerAdapter<FeatureUpvoteModel, FeatureUpvoteAdapter.LeaderboardViewHolder> {
@@ -40,13 +40,25 @@ public class FeatureUpvoteAdapter extends FirestoreRecyclerAdapter<FeatureUpvote
     @Override
     protected void onBindViewHolder(@NonNull LeaderboardViewHolder leaderboardViewHolder, int position, @NonNull FeatureUpvoteModel FeatureUpvoteModel) {
 
-
         leaderboardViewHolder.firstNameTextView.setText(FeatureUpvoteModel.getTitle());
         leaderboardViewHolder.descTextView.setText(FeatureUpvoteModel.getDescription());
         leaderboardViewHolder.pointsTextView.setText("Upvoted: " + FeatureUpvoteModel.getUpvote_count());
         String[] p = FeatureUpvoteModel.getImage().split("/");
         String imageLink = "https://drive.google.com/uc?export=download&id=" + p[5];
-        Picasso.get().load(imageLink).into(leaderboardViewHolder.image);
+        Picasso.get()
+                .load(imageLink)
+                .noFade()
+                .networkPolicy(NetworkPolicy.OFFLINE)
+                .into(leaderboardViewHolder.image, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        Picasso.get().load(imageLink).noFade().into(leaderboardViewHolder.image);
+                    }
+                });
     }
 
     @NonNull
@@ -79,8 +91,6 @@ public class FeatureUpvoteAdapter extends FirestoreRecyclerAdapter<FeatureUpvote
                 }
 
             });
-
-
         }
     }
 
