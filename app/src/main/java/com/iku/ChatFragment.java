@@ -8,13 +8,11 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -102,8 +100,7 @@ public class ChatFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentChatBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
@@ -146,8 +143,6 @@ public class ChatFragment extends Fragment {
 
         memberCount = view.findViewById(R.id.memberCount);
         mChatRecyclerview = view.findViewById(R.id.chatRecyclerView);
-        LinearLayout mBottomSheet = view.findViewById(R.id.user_bottom_sheet);
-
         binding.chatDate.setVisibility(View.GONE);
 
     }
@@ -651,44 +646,44 @@ public class ChatFragment extends Fragment {
                                                 if (spamCount >= 4)
                                                     map.put("spam", true);
                                                 db.collection("iku_earth_messages").document(documentSnapshot.getId())
-                                                    .update(map)
-                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                        @Override
-                                                        public void onSuccess(Void aVoid) {
+                                                        .update(map)
+                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                            @Override
+                                                            public void onSuccess(Void aVoid) {
 
-                                                        }
-                                                    });
+                                                            }
+                                                        });
                                             }
                                         }
                                     }
                                 }
                             });
                             bottomSheetDialog.dismiss();
-                    }
-                });
+                        }
+                    });
 
-                profileView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent userProfileIntent = new Intent(ChatFragment.this.getContext(), UserProfileActivity.class);
+                    profileView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent userProfileIntent = new Intent(ChatFragment.this.getContext(), UserProfileActivity.class);
 
-                        String name = chatModel.getUserName();
-                        String userUID = chatModel.getUID();
-                        if (name != null) {
-                            userProfileIntent.putExtra("EXTRA_PERSON_NAME", name);
-                            userProfileIntent.putExtra("EXTRA_PERSON_UID", userUID);
-                            ChatFragment.this.startActivity(userProfileIntent);
-                        } else
-                            return;
-                        bottomSheetDialog.dismiss();
-                    }
-                });
+                            String name = chatModel.getUserName();
+                            String userUID = chatModel.getUID();
+                            if (name != null) {
+                                userProfileIntent.putExtra("EXTRA_PERSON_NAME", name);
+                                userProfileIntent.putExtra("EXTRA_PERSON_UID", userUID);
+                                ChatFragment.this.startActivity(userProfileIntent);
+                            } else
+                                return;
+                            bottomSheetDialog.dismiss();
+                        }
+                    });
 
+                }
             }
-        }
-    });
+        });
 
-}
+    }
 
     private void updateMessage(String messageDocumentID, int position, String message) {
 
