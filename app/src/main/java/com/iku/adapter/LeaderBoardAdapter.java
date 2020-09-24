@@ -40,24 +40,12 @@ public class LeaderBoardAdapter extends FirestorePagingAdapter<LeaderboardModel,
                 currentUserViewHolder.pointsTextView.setText(String.valueOf(leaderboardModel.getPoints()));
                 break;
             case OTHER_USER:
+            case THIRD_PLACE:
+            case FIRST_PLACE:
+            case SECOND_PLACE:
                 LeaderBoardAdapter.OtherUserViewHolder otherUserViewHolder = (OtherUserViewHolder) viewHolder;
                 otherUserViewHolder.firstNameTextView.setText(leaderboardModel.getFirstName() + " " + leaderboardModel.getLastName());
                 otherUserViewHolder.pointsTextView.setText(String.valueOf(leaderboardModel.getPoints()));
-                break;
-            case FIRST_PLACE:
-                LeaderBoardAdapter.FirstPlaceViewHolder firstPlaceViewHolder = (FirstPlaceViewHolder) viewHolder;
-                firstPlaceViewHolder.firstNameTextView.setText(leaderboardModel.getFirstName() + " " + leaderboardModel.getLastName());
-                firstPlaceViewHolder.pointsTextView.setText(String.valueOf(leaderboardModel.getPoints()));
-                break;
-            case SECOND_PLACE:
-                LeaderBoardAdapter.SecondPlaceViewHolder secondPlaceViewHolder = (SecondPlaceViewHolder) viewHolder;
-                secondPlaceViewHolder.firstNameTextView.setText(leaderboardModel.getFirstName() + " " + leaderboardModel.getLastName());
-                secondPlaceViewHolder.pointsTextView.setText(String.valueOf(leaderboardModel.getPoints()));
-                break;
-            case THIRD_PLACE:
-                LeaderBoardAdapter.ThirdPlaceViewHolder thirdPlaceViewHolder = (ThirdPlaceViewHolder) viewHolder;
-                thirdPlaceViewHolder.firstNameTextView.setText(leaderboardModel.getFirstName() + " " + leaderboardModel.getLastName());
-                thirdPlaceViewHolder.pointsTextView.setText(String.valueOf(leaderboardModel.getPoints()));
                 break;
         }
     }
@@ -74,13 +62,13 @@ public class LeaderBoardAdapter extends FirestorePagingAdapter<LeaderboardModel,
             return new LeaderBoardAdapter.CurrentUserViewHolder(view);
         } else if (viewType == FIRST_PLACE) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.first_place_leaderboard, parent, false);
-            return new LeaderBoardAdapter.FirstPlaceViewHolder(view);
+            return new LeaderBoardAdapter.OtherUserViewHolder(view);
         }else if (viewType == SECOND_PLACE) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.second_place_leaderboard, parent, false);
-            return new LeaderBoardAdapter.SecondPlaceViewHolder(view);
+            return new LeaderBoardAdapter.OtherUserViewHolder(view);
         }else if (viewType == THIRD_PLACE) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.third_place_leaderboard, parent, false);
-            return new LeaderBoardAdapter.ThirdPlaceViewHolder(view);
+            return new LeaderBoardAdapter.OtherUserViewHolder(view);
         }
         else
             return null;
@@ -117,47 +105,6 @@ public class LeaderBoardAdapter extends FirestorePagingAdapter<LeaderboardModel,
         }
     }
 
-    public class FirstPlaceViewHolder extends RecyclerView.ViewHolder {
-        public MaterialTextView firstNameTextView, pointsTextView;
-
-        public FirstPlaceViewHolder(@NonNull View itemView) {
-            super(itemView);
-            firstNameTextView = itemView.findViewById(R.id.firstname);
-            pointsTextView = itemView.findViewById(R.id.pointsText);
-            itemView.setOnClickListener(view -> {
-                LeaderboardModel leaderboardModel = getItem(getAdapterPosition()).toObject(LeaderboardModel.class);
-                listenerDiff.onItemOfDiffUidClick(leaderboardModel.getUid(), leaderboardModel.getFirstName() + " " + leaderboardModel.getLastName());
-            });
-        }
-    }
-
-    public class SecondPlaceViewHolder extends RecyclerView.ViewHolder {
-        public MaterialTextView firstNameTextView, pointsTextView;
-
-        public SecondPlaceViewHolder(@NonNull View itemView) {
-            super(itemView);
-            firstNameTextView = itemView.findViewById(R.id.firstname);
-            pointsTextView = itemView.findViewById(R.id.pointsText);
-            itemView.setOnClickListener(view -> {
-                LeaderboardModel leaderboardModel = getItem(getAdapterPosition()).toObject(LeaderboardModel.class);
-                listenerDiff.onItemOfDiffUidClick(leaderboardModel.getUid(), leaderboardModel.getFirstName() + " " + leaderboardModel.getLastName());
-            });
-        }
-    }
-
-    public class ThirdPlaceViewHolder extends RecyclerView.ViewHolder {
-        public MaterialTextView firstNameTextView, pointsTextView;
-
-        public ThirdPlaceViewHolder(@NonNull View itemView) {
-            super(itemView);
-            firstNameTextView = itemView.findViewById(R.id.firstname);
-            pointsTextView = itemView.findViewById(R.id.pointsText);
-            itemView.setOnClickListener(view -> {
-                LeaderboardModel leaderboardModel = getItem(getAdapterPosition()).toObject(LeaderboardModel.class);
-                listenerDiff.onItemOfDiffUidClick(leaderboardModel.getUid(), leaderboardModel.getFirstName() + " " + leaderboardModel.getLastName());
-            });
-        }
-    }
 
     public class CurrentUserViewHolder extends RecyclerView.ViewHolder {
 
