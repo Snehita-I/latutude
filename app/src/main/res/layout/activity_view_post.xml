@@ -25,8 +25,8 @@
                 android:id="@+id/back_button"
                 android:layout_width="56dp"
                 android:layout_height="56dp"
-                android:padding="16dp"
                 android:contentDescription="@string/back_button_content_desc"
+                android:padding="16dp"
                 android:src="@drawable/ic_arrow_back_24"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -72,174 +72,325 @@
         android:id="@+id/viewed_image"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/heartsArea"
+        android:minHeight="260dp"
+        app:layout_constraintBottom_toTopOf="@id/scrollView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/appBar" />
 
-    <!--To upvote or downvote-->
+    <!--Swipe up for comments-->
+    <LinearLayout
+        android:id="@+id/viewComments"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingVertical="10dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@id/scrollView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:background="@drawable/ic_next_36"
+            android:rotation="-90" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="128 Comments"
+            android:textColor="@android:color/darker_gray" />
+
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/messageArea">
+
+        <!--post description-->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <!--To upvote or downvote-->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/heartsArea"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                app:layout_constraintBottom_toTopOf="@id/profileImage">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="60dp"
+                    android:gravity="center"
+                    android:weightSum="6"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <FrameLayout
+                        android:id="@+id/heartUp"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginEnd="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/hearts_button_background_viewpost_activity"
+                        android:elevation="2dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <ImageButton
+                            android:id="@+id/choose"
+                            android:layout_width="45dp"
+                            android:layout_height="45dp"
+                            android:background="?selectableItemBackgroundBorderless"
+                            android:padding="0dp"
+                            app:srcCompat="@drawable/ic_heart" />
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:id="@+id/emoji1"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginEnd="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/hearts_button_background_viewpost_activity"
+                        android:elevation="2dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/choose1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="?selectableItemBackgroundBorderless"
+                            android:padding="0dp"
+                            android:text="👍"
+                            android:textSize="20sp" />
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:id="@+id/emoji2"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginEnd="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/hearts_button_background_viewpost_activity"
+                        android:elevation="2dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/choose2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="?selectableItemBackgroundBorderless"
+                            android:padding="0dp"
+                            android:text="👏"
+                            android:textSize="20sp" />
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:id="@+id/emoji3"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginEnd="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/hearts_button_background_viewpost_activity"
+                        android:elevation="2dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/choose3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="?selectableItemBackgroundBorderless"
+                            android:padding="0dp"
+                            android:text="🤔"
+                            android:textSize="20sp" />
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:id="@+id/emoji4"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/hearts_button_background_viewpost_activity"
+                        android:elevation="2dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/choose4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="?selectableItemBackgroundBorderless"
+                            android:padding="0dp"
+                            android:text="💡"
+                            android:textSize="20sp" />
+                    </FrameLayout>
+
+                    <View
+                        android:id="@+id/div"
+                        android:layout_width="1dp"
+                        android:layout_height="35dp"
+                        android:layout_marginStart="10dp"
+                        android:background="#B3B3B3" />
+
+                    <FrameLayout
+                        android:id="@+id/heartDown"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/hearts_button_background_viewpost_activity"
+                        android:elevation="2dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/choose6"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="?selectableItemBackgroundBorderless"
+                            android:padding="0dp"
+                            android:text="👎"
+                            android:textSize="20sp" />
+                    </FrameLayout>
+
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!--Profile image-->
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/profileImage"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_below="@id/heartsArea"
+                android:layout_alignParentStart="true"/>
+
+            <!--Name-->
+            <TextView
+                android:id="@+id/originalPoster"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="5dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="334dp"
+                android:layout_toEndOf="@+id/profileImage"
+                android:maxLines="1"
+                android:text="Abhishake"
+                android:textColor="@color/colorPrimary"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_below="@id/heartsArea"
+                android:layout_alignParentEnd="true" />
+
+            <!--Comment-->
+            <TextView
+                android:id="@+id/postDescription"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:text="This is a test comment description"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:layout_toRightOf="@id/profileImage"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/originalPoster"/>
+
+            <!--Comments section-->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/commentsView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/postDescription"
+                android:visibility="visible"
+                android:layout_alignParentBottom="true" />
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+    <!--Comment message area-->
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/heartsArea"
-        android:layout_width="0dp"
-        android:layout_height="56dp"
+        android:id="@+id/messageArea"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#20ffffff"
+        android:padding="6dp"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="60dp"
-            android:gravity="center"
-            android:weightSum="6"
+        <!--Comment message composer-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/chatbox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginEnd="6dp"
+            android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/sendMessageButton"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <EditText
+                android:id="@+id/messageTextField"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:background="@color/fui_transparent"
+                android:hint="Add a comment"
+                android:inputType="textCapSentences|textMultiLine"
+                android:maxLines="3"
+                android:minHeight="45dp"
+                android:padding="4dp"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!--Send button-->
+        <ImageButton
+            android:id="@+id/sendMessageButton"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:background="@drawable/bg_send"
+            app:layout_constraintBottom_toBottomOf="@+id/chatbox"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <FrameLayout
-                android:id="@+id/heartUp"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="5dp"
-                android:layout_weight="1"
-                android:background="@drawable/hearts_button_background_viewpost_activity"
-                android:elevation="2dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <ImageButton
-                    android:id="@+id/choose"
-                    android:layout_width="45dp"
-                    android:layout_height="45dp"
-                    android:background="?selectableItemBackgroundBorderless"
-                    android:padding="0dp"
-                    app:srcCompat="@drawable/ic_heart" />
-            </FrameLayout>
-
-            <FrameLayout
-                android:id="@+id/emoji1"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="5dp"
-                android:layout_weight="1"
-                android:background="@drawable/hearts_button_background_viewpost_activity"
-                android:elevation="2dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/choose1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="?selectableItemBackgroundBorderless"
-                    android:padding="0dp"
-                    android:text="👍"
-                    android:textSize="20sp" />
-            </FrameLayout>
-
-            <FrameLayout
-                android:id="@+id/emoji2"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="5dp"
-                android:layout_weight="1"
-                android:background="@drawable/hearts_button_background_viewpost_activity"
-                android:elevation="2dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/choose2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="?selectableItemBackgroundBorderless"
-                    android:padding="0dp"
-                    android:text="👏"
-                    android:textSize="20sp" />
-            </FrameLayout>
-
-            <FrameLayout
-                android:id="@+id/emoji3"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="5dp"
-                android:layout_weight="1"
-                android:background="@drawable/hearts_button_background_viewpost_activity"
-                android:elevation="2dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/choose3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="?selectableItemBackgroundBorderless"
-                    android:padding="0dp"
-                    android:text="🤔"
-                    android:textSize="20sp" />
-            </FrameLayout>
-
-            <FrameLayout
-                android:id="@+id/emoji4"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:layout_marginStart="5dp"
-                android:layout_weight="1"
-                android:background="@drawable/hearts_button_background_viewpost_activity"
-                android:elevation="2dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/choose4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="?selectableItemBackgroundBorderless"
-                    android:padding="0dp"
-                    android:text="💡"
-                    android:textSize="20sp" />
-            </FrameLayout>
-
-            <View
-                android:id="@+id/div"
-                android:layout_width="1dp"
-                android:layout_height="35dp"
-                android:layout_marginStart="10dp"
-                android:background="#B3B3B3" />
-
-            <FrameLayout
-                android:id="@+id/heartDown"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="5dp"
-                android:layout_weight="1"
-                android:background="@drawable/hearts_button_background_viewpost_activity"
-                android:elevation="2dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/choose6"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="?selectableItemBackgroundBorderless"
-                    android:padding="0dp"
-                    android:text="👎"
-                    android:textSize="20sp" />
-            </FrameLayout>
-
-        </LinearLayout>
+            app:layout_constraintTop_toTopOf="@+id/chatbox"
+            app:srcCompat="@drawable/ic_send" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

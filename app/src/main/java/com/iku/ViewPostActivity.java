@@ -5,8 +5,11 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
+import androidx.paging.PagedList;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.firebase.ui.firestore.paging.FirestorePagingOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -18,7 +21,10 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.iku.adapter.CommentAdapter;
 import com.iku.databinding.ActivityViewPostBinding;
+import com.iku.models.CommentModel;
 import com.iku.models.LeaderboardModel;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
@@ -41,7 +47,9 @@ public class ViewPostActivity extends AppCompatActivity {
 
     private FirebaseUser user;
 
-    private MaterialTextView memberCount;
+    private CommentAdapter adapter;
+
+    private String messageId;
 
     private FirebaseFirestore db;
 
@@ -58,18 +66,60 @@ public class ViewPostActivity extends AppCompatActivity {
 
         setImage();
         setDetails();
-
-        String messageId = extras.getString("EXTRA_MESSAGE_ID");
+        initButtons();
+        messageId = extras.getString("EXTRA_MESSAGE_ID");
         initalEmojis(messageId);
         reactions(messageId);
+        initRecyclerview();
+    }
 
-        viewPostBinding.backButton.setOnClickListener(new View.OnClickListener() {
+    private void initRecyclerview() {
+        PagedList.Config config = new PagedList.Config.Builder()
+                .setInitialLoadSizeHint(12)
+                .setPageSize(15)
+                .build();
+        Query query = db.collection("iku_earth_messages").document(messageId).collection("comments").orderBy("timestamp", Query.Direction.DESCENDING);
+        FirestorePagingOptions<CommentModel> options = new FirestorePagingOptions.Builder<CommentModel>()
+                .setQuery(query, config, CommentModel.class)
+                .build();
+        adapter = new CommentAdapter(options);
+        viewPostBinding.commentsView.setHasFixedSize(true);
+        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        viewPostBinding.commentsView.setLayoutManager(linearLayoutManager);
+        viewPostBinding.commentsView.setAdapter(adapter);
+    }
+
+    private void initButtons() {
+        viewPostBinding.backButton.setOnClickListener(view -> onBackPressed());
+        /*sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onBackPressed();
-            }
-        });
+                Date d = new Date();
+                long timestamp = d.getTime();
+                CommentModel CommentModel = new CommentModel(entered_comment.getText().toString(), user.getUid());
 
+                Map<String, Object> data = new HashMap<>();
+                data.put("comment", CommentModel.getComment());
+                data.put("uid", CommentModel.getUid());
+                data.put("timestamp", timestamp);
+
+                db.collection("iku_earth_messages").document(docID)
+                        .collection("comments").add(data)
+                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                            @Override
+                            public void onSuccess(DocumentReference documentReference) {
+                                adapter.notifyDataSetChanged();
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.i("feature", "Error adding document", e);
+                            }
+                        });
+
+            }
+        });*/
     }
 
     private void setDetails() {
@@ -621,12 +671,23 @@ public class ViewPostActivity extends AppCompatActivity {
     }
 
     private void disableEmojiButtons(Boolean status) {
-
         viewPostBinding.choose.setEnabled(status);
         viewPostBinding.choose1.setEnabled(status);
         viewPostBinding.choose2.setEnabled(status);
         viewPostBinding.choose3.setEnabled(status);
         viewPostBinding.choose4.setEnabled(status);
         viewPostBinding.choose6.setEnabled(status);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        adapter.startListening();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        adapter.stopListening();
     }
 }
