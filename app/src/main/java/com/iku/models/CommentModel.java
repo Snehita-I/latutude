@@ -8,14 +8,16 @@ public class CommentModel {
     private String comment;
     @PropertyName("uid")
     private String uid;
+    @PropertyName("timestamp")
+    private long timestamp;
 
     private CommentModel() {
 
     }
 
-    public CommentModel(String comment, String uid, String timestamp) {
+    public CommentModel(String comment, String uid, long timestamp) {
         this.comment = comment;
-        //this.timestamp=timestamp;
+        this.timestamp = timestamp;
         this.uid = uid;
     }
 
@@ -33,6 +35,10 @@ public class CommentModel {
 
     public void setUid(String uid) {
         this.uid = uid;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
     }
 }
 

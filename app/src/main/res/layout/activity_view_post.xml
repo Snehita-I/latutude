@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000"
     tools:context=".ViewPostActivity">
 
     <!--top bar-->
@@ -30,8 +29,7 @@
                 android:src="@drawable/ic_arrow_back_24"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:tint="@android:color/white" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/user_name"
@@ -39,7 +37,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:singleLine="true"
-                android:textColor="@android:color/white"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@id/postTime"
@@ -55,7 +52,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:singleLine="true"
-                android:textColor="@android:color/white"
                 android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -67,63 +63,32 @@
 
     </androidx.appcompat.widget.Toolbar>
 
-    <!--Image-->
-    <com.github.chrisbanes.photoview.PhotoView
-        android:id="@+id/viewed_image"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:minHeight="260dp"
-        app:layout_constraintBottom_toTopOf="@id/scrollView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/appBar" />
-
-    <!--Swipe up for comments-->
-    <LinearLayout
-        android:id="@+id/viewComments"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:paddingVertical="10dp"
-        android:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@id/scrollView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <ImageView
-            android:layout_width="16dp"
-            android:layout_height="16dp"
-            android:background="@drawable/ic_next_36"
-            android:rotation="-90" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="128 Comments"
-            android:textColor="@android:color/darker_gray" />
-
-    </LinearLayout>
-
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/messageArea">
+        android:layout_height="match_parent"
+        android:layout_above="@id/messageArea"
+        android:layout_below="@id/appBar"
+        android:overScrollMode="never">
 
-        <!--post description-->
-        <RelativeLayout
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+            <!--Image-->
+            <com.github.chrisbanes.photoview.PhotoView
+                android:id="@+id/viewed_image"
+                android:layout_width="match_parent"
+                android:layout_height="260dp" />
 
             <!--To upvote or downvote-->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/heartsArea"
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
-                app:layout_constraintBottom_toTopOf="@id/profileImage">
+                android:layout_height="wrap_content">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -282,54 +247,55 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <!--Profile image-->
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/profileImage"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:layout_below="@id/heartsArea"
-                android:layout_alignParentStart="true"/>
+            <!--Post description-->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-            <!--Name-->
-            <TextView
-                android:id="@+id/originalPoster"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="5dp"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="334dp"
-                android:layout_toEndOf="@+id/profileImage"
-                android:maxLines="1"
-                android:text="Abhishake"
-                android:textColor="@color/colorPrimary"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:layout_below="@id/heartsArea"
-                android:layout_alignParentEnd="true" />
+                <!--Profile image-->
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/profileImage"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_alignParentStart="true" />
 
-            <!--Comment-->
-            <TextView
-                android:id="@+id/postDescription"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:text="This is a test comment description"
-                android:textColor="@color/white"
-                android:textSize="12sp"
-                android:layout_toRightOf="@id/profileImage"
-                android:layout_alignParentEnd="true"
-                android:layout_below="@id/originalPoster"/>
+                <!--Name-->
+                <TextView
+                    android:id="@+id/originalPoster"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginHorizontal="5dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="334dp"
+                    android:layout_toEndOf="@+id/profileImage"
+                    android:maxLines="1"
+                    android:text="Abhishake"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <!--Comment-->
+                <TextView
+                    android:id="@+id/postDescription"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/originalPoster"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginStart="5dp"
+                    android:layout_toEndOf="@id/profileImage"
+                    android:text="This is a test comment description"
+                    android:textColor="@android:color/black"
+                    android:textSize="12sp" />
+            </RelativeLayout>
 
             <!--Comments section-->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/commentsView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/postDescription"
-                android:visibility="visible"
-                android:layout_alignParentBottom="true" />
+                android:layout_height="match_parent" />
 
-        </RelativeLayout>
+        </LinearLayout>
 
     </ScrollView>
 
@@ -339,7 +305,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="#20ffffff"
+        android:background="#ff0000"
         android:padding="6dp"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -372,8 +338,8 @@
                 android:padding="4dp"
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp"
-                android:textColor="@color/white"
-                android:textColorHint="@color/white"
+                android:textColor="@android:color/black"
+                android:textColorHint="@android:color/darker_gray"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -394,4 +360,4 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>

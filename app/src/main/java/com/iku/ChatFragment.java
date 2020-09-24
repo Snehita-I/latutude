@@ -446,10 +446,12 @@ public class ChatFragment extends Fragment {
             ChatModel chatModel = documentSnapshot.toObject(ChatModel.class);
             String name = chatModel.getUserName();
             String url = chatModel.getimageUrl();
+            String message = chatModel.getMessage();
             long timestamp = chatModel.getTimestamp();
             String messageId = documentSnapshot.getId();
             if (name != null && url != null) {
                 viewChatImageIntent.putExtra("EXTRA_PERSON_NAME", name);
+                viewChatImageIntent.putExtra("EXTRA_MESSAGE",message);
                 viewChatImageIntent.putExtra("EXTRA_IMAGE_URL", url);
                 viewChatImageIntent.putExtra("EXTRA_POST_TIMESTAMP", timestamp);
                 viewChatImageIntent.putExtra("EXTRA_MESSAGE_ID", messageId);

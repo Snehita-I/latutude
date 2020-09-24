@@ -1,5 +1,6 @@
 package com.iku.adapter;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,8 +21,8 @@ public class CommentAdapter extends FirestorePagingAdapter<CommentModel, Comment
     }
 
     @Override
-    protected void onBindViewHolder(@NonNull CommentViewHolder commentViewHolder, int position, @NonNull CommentModel CommentModel) {
-        commentViewHolder.commentTextView.setText(CommentModel.getComment());
+    protected void onBindViewHolder(@NonNull CommentViewHolder commentViewHolder, int position, @NonNull CommentModel commentModel) {
+        commentViewHolder.commentTextView.setText(commentModel.getComment());
     }
 
     @NonNull

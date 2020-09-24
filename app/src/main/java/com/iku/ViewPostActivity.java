@@ -1,6 +1,7 @@
 package com.iku;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -14,7 +15,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -32,6 +32,9 @@ import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ViewPostActivity extends AppCompatActivity {
 
@@ -50,6 +53,7 @@ public class ViewPostActivity extends AppCompatActivity {
     private CommentAdapter adapter;
 
     private String messageId;
+
 
     private FirebaseFirestore db;
 
@@ -70,14 +74,12 @@ public class ViewPostActivity extends AppCompatActivity {
         messageId = extras.getString("EXTRA_MESSAGE_ID");
         initalEmojis(messageId);
         reactions(messageId);
-        initRecyclerview();
-    }
 
-    private void initRecyclerview() {
         PagedList.Config config = new PagedList.Config.Builder()
                 .setInitialLoadSizeHint(12)
                 .setPageSize(15)
                 .build();
+        Log.i(TAG, "onCreate: " + messageId);
         Query query = db.collection("iku_earth_messages").document(messageId).collection("comments").orderBy("timestamp", Query.Direction.DESCENDING);
         FirestorePagingOptions<CommentModel> options = new FirestorePagingOptions.Builder<CommentModel>()
                 .setQuery(query, config, CommentModel.class)
@@ -87,23 +89,28 @@ public class ViewPostActivity extends AppCompatActivity {
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         viewPostBinding.commentsView.setLayoutManager(linearLayoutManager);
         viewPostBinding.commentsView.setAdapter(adapter);
+
+        initItems();
+    }
+
+    private void initItems() {
+        String message = extras.getString("EXTRA_MESSAGE");
+        viewPostBinding.postDescription.setText(message);
     }
 
     private void initButtons() {
         viewPostBinding.backButton.setOnClickListener(view -> onBackPressed());
-        /*sendButton.setOnClickListener(new View.OnClickListener() {
+        viewPostBinding.sendMessageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Date d = new Date();
                 long timestamp = d.getTime();
-                CommentModel CommentModel = new CommentModel(entered_comment.getText().toString(), user.getUid());
-
                 Map<String, Object> data = new HashMap<>();
-                data.put("comment", CommentModel.getComment());
-                data.put("uid", CommentModel.getUid());
+                data.put("comment", viewPostBinding.messageTextField.getText().toString());
+                data.put("uid", user.getUid());
                 data.put("timestamp", timestamp);
 
-                db.collection("iku_earth_messages").document(docID)
+                db.collection("iku_earth_messages").document(messageId)
                         .collection("comments").add(data)
                         .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                             @Override
@@ -119,7 +126,7 @@ public class ViewPostActivity extends AppCompatActivity {
                         });
 
             }
-        });*/
+        });
     }
 
     private void setDetails() {
@@ -128,6 +135,7 @@ public class ViewPostActivity extends AppCompatActivity {
         long timestamp = extras.getLong("EXTRA_POST_TIMESTAMP");
 
         viewPostBinding.userName.setText(userName);
+        viewPostBinding.originalPoster.setText(userName);
         viewPostBinding.postTime.setText(sfdMainDate.format(timestamp));
     }
 
