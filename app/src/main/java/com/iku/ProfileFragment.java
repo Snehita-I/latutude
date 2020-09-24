@@ -202,7 +202,7 @@ public class ProfileFragment extends Fragment {
                                 if (points == 0)
                                     userHeartsTextView.setText(R.string.yet_to_win_hearts);
                                 else
-                                    userHeartsTextView.setText("Hearts Won: " + change.getDocument().get("points"));
+                                    userHeartsTextView.setText((Integer) change.getDocument().get("points"));
                             }
                         }
                     });

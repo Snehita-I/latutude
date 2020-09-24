@@ -18,11 +18,14 @@ import com.iku.models.LeaderboardModel;
 
 public class LeaderBoardAdapter extends FirestorePagingAdapter<LeaderboardModel, RecyclerView.ViewHolder> {
 
-    private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    private final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     private LeaderBoardAdapter.OnItemClickOfSameUidListener listener;
     private LeaderBoardAdapter.OnItemClickOfDiffUidListener listenerDiff;
     public static final int CURRENT_USER = 0;
     public static final int OTHER_USER = 1;
+    public static final int FIRST_PLACE = 2;
+    public static final int SECOND_PLACE = 3;
+    public static final int THIRD_PLACE = 4;
 
     public LeaderBoardAdapter(@NonNull FirestorePagingOptions<LeaderboardModel> options) {
         super(options);
@@ -41,6 +44,21 @@ public class LeaderBoardAdapter extends FirestorePagingAdapter<LeaderboardModel,
                 otherUserViewHolder.firstNameTextView.setText(leaderboardModel.getFirstName() + " " + leaderboardModel.getLastName());
                 otherUserViewHolder.pointsTextView.setText(String.valueOf(leaderboardModel.getPoints()));
                 break;
+            case FIRST_PLACE:
+                LeaderBoardAdapter.FirstPlaceViewHolder firstPlaceViewHolder = (FirstPlaceViewHolder) viewHolder;
+                firstPlaceViewHolder.firstNameTextView.setText(leaderboardModel.getFirstName() + " " + leaderboardModel.getLastName());
+                firstPlaceViewHolder.pointsTextView.setText(String.valueOf(leaderboardModel.getPoints()));
+                break;
+            case SECOND_PLACE:
+                LeaderBoardAdapter.SecondPlaceViewHolder secondPlaceViewHolder = (SecondPlaceViewHolder) viewHolder;
+                secondPlaceViewHolder.firstNameTextView.setText(leaderboardModel.getFirstName() + " " + leaderboardModel.getLastName());
+                secondPlaceViewHolder.pointsTextView.setText(String.valueOf(leaderboardModel.getPoints()));
+                break;
+            case THIRD_PLACE:
+                LeaderBoardAdapter.ThirdPlaceViewHolder thirdPlaceViewHolder = (ThirdPlaceViewHolder) viewHolder;
+                thirdPlaceViewHolder.firstNameTextView.setText(leaderboardModel.getFirstName() + " " + leaderboardModel.getLastName());
+                thirdPlaceViewHolder.pointsTextView.setText(String.valueOf(leaderboardModel.getPoints()));
+                break;
         }
     }
 
@@ -54,7 +72,17 @@ public class LeaderBoardAdapter extends FirestorePagingAdapter<LeaderboardModel,
         } else if (viewType == CURRENT_USER) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.leaderboard_data, parent, false);
             return new LeaderBoardAdapter.CurrentUserViewHolder(view);
-        } else
+        } else if (viewType == FIRST_PLACE) {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.first_place_leaderboard, parent, false);
+            return new LeaderBoardAdapter.FirstPlaceViewHolder(view);
+        }else if (viewType == SECOND_PLACE) {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.second_place_leaderboard, parent, false);
+            return new LeaderBoardAdapter.SecondPlaceViewHolder(view);
+        }else if (viewType == THIRD_PLACE) {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.third_place_leaderboard, parent, false);
+            return new LeaderBoardAdapter.ThirdPlaceViewHolder(view);
+        }
+        else
             return null;
     }
 
@@ -79,6 +107,48 @@ public class LeaderBoardAdapter extends FirestorePagingAdapter<LeaderboardModel,
         public MaterialTextView firstNameTextView, pointsTextView;
 
         public OtherUserViewHolder(@NonNull View itemView) {
+            super(itemView);
+            firstNameTextView = itemView.findViewById(R.id.firstname);
+            pointsTextView = itemView.findViewById(R.id.pointsText);
+            itemView.setOnClickListener(view -> {
+                LeaderboardModel leaderboardModel = getItem(getAdapterPosition()).toObject(LeaderboardModel.class);
+                listenerDiff.onItemOfDiffUidClick(leaderboardModel.getUid(), leaderboardModel.getFirstName() + " " + leaderboardModel.getLastName());
+            });
+        }
+    }
+
+    public class FirstPlaceViewHolder extends RecyclerView.ViewHolder {
+        public MaterialTextView firstNameTextView, pointsTextView;
+
+        public FirstPlaceViewHolder(@NonNull View itemView) {
+            super(itemView);
+            firstNameTextView = itemView.findViewById(R.id.firstname);
+            pointsTextView = itemView.findViewById(R.id.pointsText);
+            itemView.setOnClickListener(view -> {
+                LeaderboardModel leaderboardModel = getItem(getAdapterPosition()).toObject(LeaderboardModel.class);
+                listenerDiff.onItemOfDiffUidClick(leaderboardModel.getUid(), leaderboardModel.getFirstName() + " " + leaderboardModel.getLastName());
+            });
+        }
+    }
+
+    public class SecondPlaceViewHolder extends RecyclerView.ViewHolder {
+        public MaterialTextView firstNameTextView, pointsTextView;
+
+        public SecondPlaceViewHolder(@NonNull View itemView) {
+            super(itemView);
+            firstNameTextView = itemView.findViewById(R.id.firstname);
+            pointsTextView = itemView.findViewById(R.id.pointsText);
+            itemView.setOnClickListener(view -> {
+                LeaderboardModel leaderboardModel = getItem(getAdapterPosition()).toObject(LeaderboardModel.class);
+                listenerDiff.onItemOfDiffUidClick(leaderboardModel.getUid(), leaderboardModel.getFirstName() + " " + leaderboardModel.getLastName());
+            });
+        }
+    }
+
+    public class ThirdPlaceViewHolder extends RecyclerView.ViewHolder {
+        public MaterialTextView firstNameTextView, pointsTextView;
+
+        public ThirdPlaceViewHolder(@NonNull View itemView) {
             super(itemView);
             firstNameTextView = itemView.findViewById(R.id.firstname);
             pointsTextView = itemView.findViewById(R.id.pointsText);
@@ -119,11 +189,16 @@ public class LeaderBoardAdapter extends FirestorePagingAdapter<LeaderboardModel,
 
     @Override
     public int getItemViewType(int position) {
-        if (getItem(position).get("uid").equals(user.getUid())) {
+        if (getItem(position).get("uid").equals(user.getUid()))
             return CURRENT_USER;
-        } else
+        if (position == 0)
+            return FIRST_PLACE;
+        if (position == 1)
+            return SECOND_PLACE;
+        if (position == 2)
+            return THIRD_PLACE;
+        else
             return OTHER_USER;
-
     }
 }
 

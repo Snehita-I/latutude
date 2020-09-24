@@ -34,6 +34,8 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
     public static final int MSG_TYPE_RIGHT = 1;
     public static final int MSG_TYPE_IMAGE_LEFT = 2;
     public static final int MSG_TYPE_IMAGE_RIGHT = 3;
+    public static final int MSG_TYPE_DELETED_LEFT = 4;
+    public static final int MSG_TYPE_DELETED_RIGHT = 5;
     private static final String TAG = ChatAdapter.class.getSimpleName();
     private ChatAdapter.OnItemClickListener listener;
     private ChatAdapter.onItemLongClickListener longClickListener;
@@ -51,13 +53,32 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
 
         switch (viewHolder.getItemViewType()) {
 
+            case MSG_TYPE_DELETED_RIGHT:
+                ChatRightDeletedViewHolder chatRightDeletedViewHolder = (ChatRightDeletedViewHolder) viewHolder;
+                long timeStampDeletedRight = chatModel.getTimestamp();
+                chatRightDeletedViewHolder.messageTime.setText(sfd.format(new Date(timeStampDeletedRight)));
+
+                break;
+
+            case MSG_TYPE_DELETED_LEFT:
+                ChatLeftDeletedViewHolder chatLeftDeletedViewHolder = (ChatLeftDeletedViewHolder) viewHolder;
+                long timeStampDeletedLeft = chatModel.getTimestamp();
+                chatLeftDeletedViewHolder.senderName.setText(chatModel.getUserName());
+                chatLeftDeletedViewHolder.messageTime.setText(sfd.format(new Date(timeStampDeletedLeft)));
+                chatLeftDeletedViewHolder.messageTime2.setText(sfd.format(new Date(timeStampDeletedLeft)));
+                if (chatLeftDeletedViewHolder.senderName.getVisibility() == View.VISIBLE) {
+                    chatLeftDeletedViewHolder.messageTime.setVisibility(View.VISIBLE);
+                    chatLeftDeletedViewHolder.messageTime2.setVisibility(View.GONE);
+                }else{
+                    chatLeftDeletedViewHolder.messageTime.setVisibility(View.GONE);
+                    chatLeftDeletedViewHolder.messageTime2.setVisibility(View.VISIBLE);
+                }
+                break;
+
             case MSG_TYPE_LEFT:
                 ChatLeftViewHolder chatLeftViewHolder = (ChatLeftViewHolder) viewHolder;
                 long timeStampLeft = chatModel.getTimestamp();
-                if(chatModel.isSpam())
-                    chatLeftViewHolder.messageText.setText("Message deleted");
-                else
-                    chatLeftViewHolder.messageText.setText(chatModel.getMessage());
+                chatLeftViewHolder.messageText.setText(chatModel.getMessage());
                 chatLeftViewHolder.messageTime.setText(sfd.format(new Date(timeStampLeft)));
                 chatLeftViewHolder.messageTime2.setText(sfd.format(new Date(timeStampLeft)));
                 chatLeftViewHolder.messageTime3.setText(sfd.format(new Date(timeStampLeft)));
@@ -161,10 +182,7 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
                 } else
                     chatRightViewHolder.itemView.findViewById(R.id.upvotesLayout).setVisibility(View.GONE);
 
-                if(chatModel.isSpam())
-                    chatRightViewHolder.messageText.setText("Message deleted");
-                else
-                    chatRightViewHolder.messageText.setText(chatModel.getMessage());
+                chatRightViewHolder.messageText.setText(chatModel.getMessage());
                 chatRightViewHolder.messageTime.setText(sfd.format(new Date(timeStampRight)));
                 chatRightViewHolder.messageTime2.setText(sfd.format(new Date(timeStampRight)));
                 chatRightViewHolder.upvoteCount.setText(String.valueOf(chatModel.getUpvoteCount()));
@@ -195,10 +213,7 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
                 final ChatLeftImageViewHolder chatLeftImageViewHolder = (ChatLeftImageViewHolder) viewHolder;
                 long timeStampImageLeft = chatModel.getTimestamp();
 
-                if(chatModel.isSpam())
-                    chatLeftImageViewHolder.messageText.setText("Message deleted");
-                else
-                    chatLeftImageViewHolder.messageText.setText(chatModel.getMessage());
+                chatLeftImageViewHolder.messageText.setText(chatModel.getMessage());
                 chatLeftImageViewHolder.messageTime.setText(sfd.format(new Date(timeStampImageLeft)));
                 chatLeftImageViewHolder.messageTime2.setText(sfd.format(new Date(timeStampImageLeft)));
                 chatLeftImageViewHolder.messageTime3.setText(sfd.format(new Date(timeStampImageLeft)));
@@ -260,15 +275,6 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
                 } else
                     chatLeftImageViewHolder.itemView.findViewById(R.id.upvotesLayout).setVisibility(View.GONE);
 
-                if(chatModel.isSpam()) {
-                    chatLeftImageViewHolder.messageText.setText("Message deleted");
-                    chatLeftImageViewHolder.receiverImage.setVisibility(View.GONE);
-                    chatLeftImageViewHolder.viewPostBtn.setVisibility(View.GONE);
-                } else {
-                    chatLeftImageViewHolder.messageText.setText(chatModel.getMessage());
-                    chatLeftImageViewHolder.receiverImage.setVisibility(View.VISIBLE);
-                    chatLeftImageViewHolder.viewPostBtn.setVisibility(View.VISIBLE);
-
                     Picasso.get()
                             .load(chatModel.getimageUrl())
                             .noFade()
@@ -287,13 +293,14 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
                                             .into(chatLeftImageViewHolder.receiverImage);
                                 }
                             });
-                }
+
                 break;
 
             case MSG_TYPE_IMAGE_RIGHT:
                 final ChatRightImageViewHolder chatRightImageViewHolder = (ChatRightImageViewHolder) viewHolder;
                 long timeStampImageRight = chatModel.getTimestamp();
 
+                chatRightImageViewHolder.messageText.setText(chatModel.getMessage());
                 chatRightImageViewHolder.messageTime.setText(sfd.format(new Date(timeStampImageRight)));
                 chatRightImageViewHolder.messageTime2.setText(sfd.format(new Date(timeStampImageRight)));
 
@@ -347,12 +354,6 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
                 } else
                     chatRightImageViewHolder.itemView.findViewById(R.id.upvotesLayout).setVisibility(View.GONE);
 
-                if(chatModel.isSpam()) {
-                    chatRightImageViewHolder.messageText.setText("Message deleted");
-                    chatRightImageViewHolder.sentImage.setVisibility(View.GONE);
-                } else {
-                    chatRightImageViewHolder.messageText.setText(chatModel.getMessage());
-                    chatRightImageViewHolder.sentImage.setVisibility(View.VISIBLE);
                     Picasso.get()
                             .load(chatModel.getimageUrl())
                             .noFade()
@@ -371,7 +372,6 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
                                             .into(chatRightImageViewHolder.sentImage);
                                 }
                             });
-                }
                 break;
 
         }
@@ -402,12 +402,25 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
         } else if (viewType == MSG_TYPE_IMAGE_RIGHT) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_right_image, parent, false);
             return new ChatRightImageViewHolder(view);
-        } else
+        } else if (viewType == MSG_TYPE_DELETED_RIGHT){
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_deleted_right, parent, false);
+            return new ChatRightDeletedViewHolder(view);
+        }else if (viewType == MSG_TYPE_DELETED_LEFT){
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_deleted_left, parent, false);
+            return new ChatLeftDeletedViewHolder(view);
+        }
+        else
             return null;
     }
 
     @Override
     public int getItemViewType(int position) {
+        if(getItem(position).isSpam()){
+            if (getItem(position).getUID().equals(user.getUid()))
+                return MSG_TYPE_DELETED_RIGHT;
+            else
+               return MSG_TYPE_DELETED_LEFT;
+        } else {
             if (getItem(position).getUID().equals(user.getUid()) && getItem(position).getType().equals("text")) {
                 return MSG_TYPE_RIGHT;
             } else if (!getItem(position).getUID().equals(user.getUid()) && getItem(position).getType().equals("text")) {
@@ -418,6 +431,7 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
                 return MSG_TYPE_IMAGE_RIGHT;
             else
                 return 0;
+        }
     }
 
     public interface OnItemClickListener {
@@ -591,6 +605,32 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<ChatModel, RecyclerVie
                     return false;
                 }
             });
+
+        }
+    }
+
+    private class ChatRightDeletedViewHolder extends RecyclerView.ViewHolder {
+
+        private MaterialTextView messageTime;
+
+        public ChatRightDeletedViewHolder(View itemView) {
+            super(itemView);
+
+            messageTime = itemView.findViewById(R.id.message_time);
+
+        }
+    }
+
+    private class ChatLeftDeletedViewHolder extends RecyclerView.ViewHolder {
+
+        private MaterialTextView messageText, messageTime, messageTime2, senderName;
+
+        public ChatLeftDeletedViewHolder(View itemView) {
+            super(itemView);
+
+            messageTime = itemView.findViewById(R.id.message_time);
+            messageTime2 = itemView.findViewById(R.id.message_time2);
+            senderName = itemView.findViewById(R.id.sender_name);
 
         }
     }
