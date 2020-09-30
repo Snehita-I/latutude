@@ -19,16 +19,20 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".FeatureUpvoteActivity" />
-        <activity android:name=".EditProfileActivity" />
-        <activity
-            android:name=".SplashActivity"
-            android:screenOrientation="portrait">
+        <activity android:name=".CameraActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".ChatFragment$CameraActivity" />
+        <activity android:name=".FeatureUpvoteActivity" />
+        <activity android:name=".EditProfileActivity" />
+        <activity
+            android:name=".SplashActivity"
+            android:screenOrientation="portrait">
+
         </activity>
         <activity android:name=".EmailInputActivity" />
         <activity android:name=".ViewPostActivity" />
@@ -94,7 +98,9 @@
         </activity>
         <activity
             android:name=".WelcomeActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait" >
+
+        </activity>
         <activity
             android:name=".HomeActivity"
             android:screenOrientation="portrait" />
